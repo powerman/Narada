@@ -1,0 +1,237 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+use version; our $VERSION = qv('1.0.0');
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+use Narada::Config qw(get_config_line set_config);
+use File::Temp qw( tempdir );
+
+use constant WAIT2EXIT => 8;
+
+
+main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+
+
+sub err { die "narada-release: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+
+sub main {
+    update_version();
+    system($ENV{EDITOR}, 'doc/ChangeLog') == 0  or err "system(EDITOR): $!";
+    update_changelog();
+
+    my ($v_old, $v_new) = get_versions();
+
+    my $dir4diff = tempdir( CLEANUP => 1 );
+    for my $subdir qw(old old/doc old/config new new/doc new/config) {
+        mkdir "$dir4diff/$subdir" or err "mkdir($subdir): $!";
+    }
+    chomp(my $pwd = `pwd`);
+    symlink "$pwd/config/version",                "$dir4diff/new/config/version" or err "symlink: $!";
+    symlink "$pwd/doc/ChangeLog",                 "$dir4diff/new/doc/ChangeLog"  or err "symlink: $!";
+    symlink "$pwd/var/patch/prev/config/version", "$dir4diff/old/config/version" or err "symlink: $!";
+    symlink "$pwd/var/patch/prev/doc/ChangeLog",  "$dir4diff/old/doc/ChangeLog"  or err "symlink: $!";
+    my $patch = "$pwd/var/patch/\Q$v_new\E.\Q$ENV{USER}\E.99.patch";
+    system("cd \Q$dir4diff\E; LANG= diff -uNr old new > $patch") >> WAIT2EXIT!=2 or err "system(diff): $!";
+
+    for my $diff (grep {-f} glob 'var/patch/CURRENT.*') {
+        (my $ext = $diff) =~ s{\Avar/patch/CURRENT[.]}{}xms;
+        rename $diff, "var/patch/$v_new.$ENV{USER}.$ext" or err "rename($diff): $!";
+    }
+    for my $pending (grep {-f && -s} glob 'var/patch/PENDING.*') {
+        (my $ext = $pending) =~ s{\Avar/patch/PENDING[.]}{}xms;
+        if ($ext =~ /\A(?:10[.]sh|20[.]patch|30[.]tgz|40[.]sh|99[.]patch)\z/xms) {
+            warn "WARNING! PENDING file $pending may overwrite another file!\n";
+        }
+        rename $pending, "var/patch/$v_new.$ENV{USER}.$ext" or err "rename($pending): $!";
+        touch($pending);
+    }
+
+    return;
+}
+
+sub get_versions {
+    chdir 'var/patch/prev'                  or err "chdir(var/patch/prev): $!";
+    my $v_old = get_config_line('version');
+    chdir '../../..'                        or err "chdir(../../..): $!";
+    my $v_new = get_config_line('version');
+    $v_new =~ /\S/xms           or err 'UNABLE TO DETECT VERSION';
+    $v_new !~ m{/}xms           or err 'VERSION MUST NOT CONTAIN /';
+    $v_new !~ m{\s}xms          or err 'VERSION MUST NOT CONTAIN WHITESPACES';
+    return ($v_old, $v_new);
+}
+
+sub touch {
+    my ($f) = @_;
+    open my $fd, '>', $f or err "touch($f): $!"; ## no critic (RequireBriefOpen)
+    return;
+}
+
+sub read_file {
+    my ($file) = @_;
+    open my $f, '<', $file              or err "open($file): $!";
+    local $/ = undef;
+    my $val = <$f>;
+    close $f                            or err "close: $!";
+    return $val;
+}
+
+# Read (in update if needed) version.
+sub update_version {
+    my ($v_old, $v_new) = get_versions();
+    if ($v_old eq $v_new) {
+        $v_new =~ s/^(.*\D)?(\d+)/(my $v=$2)++; ($1||q{}) . $v/xmse
+            or err 'VERSION MUST CONTAIN NUMBER';
+        set_config('version', $v_new."\n");
+    }
+    return;
+}
+
+# Ensure ChangeLog has record for this version (if not - create empty) and
+# correct it header.
+sub update_changelog {
+    -f 'doc/ChangeLog'                          or err 'CHANGELOG NOT FOUND';
+    my $changelog_old   = read_file('var/patch/prev/doc/ChangeLog');
+    my $changelog       = read_file('doc/ChangeLog');
+    my $modified        = $changelog_old ne $changelog;
+    if ($modified) {
+        $changelog =~ s/\A (?: \s* \n )* (?: \S[^\n]*\n (?: \s* \n )* )?//xms;
+    }
+    else {
+        warn "... you forget to update ChangeLog, adding fake record. :-(\n";
+    }
+    chomp(my $date = `LANG= date`);
+    open my $f, '>', "tmp/ChangeLog.$$"         or err "open(tmp/ChangeLog): $!";
+    printf {$f} "\t\n\n%-30s %-14s %s\n%s\n%s",
+        $date, $ENV{NARADA_USER} // $ENV{USER}, get_config_line('version'),
+        ($modified ? q{} : "\n\t???"),
+        $changelog;
+    close $f                                    or err "close: $!";
+    rename "tmp/ChangeLog.$$", 'doc/ChangeLog'  or err "rename(doc/ChangeLog): $!";
+    return;
+}
+
+
+1; # Magic true value required at end of module
+
+## no critic (RequirePodAtEnd)
+
+=head1 NAME
+
+narada-release - release current changes in Narada project
+
+
+=head1 VERSION
+
+This document describes narada-release version 1.0.0
+
+
+=head1 USAGE
+
+    narada-release
+
+
+=head1 DESCRIPTION
+
+Generate project update in files C<var/patch/VERSION.$USER.*> where
+VERSION is contents of C<config/version>. This update should be then
+applied locally on C<var/patch/prev/> (just run C<narada-patch>) and
+can be applied on another installation of this project by uploading
+these files into C<var/patch/> of that installation and executing
+C<narada-patch>.
+
+=head2 Process of generating update files
+
+Increment version number in C<config/version> if this file wasn't modified
+manually since last update.
+
+Run C<$EDITOR doc/ChangeLog> to let you enter changes for this update.
+After you exit from editor will add/update header line in C<doc/ChangeLog>.
+
+Create C<var/patch/VERSION.$USER.99.patch> with changes for files
+C<config/version> and C<doc/ChangeLog>.
+
+Rename C<var/patch/CURRENT.*> to C<var/patch/VERSION.$USER.*>.
+
+Rename C<var/patch/PENDING.*> to C<var/patch/VERSION.$USER.*>.
+
+Create empty C<var/patch/PENDING.*> (just for convenience).
+
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+
+=head1 OPTIONS
+
+See USAGE.
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+    $EDITOR
+    $USER
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-narada@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+Alex Efros  C<< <powerman-asdf@ya.ru> >>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+
+=cut
+
+__DATA__
+While running `./Build` the skel/ directory will be injected here as tar+base64.
+

@@ -1,0 +1,187 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+use version; our $VERSION = qv('1.0.0');
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+use Narada::Config qw( get_config_line );
+use DBI;
+
+use constant SCHEME => 'var/sql/db.scheme.sql';
+
+main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+
+sub err {   ## no critic (ProhibitBuiltinHomonyms)
+    die "narada-setup-db: @_\n";
+}
+
+sub main {  ## no critic (RequireArgUnpacking)
+    die "Usage: narada-setup-db [--clean]\n"
+        if (@_ >  1)
+        || (@_ == 1 && $_[0] ne '--clean');
+
+    my $db = get_config_db() or return;
+    $::dbh = DBI->connect($db->{dsn_nodb}, $db->{login}, $db->{pass},
+        {RaiseError=>1}) or err DBI->errstr;
+
+    if (@_) {
+        $::dbh->do('DROP DATABASE IF EXISTS `'.$db->{db}.q{`});
+    }
+    else {
+        $::dbh->do('CREATE DATABASE IF NOT EXISTS `'.$db->{db}.q{`});
+        $::dbh->do('USE `'.$db->{db}.q{`});
+        if (0 < $::dbh->prepare('SHOW TABLES')->execute()) {
+            err 'SQL files not imported because database does not empty';
+        }
+        if (-f SCHEME) {
+            import_sql(SCHEME);
+            for (grep {-f $_ && $_ ne SCHEME} glob 'var/sql/*.sql') {
+                import_sql($_);
+            }
+        }
+    }
+
+    return;
+}
+
+sub get_config_db {
+    my %db;
+    $db{db} = eval { get_config_line('db/db') };
+    if (!defined $db{db} || !length $db{db}) {
+        return;
+    }
+    $db{login}= get_config_line('db/login');
+    $db{pass} = get_config_line('db/pass');
+    $db{host} = eval { get_config_line('db/host') };
+    $db{port} = eval { get_config_line('db/port') };
+    $db{dsn_nodb}  = 'dbi:mysql:';
+    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic
+    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic
+#    $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
+    return \%db;
+}
+
+sub import_sql {
+    my ($file) = @_;
+    warn "importing $file...\n";
+    system("narada-mysql <\Q$file\E") == 0 or err 'failed to import '.$file;
+    return;
+}
+
+
+1; # Magic true value required at end of module
+__END__
+
+=head1 NAME
+
+narada-setup-db - initialize project database
+
+=head1 VERSION
+
+This document describes narada-setup-db version 1.0.0
+
+=head1 USAGE
+
+    narada-setup-db [--clean]
+
+
+=head1 DESCRIPTION
+
+Initialize/drop your Narada project's MySQL database.
+
+If "config/db/db" absent or empty do nothing.
+
+When executed without params will create database (if needed) and load sql dumps
+into database (if any).
+
+When executed with --clean option will drop project's database with all tables.
+
+Script must be executed only from "project root directory".
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+
+=head1 OPTIONS
+
+See USAGE.
+
+=head1 DIAGNOSTICS
+
+=over
+
+=item C<< Usage: narada-setup-db [--clean] >>
+
+Script was executed with too many or wrong params.
+
+=back
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+narada-setup-db use these configuration files:
+
+    config/db/db
+    config/db/login
+    config/db/pass
+    config/db/host
+    config/db/port
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-narada@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+Alex Efros C<< <powerman-asdf@ya.ru> >>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+

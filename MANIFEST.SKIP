@@ -1,0 +1,13 @@
+^Build$
+^_build
+^blib
+^cover_db
+^MYMETA\.yml$
+^MYMETA\.json$
+~$
+\.bak$
+\.swp$
+CVS
+^\.cvsignore$
+^Narada-.*\.tar\.gz$
+^t/.answers$

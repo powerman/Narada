@@ -1,0 +1,292 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+use version; our $VERSION = qv('1.0.0');
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+
+use List::Util qw( min );
+
+use constant BAD_INODE => -1;
+use constant TAIL_BLOCK => 8192;
+use constant TAIL_LINES => 20;
+
+my ($prev_date, $multiline) = (q{}, 1);
+my %level = (err=>0,warn=>1,notice=>2,info=>3,debug=>4);
+
+
+main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+
+
+sub err { die "narada-viewlog: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+
+sub main { ## no critic (RequireArgUnpacking)
+    my ($opt, @files) = parse_opt(@_);
+    if (@files) {
+        for (@files) {
+            cat($opt, $_);
+        }
+    }
+    else {
+        tail($opt, 'var/log/current');
+    }
+    return;
+}
+
+sub parse_opt { ## no critic (RequireArgUnpacking)
+    my ($simple, $complex, $default) = qw( dtmfliph LR tmli );
+    my %opt = map {$_=>1} map {split //xms,substr $_,1} grep {m/\A-[$simple]+\z/xms} @_;
+    if (!keys %opt) {
+        %opt = map {$_=>1} split //xms, $default;
+    }
+    @_ = grep {!m/\A-[$simple]+\z/xms} @_;
+    while (@_ && $_[0] =~ /\A-([$complex])\z/xms) {
+        shift;
+        $opt{$1} = shift;
+    }
+    die "Usage: narada-viewlog [-d] [-t] [-m] [-f] [-l] [-i] [-p] [-L LEVEL] [-R REGEX] [logfile ...]\n"
+        if $opt{h} || grep {!defined} values %opt;
+    return (\%opt, @_);
+}
+
+sub cat {
+    my ($opt, $file) = @_;
+    open my $f, '<', $file or err "open: $!";
+    while (<$f>) {
+        print_line($opt, $_);
+    }
+    close $f or err "close: $!";
+    return;
+}
+
+sub tail {
+    my ($opt, $file) = @_;
+    my $prev_inode = BAD_INODE;
+    my $fh;
+    while (1) {
+        my $inode = (stat $file)[1];
+        if (!$inode) {
+            next;
+        }
+        elsif ($inode != $prev_inode) {
+            if (!open $fh, '<', $file) {    ## no critic (RequireBriefOpen)
+                warn "open: $!\n";
+            } else {
+                if ($prev_inode == BAD_INODE) {
+                    seek $fh, offset_lastlines($fh, TAIL_LINES), 2 or err "seek: $!";
+                }
+                else {
+                    warn "\n$file reopened, continue...\n\n";
+                }
+                $prev_inode = $inode;
+            }
+        }
+        else {
+            while (<$fh>) {
+                print_line($opt, $_);
+            }
+        }
+    } continue { sleep 1 }
+    return;
+}
+
+sub offset_lastlines {
+    my ($fh, $lines) = @_;
+    seek $fh, -min(-s $fh, TAIL_BLOCK), 2 or err "seek: $!";
+    my @lines = <$fh>;
+    shift @lines;
+    splice @lines, 0, -$lines;
+    return -length join q{}, @lines;
+}
+
+sub print_line { ## no critic (ProhibitExcessComplexity)
+    my ($opt, $line) = @_;
+    my $r_time   = qr/(\d\d\d\d-\d\d-\d\d)_(\d\d:\d\d:\d\d)[.](\d+)/xms;
+    my $r_faclvl = qr/(\w+)[.](\w+)/xms;
+    my $r_idpid  = qr/([^\[]+)\[(\d+)\]/xms;
+    if ($line !~ m{\A$r_time\s$r_faclvl:\s\S+\s+\S+\s\S+\s+$r_idpid:\s(.*)\z}xms) {
+        if ($multiline) {
+            $line =~ s/\A$r_time\s//xms;
+            print $line;
+        }
+    }
+    else {
+        my ($date, $time, $msec, $facility, $level, $ident, $pid, $msg)
+            = ($1,$2,$3,$4,$5,$6,$7,$8);
+        $multiline = 0;
+        return if $opt->{L} && $level{lc $level} > $level{lc $opt->{L}};
+        return if $opt->{R} && $msg !~ /$opt->{R}/xms;
+        $multiline = 1;
+        my (@p);
+        if ($opt->{d}) {
+            push @p, sprintf '%s', $date;
+        }
+        elsif ($opt->{t} && $prev_date ne $date) {
+            printf "=== %s\n", $date;
+            $prev_date = $date;
+        }
+        ## no critic (ProhibitPostfixControls)
+        if ($opt->{t} && $opt->{m}) {
+            push @p, sprintf '%s.%05d', $time, $msec;
+        }
+        else {
+            push @p, sprintf '%s',   $time if $opt->{t};
+            push @p, sprintf '%05d', $msec if $opt->{m};
+        }
+        if ($opt->{f} && $opt->{l}) {
+            push @p, sprintf '%s.%-6s', $facility, $level;
+        }
+        else {
+            push @p, sprintf '%s', $facility if $opt->{f};
+            push @p, sprintf '%6s', $level   if $opt->{l};
+        }
+        if ($opt->{i} && $opt->{p}) {
+            push @p, sprintf '%s[%d]', $ident, $pid;
+        }
+        else {
+            push @p, sprintf '%s', $ident if $opt->{i};
+            push @p, sprintf '[%d]', $pid if $opt->{p};
+        }
+        if (@p) {
+            printf '%s: %s', join(q{ }, @p), $msg;
+        } else {
+            print $msg;
+        }
+    }
+    return;
+}
+
+
+1; # Magic true value required at end of module
+
+## no critic (RequirePodAtEnd)
+
+=head1 NAME
+
+narada-viewlog - log viewer for project based on Narada framework
+
+
+=head1 VERSION
+
+This document describes narada-viewlog version 1.0.0
+
+
+=head1 USAGE
+
+    narada-viewlog [-d] [-t] [-m] [-f] [-l] [-i] [-p] [-L LEVEL] [-R REGEX] [logfile ...]
+
+
+=head1 DESCRIPTION
+
+Output logs in ease to read format (control output fields and can filter
+log records).
+
+If 'logfile' param(s) used output these files, else work like
+`tail -F var/log/current`.
+
+To select which fields should be included in output (use -tmli by default):
+
+  [-d] date
+  [-t] time
+  [-m] time microseconds
+  [-f] facility
+  [-l] log level
+  [-i] ident
+  [-p] pid
+
+To filter log records:
+
+  [-L LEVEL] minimum log level (debug->info->notice->warn->err)
+  [-R REGEX] regexp to filter log records (in multiline records 
+             will apply to first line only)
+
+If option -t used without -d, will output date on separate line on date change.
+Will remove duplicate date/time (added by syslog) from output.
+Strip prefix in multiline records for second and next lines.
+
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+
+=head1 OPTIONS
+
+See USAGE.
+
+=head1 DIAGNOSTICS
+
+=over
+
+=item C<< Usage: narada-viewlog [-d] [-t] [-m] [-f] [-l] [-i] [-p] [-L LEVEL] [-R REGEX] [logfile ...] >>
+
+Script was executed with wrong params.
+
+
+=back
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+narada-viewlog requires no configuration files or environment variables.
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-narada@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+Alex Efros  C<< <powerman-asdf@ya.ru> >>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+
+=cut
+

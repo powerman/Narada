@@ -1,0 +1,2 @@
+Replace dependency on mutt in `narada-patch-send` with POWER::Email and
+POWER::GPG (have to release both to CPAN first).

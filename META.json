@@ -1,0 +1,67 @@
+{
+   "abstract" : "framework for ease development/deploy/support for medium/big projects",
+   "author" : [
+      "Alex Efros <powerman-asdf@ya.ru>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Narada",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.40"
+         }
+      },
+      "runtime" : {
+         "recommends" : {
+            "Pod::Coverage" : "0.18",
+            "Test::CheckManifest" : "0.9",
+            "Test::Perl::Critic" : "0",
+            "Test::Pod" : "1.22",
+            "Test::Pod::Coverage" : "1.08"
+         },
+         "requires" : {
+            "DBI" : "0",
+            "Log::Fast" : "0",
+            "Perl6::Export::Attrs" : "0",
+            "Test::Differences" : "0",
+            "Test::Exception" : "0",
+            "Test::MockModule" : "0",
+            "perl" : "v5.10.0",
+            "version" : "0.77"
+         }
+      }
+   },
+   "provides" : {
+      "Narada" : {
+         "file" : "lib/Narada.pm",
+         "version" : "v1.0.0"
+      },
+      "Narada::Config" : {
+         "file" : "lib/Narada/Config.pm",
+         "version" : "v1.0.0"
+      },
+      "Narada::Lock" : {
+         "file" : "lib/Narada/Lock.pm",
+         "version" : "v1.0.0"
+      },
+      "Narada::Log" : {
+         "file" : "lib/Narada/Log.pm",
+         "version" : "v1.0.0"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "v1.0.0"
+}

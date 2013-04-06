@@ -1,0 +1,240 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+use version; our $VERSION = qv('1.0.0');
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+use Narada::Config qw(set_config);
+
+main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+
+
+sub err { die "narada-new: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+
+sub main {  ## no critic (RequireArgUnpacking)
+    die "Usage: narada-new [/path/to/project]\n" if @_ > 1;
+    my $dst = @_ ? $_[0] : q{.};
+
+    # Prepare empty destination directory.
+    if (!-e $dst) {
+        mkdir $dst                      or err "mkdir: $!";
+    }
+    else {
+        -d $dst                         or err "not a directory: $dst";
+        opendir my $d, $dst             or err "opendir: $!";
+        (my @tmp = readdir $d) == 2     or err "directory not empty: $dst";
+        closedir $d                     or err "closedir: $!";
+    }
+
+    # Unpack project skeleton from DATA.
+    local $/;
+    my $skel = <DATA>;
+    local $SIG{PIPE} = 'IGNORE';
+    open my $unpack, q{|-}, "base64 -d | tar xpf - -C \Q$dst\E"
+                                        or err 'unpack failed';
+    print {$unpack} $skel;
+    close $unpack                       or err 'unpack failed';
+
+    # Enter project.
+    chdir $dst                          or err "chdir: $!";
+
+    # Setup project version.
+    my ($project) = `pwd` =~ m{([^/]+?)\n\z}xms
+                                        or err 'unable to detect project name';
+    my $version = "$project-0.0.000";
+    set_config('version', "$version\n");
+
+    if (exists $ENV{NARADA_USER}) {
+        set_config("patch/send/$ENV{USER}", $ENV{NARADA_USER});
+    }
+
+    # Initialize patch system.
+    system 'tar cf - ./ --exclude var/patch/prev | tar xpf - -C var/patch/prev/';
+
+    # Make initial archive for installing this project elsewhere.
+    system 'narada-backup';
+    rename 'var/backup/full.tar', "var/patch/$version.tar" or err "rename: $!";
+
+    return;
+}
+
+1; # Magic true value required at end of module
+
+## no critic (RequirePodAtEnd)
+
+=head1 NAME
+
+narada-new - creates a skeleton project based on Narada framework
+
+
+=head1 VERSION
+
+This document describes narada-new version 1.0.0
+
+
+=head1 USAGE
+
+    narada-new [/path/to/project]
+
+
+=head1 DESCRIPTION
+
+This script help you create skeleton project directory for using Narada
+framework.
+
+Target directory shouldn't exists or must be empty.
+
+If target directory doesn't exists - it will be created (parent
+directory must exists).
+
+If executed without param will create skeleton
+project in current directory, which must be empty.
+
+Target directory become "project root directory", and all other `narada-*`
+scripts must be executed in this directory.
+
+
+=head2 INITIAL SETUP
+
+File C<config/version> will be initialized with value "PROJECTNAME-0.0.000",
+where PROJECTNAME is target directory name.
+
+Will create C<var/patch/PROJECTNAME-0.0.000.tar> with backup of current
+project. This backup should be used when installing this project elsewhere:
+
+    unpack backup in empty project root
+    (if needed) unpack backup in var/patch/prev/
+    put all updates into var/patch/
+    run narada-patch
+    setup config/* as needed for this installation
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+
+=head1 OPTIONS
+
+See USAGE.
+
+=head1 DIAGNOSTICS
+
+=over
+
+=item C<< Usage: narada-new [/path/to/project] >>
+
+Script was executed with too many params.
+
+
+=item C<< narada-new: mkdir: %s >>
+
+Target directory wasn't exists and mkdir failed (probably parent directory
+doesn't exist or have wrong permissions).
+
+=item C<< narada-new: not a directory: %s >>
+
+Script's param point to existing file.
+
+
+=item C<< narada-new: opendir: %s >>
+
+Target directory exists, but can't be read (probably have wrong permissions).
+
+
+=item C<< narada-new: directory not empty: %s >>
+
+Target directory exists, but not empty.
+
+
+=item C<< narada-new: unpack failed >>
+
+Script failed to unpack skeleton directory. Most likely reason - target
+directory doesn't writable. While unpacking it use tools `base64` and
+`tar`, so maybe there some issue with these tools. Or this script was
+damaged (reinstall recommended).
+
+
+=item C<< narada-new: unable to detect project name >>
+
+Failed to setup 'config/version' file using project directory name as
+default project name. Probably some issue with `pwd` command or unusual
+symbols in project directory name (\n for example).
+
+
+=item C<< narada-new: closedir: %s >>
+
+=item C<< narada-new: chdir: %s >>
+
+Internal error.
+
+
+=back
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+narada-new requires no configuration files or environment variables.
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-narada@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+Alex Efros  C<< <powerman-asdf@ya.ru> >>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+
+=cut
+
+__DATA__
+While running `./Build` the skel/ directory will be injected here as tar+base64.
+

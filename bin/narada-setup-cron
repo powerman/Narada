@@ -1,0 +1,250 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+use version; our $VERSION = qv('1.0.0');
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+use Narada::Config qw( get_config set_config );
+
+main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+
+sub err {   ## no critic (ProhibitBuiltinHomonyms)
+    die "narada-setup-cron: @_\n";
+}
+
+sub main {  ## no critic (RequireArgUnpacking)
+    die "Usage: narada-setup-cron [--clean]\n"
+        if (@_ >  1)
+        || (@_ == 1 && $_[0] ne '--clean');
+
+    if (@_) {
+        del_cron();
+    }
+    else {
+        my $crontab = eval { get_config('crontab') };
+        if ($@ =~ /no\ssuch\sconfig:/xms) {
+            del_cron();
+        }
+        elsif ($@) {
+            err $@;
+        }
+        else {
+            $crontab = process($crontab);
+            set_cron($crontab);
+        }
+    }
+
+    return;
+}
+
+sub get_project_dir {
+    chomp (my $project_dir = `pwd`);
+    $project_dir !~ /\n/xms or err 'project directory must not contain \\n';
+    return $project_dir;
+}
+
+sub process {
+    my ($crontab) = @_;
+    my $project_dir = get_project_dir();
+    $project_dir = quotemeta $project_dir;
+    $project_dir =~ s{\\([/,._-])}{$1}xmsg; # unquote safe chars for readability
+    $crontab =~ s/^(\s*(?!\#)(?:\S+\s+){5})/${1}cd $project_dir || exit; /xmsg;
+    return $crontab;
+}
+
+sub get_markers {
+    my $project_dir = get_project_dir();
+    my $start   = "# ENTER Narada: $project_dir";
+    my $end     = "# LEAVE Narada: $project_dir";
+    my $re      = qr/^\Q$start\E\n.*?^\Q$end\E(?:\n|\z)/xms;
+    return ($re, $start, $end);
+}
+
+sub get_user_crontab {
+    local $/ = undef;
+    # WORKAROUND    If user has no crontab then `crontab -l` output string
+    #               "no crontab for USERNAME". So we've to use `crontab -e`
+    #               instead, to get empty output in this case.
+    open my $cron, q{-|}, 'EDITOR=cat crontab -e'    or err "crontab -e: $!";
+    my $crontab = <$cron>;
+    close $cron                                     or err "crontab -e: $!";
+    return $crontab;
+}
+
+sub set_user_crontab {
+    my ($crontab) = @_;
+    open my $cron, q{|-}, 'crontab -'                or err "crontab -e: $!";
+    print {$cron} $crontab;
+    close $cron                                     or err "crontab -e: $!";
+    return;
+}
+
+sub force_last_CR { ## no critic (Capitalization)
+    my ($s) = @_;
+    if ($s =~ /[^\n]\z/xms) {
+        $s .= "\n";
+    }
+    return $s;
+}
+
+sub set_cron {
+    my ($crontab) = @_;
+    $crontab = force_last_CR($crontab);
+
+    my $user_crontab = get_user_crontab();
+    my ($re, $start, $end) = get_markers();
+    if ($user_crontab !~ /$re/xms) {
+        $user_crontab = force_last_CR($user_crontab);
+        $user_crontab .= "$start\n$end\n";
+    }
+
+    $user_crontab =~ s/$re/$start\n$crontab$end\n/xms;
+    set_user_crontab($user_crontab);
+    return;
+}
+
+sub del_cron {
+    my $user_crontab = get_user_crontab();
+    my ($re) = get_markers();
+    $user_crontab =~ s/$re//xms;
+    set_user_crontab($user_crontab);
+    return;
+}
+
+1; # Magic true value required at end of module
+__END__
+
+=head1 NAME
+
+narada-setup-cron - synchronize project crontab with user crontab
+
+=head1 VERSION
+
+This document describes narada-setup-cron version 1.0.0
+
+=head1 USAGE
+
+    narada-setup-cron [--clean]
+
+
+=head1 DESCRIPTION
+
+Install/remove your Narada project's cron configuration.
+
+When executed without params add/update project's cron configuration found
+in "config/crontab" into user's crontab.
+
+When executed with --clean option or in case "config/crontab" doesn't exists
+will remove project's cron configuration from user's crontab.
+
+Script must be executed only from "project root directory".
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+
+=head1 OPTIONS
+
+See USAGE.
+
+=head1 SYNTAX OF "config/crontab"
+
+Syntax of "config/crontab" is same as for system crontab, but commands in
+project's cron configuration will be executed in project's root directory
+instead of user's home directory. For this, the "cd /path/to/project ||
+exit;" command will be added on-the-fly before user command, i.e. every
+line in "config/crontab" like:
+
+    * * * * *    do something
+
+will turn into line in user's crontab like:
+
+    * * * * *    cd /path/to/project || exit; do something
+
+=head1 DIAGNOSTICS
+
+=over
+
+=item C<< Usage: narada-setup-cron [--clean] >>
+
+Script was executed with too many or wrong params.
+
+=item C<< project directory must not contain \n >>
+
+Project root directory used in BEGIN/END markers in crontab, which has
+line-based format and so directory name must not contain \n.
+
+Also project root directory used in "cd" command in crontab, which suffer
+from same limitation.
+
+=item C<< crontab -e: %s  >>
+
+Internal error, possible reason - user doesn't have access to system crontab.
+
+=back
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+narada-config-cron use "config/crontab" configuration file.
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-narada@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+Alex Efros C<< <powerman-asdf@ya.ru> >>
+
+Nick Levchenko C<< <nick-lev@ya.ru> >>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+

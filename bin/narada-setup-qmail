@@ -1,0 +1,241 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+use version; our $VERSION = qv('1.0.0');
+
+use FindBin;
+use lib "$FindBin::Bin/../lib/perl5";
+use Narada::Config qw( get_config set_config );
+use File::Temp qw( tempfile );
+use Cwd qw( cwd );
+
+main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+
+sub err {   ## no critic (ProhibitBuiltinHomonyms)
+    die "narada-setup-qmail: @_\n";
+}
+
+sub main {  ## no critic (RequireArgUnpacking)
+    die "Usage: narada-setup-qmail [--clean]\n"
+        if (@_ >  1)
+        || (@_ == 1 && $_[0] ne '--clean');
+    my $clean = @_ && $_[0] eq '--clean';
+
+    if ($clean) {
+        for my $file (ls_qmail()) {
+            unlink $file                        or err "unlink($file): $!";
+        }
+    }
+    else {
+        setup_qmail();
+    }
+
+    return;
+}
+
+sub setup_qmail {
+    my $cwd = cwd();
+
+    for my $file (ls('config/qmail')) {
+        # read from config/qmail/
+        my $data = get_config("qmail/$file");
+        $data =~ s/^[|]/|cd \Q$cwd\E || exit(100); /gmxs;
+        # write to var/qmail/
+        my $path = "$cwd/var/qmail/$file";
+        replacefile($path, $data);
+        # symlink at ~/.qmail-
+        my $qmail = "$ENV{HOME}/.qmail-$file";
+        if (! -e $qmail) {
+            symlink $path, $qmail               or err "symlink($path,$qmail): $!";
+        }
+        elsif (! (-l $qmail && _readlink($qmail) eq $path)) {
+            err "conflict detected on $qmail";
+        }
+    }
+
+    # cleanup
+    for my $file (grep {! -f "config/qmail/$_"} ls('var/qmail')) {
+        unlink "var/qmail/$file"                or err "unlink(var/qmail/$file): $!";
+    }
+    for my $file (grep {! -f $_} ls_qmail()) {
+        unlink $file                            or err "unlink($file): $!";
+    }
+
+    return;
+}
+
+sub ls_qmail {
+    my $cwd = cwd();
+    my @files =
+        grep {-l $_ && _readlink($_) =~ m{\A\Q$cwd\E/}xms}
+        map {"$ENV{HOME}/$_"}
+        grep { m/\A[.]qmail-/xms }
+        ls($ENV{HOME});
+    return @files;
+}
+
+sub replacefile {
+    my ($file, $data) = @_;
+    (my $dir = $file) =~ s{/[^/]+\z}{}xms;
+    my ($fh, $temp) = tempfile(DIR => $dir);
+    print {$fh} $data;
+    close $fh                                   or err "close($temp): $!";
+    rename $temp, $file                         or err "rename($temp,$file): $!";
+    return;
+}
+
+sub ls {
+    my ($dir) = @_;
+    opendir my $d, $dir                         or err "opendir($dir): $!";
+    my @files = grep { $_ ne q{.} && $_ ne q{..} } readdir $d;
+    closedir $d                                 or err "closedir($dir): $!";
+    return @files;
+}
+
+sub _readlink {
+    my ($link) = @_;
+    my $path = readlink $link                   or err "readlink($link): $!";
+    return $path;
+}
+
+
+1; # Magic true value required at end of module
+__END__
+
+=head1 NAME
+
+narada-setup-qmail - install/remove project qmail configuration
+
+=head1 VERSION
+
+This document describes narada-setup-qmail version 1.0.0
+
+=head1 USAGE
+
+    narada-setup-qmail [--clean]
+
+
+=head1 DESCRIPTION
+
+Sync Narada project's qmail configuration with user's ~/.qmail-* files.
+
+Script must be executed in "project root directory".
+
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+
+
+=head1 OPTIONS
+
+=over
+
+=item B<--clean>
+
+Remove all ~/.qmail-* files related to this project.
+
+=back
+
+
+=head1 SYNTAX OF "config/qmail/files"
+
+Syntax of "config/qmail/files" is same as described in "man dot-qmail",
+but commands in project's qmail configuration will be executed in project's
+root directory instead of user's home directory. If config file have piped
+command (started with "|") it will be modified to
+"|cd /path/to/project || exit(100); " command will be added on-the-fly before
+user command, i.e. every command line in "config/qmail/file_with_command" like:
+
+|some_script some_opt;
+
+will turn into line in user's dir like:
+
+|cd /path/to/project || exit(100); some_script some_opt;
+
+
+=head1 DIAGNOSTICS
+
+=over
+
+=item C<< Usage: narada-setup-qmail [--clean] >>
+
+Script was executed with too many or wrong params.
+
+=item C<< conflict detected on ~/.qmail-NAME >>
+
+This project have config/qmail/NAME, but ~/.qmail-NAME already exists and
+it isn't symlink to this project's var/qmail/NAME file.
+
+You should manually resolve this conflict by either renaming
+config/qmail/NAME file in this project or removing ~/.qmail-NAME.
+After that you should run narada-setup-qmail again.
+
+=back
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+ read from config/qmail/*
+ write to var/qmail/*
+ create/delete symlinks at ~/.qmail-*
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-narada@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+Alex Efros C<< <powerman-asdf@ya.ru> >>
+
+Nick Levchenko C<< <nick-lev@ya.ru> >>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
