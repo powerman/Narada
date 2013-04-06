@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.0.0');
+use version; our $VERSION = qv('1.0.1');
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Narada::Config qw( get_config_line );
@@ -62,7 +62,7 @@ Narada::Log - setup project log
 
 =head1 VERSION
 
-This document describes Narada::Log version 1.0.0
+This document describes Narada::Log version 1.0.1
 
 
 =head1 SYNOPSIS
@@ -74,13 +74,14 @@ This document describes Narada::Log version 1.0.0
 
 =head1 DESCRIPTION
 
-While loading, this module will configure $POWER::LOG::DEFAULT object
-according to configuration in config/log/output and config/log/level.
+While loading, this module will configure Log::Fast->global() object
+according to configuration in C<config/log/type>, C<config/log/output> and
+C<config/log/level>.
 
 If any scalar variable names will be given as parameters while loading
-module it will export $POWER::LOG::DEFAULT as given variable names.
+module it will export Log::Fast->global() as given variable names.
 
-See L<POWER::LOG> for more details.
+See L<Log::Fast> for more details.
 
 
 =head1 INTERFACE 
@@ -109,7 +110,7 @@ Narada framework.
 
 =head1 DEPENDENCIES
 
- POWER::LOG
+ Log::Fast
 
 
 =head1 INCOMPATIBILITIES

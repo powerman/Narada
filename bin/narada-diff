@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION='1.0.0'
+VERSION='1.0.1'
 
 exclude=( -x "\A./var/patch/" )
 IFS=$'\n'
@@ -29,7 +29,7 @@ narada-diff - prepare patch from previous version to current
 
 =head1 VERSION
 
-This document describes narada-diff version 1.0.0
+This document describes narada-diff version 1.0.1
 
 =head1 USAGE
 

@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.0.0');
+use version; our $VERSION = qv('1.0.1');
 
 1; # Magic true value required at end of module
 __END__
@@ -15,7 +15,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 =head1 VERSION
 
-This document describes Narada version 1.0.0
+This document describes Narada version 1.0.1
 
 
 =head1 SYNOPSIS
@@ -37,7 +37,7 @@ projects conform Narada interface (and developed in *NIX - Windows not
 supported).
 
 There are few helper Narada::* modules for perl which helps you to conform
-Narada interface in you perl modules/scripts; for other languages you may
+Narada interface in your perl modules/scripts; for other languages you may
 want to create similar helpers, but this isn't required - Narada interface
 is simple and can be easily conformed without using special helpers.
 
@@ -52,7 +52,7 @@ have common runtime environment, logs, etc.) with different entry points
 
 =item Create files and directory structure for new project.
 
-Project doesn't require to use database, all configuration/logs/etc. are
+Project doesn't required to use database, all configuration/logs/etc. are
 stored in files.
 
 =item Different project installations have different configuration.
@@ -86,7 +86,7 @@ maintenance.
 
 =item Basic support for team development and versioning project.
 
-Narada make it easier to release updates to production/testing servers.
+Narada make it easier to release and deploy updates on server.
 Team members may merge these updates with their working copy of project.
 Each update consists of several .patch, .sh, .sql and .tgz files, and can
 be easily reviewed/corrected before releasing.
@@ -159,10 +159,6 @@ settings, but not changed settings).
 
 Contain C<ChangeLog>. Put your documentation here.
 
-=item C<perl/>
-
-Install extra perl modules used by your project here.
-
 =item C<service/>
 
 This directory should be used to setup project's services (daemons)
@@ -230,8 +226,8 @@ updates found this this directory to project; etc.
 
 =item C<var/patch/PENDING.*>
 
-You should put in these files custom sql/sh commands which should be
-included in next update.
+You should put into these files custom sql/sh commands which should be
+included with next update.
 
 =item C<var/patch/ChangeLog>
 
@@ -270,12 +266,12 @@ in backup. Must contain at least these lines:
 List of database tables (one per line) which can be dumped incrementally
 (according to their auto_increment primary key field). C<narada-backup>
 will dump only new records in these tables (dumps for older records will
-be available from existing files in C<var/backup/>).
+be available in existing files in C<var/backup/> or C<var/sql/>).
 
 =item C<config/db/dump/empty>
 
-List of database tables (one per line) which data shouldn't be included in
-backup, just scheme.
+List of database tables (one per line) which records shouldn't be included in
+backup, only scheme.
 
 =item C<config/db/dump/ignore>
 
@@ -320,8 +316,8 @@ C<narada-new> set it to C<DEBUG>.
 =item C<service/log/>
 
 Syslog-compatible service listening to C<var/log.sock> and saving logs
-into C<var/log/>. Can be switched off only if C<config/log/output> doesn't
-contain C<var/log.sock>.
+into C<var/log/>. Can be switched off only if you doesn't write logs to
+C<var/log.sock>.
 
 =item C<var/log/>
 
@@ -423,7 +419,7 @@ manual maintenance.
 
 This file created before trying to exclusive-lock C<var/.lock>. All
 applications wanted to shared-lock C<var/.lock> should first check is
-C<var/.lock.new> exists and if it is delay/avoid locking C<var/.lock>.
+C<var/.lock.new> exists and if yes then delay/avoid locking C<var/.lock>.
 After exclusive lock will be acquired C<var/.lock.new> will be removed.
 This is needed to guarantee exclusive lock will be acquired as soon as
 possible.
@@ -450,9 +446,14 @@ Read man pages of these tools for details.
 
     narada-diff
     narada-release
-    narada-patch
     narada-patch-remote
     narada-patch-send
+    narada-patch-pull
+    narada-patch
+
+    narada-remote
+    narada-upload
+    narada-download
 
     narada-viewlog
     narada-mysql

@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION='1.0.0'
+VERSION='1.0.1'
 
 [ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
 
@@ -51,7 +51,7 @@ narada-backup - prepare consistent project backup
 
 =head1 VERSION
 
-This document describes narada-backup version 1.0.0
+This document describes narada-backup version 1.0.1
 
 =head1 USAGE
 
