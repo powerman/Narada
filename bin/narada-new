@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.1.0');
+use version; our $VERSION = qv('1.2.0');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -51,7 +51,7 @@ sub main {  ## no critic (RequireArgUnpacking)
     }
 
     # Initialize patch system.
-    system 'tar cf - ./ --exclude var/patch/prev | tar xpf - -C var/patch/prev/';
+    system 'tar cf - ./ --exclude var/patch/.prev | tar xpf - -C var/patch/.prev/';
 
     # Make initial archive for installing this project elsewhere.
     system 'narada-backup';
@@ -71,7 +71,7 @@ narada-new - creates a skeleton project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-new version 1.1.0
+This document describes narada-new version 1.2.0
 
 
 =head1 USAGE
@@ -105,7 +105,7 @@ Will create C<var/patch/PROJECTNAME-0.0.000.tar> with backup of current
 project. This backup should be used when installing this project elsewhere:
 
     unpack backup in empty project root
-    (if needed) unpack backup in var/patch/prev/
+    (if needed) unpack backup in var/patch/.prev/
     put all updates into var/patch/
     run narada-patch
     setup config/* as needed for this installation

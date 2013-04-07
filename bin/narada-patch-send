@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION='1.1.0'
+VERSION='1.2.0'
 
 perl -ne 'print if ($rec+=/^\S/) == 1' doc/ChangeLog  >tmp/ChangeLog.$$
 # Mutt options:
@@ -33,7 +33,7 @@ narada-patch-send - send latests patch files by email to other developers
 
 =head1 VERSION
 
-This document describes narada-patch-send version 1.1.0
+This document describes narada-patch-send version 1.2.0
 
 =head1 USAGE
 

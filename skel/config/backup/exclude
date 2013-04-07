@@ -1,4 +1,4 @@
 ./var/.lock.new
 ./tmp/*
 ./var/backup/*
-./var/patch/prev/*
+./var/patch/.prev/*

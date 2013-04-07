@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.1.0');
+use version; our $VERSION = qv('1.2.0');
 
 1; # Magic true value required at end of module
 __END__
@@ -15,7 +15,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 =head1 VERSION
 
-This document describes Narada version 1.1.0
+This document describes Narada version 1.2.0
 
 
 =head1 SYNOPSIS
@@ -246,7 +246,7 @@ Symlink to C<doc/ChangeLog> for convenience.
 Shortcuts for convenience (to run C<narada-*> in project root without
 leaving C<var/patch/> where you now reviewing current patch).
 
-=item C<var/patch/prev/>
+=item C<var/patch/.prev/>
 
 Contains "master" copy of current project's version (VCS keeps it in .git
 or .hg), for internal use by C<narada-diff>. Should never be modified
@@ -270,7 +270,7 @@ in backup. Must contain at least these lines:
     ./var/.lock.new     to avoid project in locked state after restore
                         from backup
     ./var/backup/*      to avoid recursively including old backups in new
-    ./var/patch/prev/*  harmless, but it always can be restored by
+    ./var/patch/.prev/* harmless, but it always can be restored by
                         applying all released updates on empty project
 
 =item C<config/db/dump/incremental>
@@ -452,6 +452,7 @@ Read man pages of these tools for details.
     narada-setup-cron
     narada-setup-mysql
     narada-setup-qmail
+    narada-shutdown-services
 
     narada-backup
     narada-mysqldump

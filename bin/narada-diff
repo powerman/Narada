@@ -1,17 +1,20 @@
 #!/bin/bash
-VERSION='1.1.0'
+VERSION='1.2.0'
+
+# compatibility with Narada <1.2.0
+[ -d ./var/patch/prev ] && mv ./var/patch/prev ./var/patch/.prev
 
 exclude=( -x "\A./var/patch/" )
 IFS=$'\n'
 exclude+=( $(
-    (find ./config/ -type f; cd ./var/patch/prev/; find ./config/ -type f) |
+    (find ./config/ -type f; cd ./var/patch/.prev/; find ./config/ -type f) |
     sort | uniq -c | grep '^ *2 ' | sed 's/^ *2 //' |
     perl -ne 'chomp; print "-x\n"; print "\\A\Q$_\E\\z\n"'
     ) )
 IFS=$' \t\n'
 
 powerdiff -o tmp/CURRENT -f config/patch/exclude "${exclude[@]}" \
-    ./var/patch/prev/ ./
+    ./var/patch/.prev/ ./
 
 rm                      var/patch/CURRENT.*            2>/dev/null
 mv tmp/CURRENT.pre.sh   var/patch/CURRENT.10.sh        2>/dev/null
@@ -28,7 +31,7 @@ narada-diff - prepare patch from previous version to current
 
 =head1 VERSION
 
-This document describes narada-diff version 1.1.0
+This document describes narada-diff version 1.2.0
 
 =head1 USAGE
 

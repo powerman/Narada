@@ -15,16 +15,16 @@ name: Narada
 provides:
   Narada:
     file: lib/Narada.pm
-    version: v1.1.0
+    version: v1.2.0
   Narada::Config:
     file: lib/Narada/Config.pm
-    version: v1.1.0
+    version: v1.2.0
   Narada::Lock:
     file: lib/Narada/Lock.pm
-    version: v1.1.0
+    version: v1.2.0
   Narada::Log:
     file: lib/Narada/Log.pm
-    version: v1.1.0
+    version: v1.2.0
 recommends:
   Pod::Coverage: 0.18
   Test::CheckManifest: 0.9
@@ -42,4 +42,4 @@ requires:
   version: 0.77
 resources:
   license: http://dev.perl.org/licenses/
-version: v1.1.0
+version: v1.2.0

@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.1.0');
+use version; our $VERSION = qv('1.2.0');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -18,6 +18,8 @@ main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 sub err { die "narada-release: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
 
 sub main {
+    rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
+
     update_version();
     system($ENV{EDITOR}, 'doc/ChangeLog') == 0  or err "system(EDITOR): $!";
     update_changelog();
@@ -31,8 +33,8 @@ sub main {
     chomp(my $pwd = `pwd`);
     symlink "$pwd/config/version",                "$dir4diff/new/config/version" or err "symlink: $!";
     symlink "$pwd/doc/ChangeLog",                 "$dir4diff/new/doc/ChangeLog"  or err "symlink: $!";
-    symlink "$pwd/var/patch/prev/config/version", "$dir4diff/old/config/version" or err "symlink: $!";
-    symlink "$pwd/var/patch/prev/doc/ChangeLog",  "$dir4diff/old/doc/ChangeLog"  or err "symlink: $!";
+    symlink "$pwd/var/patch/.prev/config/version","$dir4diff/old/config/version" or err "symlink: $!";
+    symlink "$pwd/var/patch/.prev/doc/ChangeLog", "$dir4diff/old/doc/ChangeLog"  or err "symlink: $!";
     my $patch = "$pwd/var/patch/\Q$v_new\E.\Q$ENV{USER}\E.99.patch";
     system("cd \Q$dir4diff\E; LANG= diff -uNr old new > $patch") >> WAIT2EXIT!=2 or err "system(diff): $!";
 
@@ -53,7 +55,7 @@ sub main {
 }
 
 sub get_versions {
-    chdir 'var/patch/prev'                  or err "chdir(var/patch/prev): $!";
+    chdir 'var/patch/.prev'                 or err "chdir(var/patch/.prev): $!";
     my $v_old = get_config_line('version');
     chdir '../../..'                        or err "chdir(../../..): $!";
     my $v_new = get_config_line('version');
@@ -93,7 +95,7 @@ sub update_version {
 # correct it header.
 sub update_changelog {
     -f 'doc/ChangeLog'                          or err 'CHANGELOG NOT FOUND';
-    my $changelog_old   = read_file('var/patch/prev/doc/ChangeLog');
+    my $changelog_old   = read_file('var/patch/.prev/doc/ChangeLog');
     my $changelog       = read_file('doc/ChangeLog');
     my $modified        = $changelog_old ne $changelog;
     if ($modified) {
@@ -125,7 +127,7 @@ narada-release - release current changes in Narada project
 
 =head1 VERSION
 
-This document describes narada-release version 1.1.0
+This document describes narada-release version 1.2.0
 
 
 =head1 USAGE
@@ -137,7 +139,7 @@ This document describes narada-release version 1.1.0
 
 Generate project update in files C<var/patch/VERSION.$USER.*> where
 VERSION is contents of C<config/version>. This update should be then
-applied locally on C<var/patch/prev/> (just run C<narada-patch>) and
+applied locally on C<var/patch/.prev/> (just run C<narada-patch>) and
 can be applied on another installation of this project by uploading
 these files into C<var/patch/> of that installation and executing
 C<narada-patch>.

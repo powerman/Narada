@@ -16,6 +16,7 @@ bin/narada-remote
 bin/narada-setup-cron
 bin/narada-setup-mysql
 bin/narada-setup-qmail
+bin/narada-shutdown-services
 bin/narada-upload
 bin/narada-viewlog
 bin/powerdiff
@@ -71,7 +72,7 @@ skel/var/patch/.mc.menu
 skel/var/patch/ChangeLog
 skel/var/patch/PENDING.50.sql
 skel/var/patch/PENDING.90.sh
-skel/var/patch/prev/.keep
+skel/var/patch/.prev/.keep
 skel/var/qmail/.keep
 skel/var/sql/.keep
 t/.perlcriticrc

@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.1.0');
+use version; our $VERSION = qv('1.2.0');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -65,15 +65,16 @@ sub basename {
 }
 
 sub main {  ## no critic (RequireArgUnpacking)
+    rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
     die "Usage: narada-patch\n"
         if @_ > 1
-        || (@_ == 1 && $_[0] ne '--no-prev'); # compatibility with <0.9.3
+        || (@_ == 1 && $_[0] ne '--no-prev'); # compatibility with Narada <0.9.3
     my %patches = get_patches('var/patch');
     apply_patches(undef, q{.}, %patches);
-    if (-f 'var/patch/prev/config/version') {
-        apply_patches(undef, 'var/patch/prev', %patches);
+    if (-f 'var/patch/.prev/config/version') {
+        apply_patches(undef, 'var/patch/.prev', %patches);
     }
-    for my $addon (grep {$_ ne 'prev'} map {m{/([^/]+)/\z}ms} glob 'var/patch/*/') {
+    for my $addon (map {m{/([^/]+)/\z}ms} glob 'var/patch/*/') {
         %patches = get_patches("var/patch/$addon");
         apply_patches($addon, q{.}, %patches);
     }
@@ -203,7 +204,7 @@ narada-patch - apply pending patches on Narada project
 
 =head1 VERSION
 
-This document describes narada-patch version 1.1.0
+This document describes narada-patch version 1.2.0
 
 
 =head1 USAGE
@@ -214,7 +215,7 @@ This document describes narada-patch version 1.1.0
 =head1 DESCRIPTION
 
 Apply updates found in C<var/patch/*> files on both project root and
-C<var/patch/prev/>. Then apply addon updates in C<var/patch/*/*> files on
+C<var/patch/.prev/>. Then apply addon updates in C<var/patch/*/*> files on
 project root. Automatically detect which updates should be applied.
 Update may include C<.sh>, C<.patch>, C<.tgz>, C<.sql> and C<.pl> files.
 

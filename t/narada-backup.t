@@ -48,8 +48,8 @@ sub check_backup {
     # looks like dir size on raiserfs differ and break this test (ext3 works ok)
     my $wait = `
         cd \Q$dir2\E
-        find -not -path './var/patch/prev/*' -type d -printf "%M        %p %l\n" | sort
-        find -not -path './var/patch/prev/*' -type f -printf "%M %6s %p %l\n" | sort
+        find -not -path './var/patch/.prev/*' -type d -printf "%M        %p %l\n" | sort
+        find -not -path './var/patch/.prev/*' -type f -printf "%M %6s %p %l\n" | sort
         `;
     my $list = `
         find -type d -printf "%M        %p %l\n" | sort
@@ -96,7 +96,7 @@ for my $dir ($dir1, $dir2) {
         chmod 0712 var/data
     ");
 }
-filldir("$dir1/var/patch/prev/");
+filldir("$dir1/var/patch/.prev/");
 system("cd \Q$dir1\E && rm tmp/file && rmdir tmp/.hiddendir");
 
 is system("cd \Q$dir1\E; narada-backup"), 0, 'third backup';

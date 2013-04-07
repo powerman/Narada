@@ -1,32 +1,34 @@
 #!/bin/bash
-VERSION='1.2.0'
+VERSION="1.2.0"
 
-narada-remote "rm var/patch/$(cat config/version).$USER.* 2>/dev/null"
-narada-upload var/patch/$(cat config/version).$USER.*        &&
-narada-remote -t "narada-lock-exclusive narada-patch --no-prev" # --no-prev for compatibility with <0.9.3
+kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
 
 exit
 : <<'=cut'
 
 =head1 NAME
 
-narada-patch-remote - upload latests patch files and apply patch on remote side
+narada-shutdown-services - kill services and their supervisors
 
 =head1 VERSION
 
-This document describes narada-patch-remote version 1.2.0
+This document describes narada-shutdown-services version 1.2.0
 
 =head1 USAGE
 
-    narada-patch-remote
+    narada-shutdown-services
 
 
 =head1 DESCRIPTION
 
 Script must be executed only from "project root directory".
 
-Narada must be installed on remote side too.
+Service supervisors usually started by cron, and may continue working
+even after project directory will be removed - with undefined result.
 
+So, if you want to stop and/or delete project you should run this command
+after C<narada-setup-cron --clean> to make sure all project services are
+not running anymore and won't start again.
 
 =head1 REQUIRED ARGUMENTS
 
@@ -42,7 +44,7 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-config/remote
+None.
 
 =head1 DEPENDENCIES
 

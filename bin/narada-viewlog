@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.1.0');
+use version; our $VERSION = qv('1.2.0');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -170,7 +170,7 @@ narada-viewlog - log viewer for project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-viewlog version 1.1.0
+This document describes narada-viewlog version 1.2.0
 
 
 =head1 USAGE
