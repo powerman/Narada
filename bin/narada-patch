@@ -2,10 +2,11 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.0.1');
+use version; our $VERSION = qv('1.1.0');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
+use File::Temp qw( tempfile );
 use Narada::Config qw(get_config_line);
 
 ## no critic (ProhibitEscapedCharacters)
@@ -23,6 +24,8 @@ our $CYAN   = "\033[36m";
 our $WHITE  = "\033[37m";
 ## use critic (ProhibitEscapedCharacters)
 
+local $SIG{INT} = sub { exit };  # cleanup temp files
+local $SIG{QUIT}= sub { exit };  # cleanup temp files
 main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 
 
@@ -65,19 +68,14 @@ sub main {  ## no critic (RequireArgUnpacking)
     die "Usage: narada-patch\n"
         if @_ > 1
         || (@_ == 1 && $_[0] ne '--no-prev'); # compatibility with <0.9.3
-    my %patches = get_patches();
-    printf "\n";
-    color_printf "\n";
-    color_printf "Patching directory: %s\n", bold(q{.});
-    color_printf "\n";
-    apply_patches(%patches);
+    my %patches = get_patches('var/patch');
+    apply_patches(undef, q{.}, %patches);
     if (-f 'var/patch/prev/config/version') {
-        chdir 'var/patch/prev'  or err "chdir: $!";
-        printf "\n";
-        color_printf "\n";
-        color_printf "Patching directory: %s\n", bold('var/patch/prev');
-        color_printf "\n";
-        apply_patches(%patches);
+        apply_patches(undef, 'var/patch/prev', %patches);
+    }
+    for my $addon (grep {$_ ne 'prev'} map {m{/([^/]+)/\z}ms} glob 'var/patch/*/') {
+        %patches = get_patches("var/patch/$addon");
+        apply_patches($addon, q{.}, %patches);
     }
     return;
 }
@@ -91,9 +89,31 @@ sub read_file {
     return $val;
 }
 
+sub replace_addon_patch {
+    my ($addon, $file) = @_;
+    my $patch = read_file($file);
+    my $rename= qr{(?:config/version|doc/ChangeLog)(?=\s)}ms;
+    $patch =~ s{^(diff [^\n]*/$rename)([^\n]*/$rename)}{$1.$addon$2.$addon}msg;
+    $patch =~ s{^((?:[+-]{3}) [^\n]*/$rename)}{$1.$addon}msg;
+    my ($fh, $tempfile) = tempfile(UNLINK=>1);
+    print {$fh} $patch;
+    close $fh                           or err "close: $!";
+    return $tempfile;
+}
+
 sub apply_patches {
-    my (%patch_for) = @_;
-    my $v=get_config_line('version');
+    my ($addon, $dir, %patch_for) = @_;
+    chomp(my $pwd = `pwd`);
+    chdir $dir or err "chdir: $!";
+    printf "\n";
+    color_printf "\n";
+    if (defined $addon) {
+        color_printf "Patching directory: %s (addon %s)\n", bold($dir), bold($addon);
+    } else {
+        color_printf "Patching directory: %s\n", bold($dir);
+    }
+    color_printf "\n";
+    my $v=get_config_line(defined $addon ? "version.$addon" : 'version');
     while (exists $patch_for{$v}) {
         printf "\n";
         color_printf "Current version: %s\n", bold($v);
@@ -104,6 +124,9 @@ sub apply_patches {
             my ($ext) = $file =~ /.*[.](.*)/xms;
             ## no critic (ProhibitCascadingIfElse)
             if ($ext eq 'patch') {
+                if (defined $addon && $file =~ /[.]99[.]patch\z/ms) {
+                    $file = replace_addon_patch($addon, $file);
+                }
                 color_printf "--- DRY RUN, NO FILES WILL BE MODIFIED ---\n";
                 my $status = system "patch -p1 --dry-run < \Q$file\E";
                 if ($status != 0) {
@@ -128,15 +151,18 @@ sub apply_patches {
                 color_warn("Don't know how to apply: $file");
             }
         }
-        $v=get_config_line('version');
+        $v=get_config_line(defined $addon ? "version.$addon" : 'version');
     }
+    chdir $pwd or err "chdir: $!";
     return;
 }
 
 sub get_patches {
+    my ($dir) = @_;
     my %patch_for;  # Found patches, key - version "from", value - file name
     chomp(my $pwd = `pwd`);
-    for my $file (glob "$pwd/var/patch/*.99.patch") {
+    printf "\n";
+    for my $file (glob "$pwd/$dir/*.99.patch") {
         my $patch = read_file($file);
         if ($patch !~ m{^diff\s+\S+\s+\S+config/version\s+[^\n]+\n
                         ---         \s+[^\n]+\n
@@ -177,7 +203,7 @@ narada-patch - apply pending patches on Narada project
 
 =head1 VERSION
 
-This document describes narada-patch version 1.0.1
+This document describes narada-patch version 1.1.0
 
 
 =head1 USAGE
@@ -187,8 +213,9 @@ This document describes narada-patch version 1.0.1
 
 =head1 DESCRIPTION
 
-Apply updates found in C<var/patch/*> on both project root and
-C<var/patch/prev/>. Automatically detect which updates should be applied.
+Apply updates found in C<var/patch/*> files on both project root and
+C<var/patch/prev/>. Then apply addon updates in C<var/patch/*/*> files on
+project root. Automatically detect which updates should be applied.
 Update may include C<.sh>, C<.patch>, C<.tgz>, C<.sql> and C<.pl> files.
 
 

@@ -1,5 +1,8 @@
 Revision history for Narada
 
+1.1.0	Sun Apr  7 13:41:29 EEST 2013
+	add experimental support for addons
+
 1.0.1	Sat Apr  6 21:55:17 EEST 2013
 	fix doc
 

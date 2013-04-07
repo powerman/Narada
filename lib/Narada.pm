@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.0.1');
+use version; our $VERSION = qv('1.1.0');
 
 1; # Magic true value required at end of module
 __END__
@@ -15,7 +15,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 =head1 VERSION
 
-This document describes Narada version 1.0.1
+This document describes Narada version 1.1.0
 
 
 =head1 SYNOPSIS
@@ -196,6 +196,10 @@ Last number in this string will be automatically incremented by
 C<narada-release> unless this file was manually modified since previous
 C<narada-release> run.
 
+=item C<config/version.*>
+
+Name and version of installed addons.
+
 =item C<config/patch/send/*>
 
 Each file contain one line with email of team member, who wanna receive
@@ -216,6 +220,10 @@ be listed in this file.
 Project's change log, in standard format. C<narada-release> will ask you
 to enter changes using $EDITOR and then automatically insert/update line
 with date/version.
+
+=item C<doc/ChangeLog.*>
+
+Change logs of installed addons.
 
 =item C<var/patch/>
 
@@ -243,6 +251,10 @@ leaving C<var/patch/> where you now reviewing current patch).
 Contains "master" copy of current project's version (VCS keeps it in .git
 or .hg), for internal use by C<narada-diff>. Should never be modified
 manually!
+
+=item C<var/patch/*/>
+
+Contains "addon" patches.
 
 =back
 

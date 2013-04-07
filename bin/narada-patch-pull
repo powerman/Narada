@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION='1.0.1'
+VERSION='1.1.0'
 
 { ls -d var/patch/*; ls -d var/patch/*; narada-remote "ls -d var/patch/*"; } |
 	sort | uniq -u | xargs -r narada-download
@@ -13,7 +13,7 @@ narada-patch-pull - download latests patch files from remote
 
 =head1 VERSION
 
-This document describes narada-patch-pull version 1.0.1
+This document describes narada-patch-pull version 1.1.0
 
 =head1 USAGE
 
