@@ -1,5 +1,8 @@
 Revision history for Narada
 
+1.2.1	Sun Apr  7 17:46:13 EEST 2013
+	fix config/crontab: run runsvdir in background
+
 1.2.0	Sun Apr  7 15:43:44 EEST 2013
 	add narada-shutdown-services
 	rename var/patch/prev/ to var/patch/.prev/
