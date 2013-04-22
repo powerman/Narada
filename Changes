@@ -1,5 +1,10 @@
 Revision history for Narada
 
+1.2.2	Mon Apr 22 03:22:56 EEST 2013
+	improve doc
+	narada-lock*: improve $PS1
+	fix portability issues in tests
+
 1.2.1	Sun Apr  7 17:46:13 EEST 2013
 	fix config/crontab: run runsvdir in background
 

@@ -40,6 +40,7 @@ sub _inject_skel {
     return;
 }
 
+# Better compatibility with Gentoo ebuilds.
 sub dist_version {
     my $self = shift;
     my $v = $self->SUPER::dist_version;
@@ -51,7 +52,7 @@ SUBCLASS
 my $builder = $class->new(
     module_name         => 'Narada',
     license             => 'perl',
-    dist_author         => 'Alex Efros <powerman-asdf@ya.ru>',
+    dist_author         => 'Alex Efros <powerman@cpan.org>',
     requires => {
         'perl'                  => '5.10.0',
         'version'               => '0.77',
@@ -61,6 +62,7 @@ my $builder = $class->new(
         'Perl6::Export::Attrs'  => 0,
         'Log::Fast'             => 0,
         'DBI'                   => 0,
+        'DBD::mysql'            => 0,
     },
     recommends => {
         'Test::CheckManifest'   => '0.9',
@@ -69,7 +71,7 @@ my $builder = $class->new(
         'Pod::Coverage'         => '0.18',
         'Test::Pod'             => '1.22',
     },
-    add_to_cleanup      => [ 'Narada-*' ],
+#     add_to_cleanup      => [ 'Narada-*' ],
 );
 $builder->create_build_script;
 

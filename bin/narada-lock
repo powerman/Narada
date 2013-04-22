@@ -2,13 +2,13 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.2.1');
+use version; our $VERSION = qv('1.2.2');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada::Lock qw( shared_lock child_inherit_lock );
 
-local @ARGV = @ARGV ? @ARGV : ('env', "PS1=[SHARED] $ENV{PS1}", 'bash', '--norc');
+local @ARGV = @ARGV ? @ARGV : ('env', 'PS1=[SHARED] \u@\h \w \$ ', 'bash', '--norc');
 
 shared_lock();
 child_inherit_lock(1);
@@ -23,7 +23,7 @@ narada-lock - run command under shared lock
 
 =head1 VERSION
 
-This document describes narada-lock version 1.2.1
+This document describes narada-lock version 1.2.2
 
 =head1 USAGE
 
@@ -77,12 +77,12 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-Alex Efros C<< <powerman-asdf@ya.ru> >>
+Alex Efros C<< <powerman.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+Copyright (c) 2008-2013 Alex Efros C<< <powerman.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

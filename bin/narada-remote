@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.2.1" # based on remote-2.0.2
+VERSION="1.2.2" # based on remote-2.0.2
 
 if ! [ -f config/remote -a -s config/remote ]; then
     echo "error: configure config/remote first"
@@ -30,7 +30,7 @@ narada-remote - use ssh to execute command on remote host in project root
 
 =head1 VERSION
 
-This document describes narada-remote version 1.2.1
+This document describes narada-remote version 1.2.2
 
 =head1 USAGE
 
@@ -80,12 +80,12 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-Alex Efros C<< <powerman-asdf@ya.ru> >>
+Alex Efros C<< <powerman.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+Copyright (c) 2008-2013 Alex Efros C<< <powerman.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

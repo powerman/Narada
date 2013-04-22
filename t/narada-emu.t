@@ -4,11 +4,8 @@ use strict;
 use Test::More;
 use Test::Exception;
 
-if (system('which emu-g &>/dev/null') != 0) {
-    plan skip_all => 'OS Inferno required';
-} else {
-    plan tests => 6;
-}
+plan skip_all => 'OS Inferno not installed' if !grep {-x "$_/emu-g" && /inferno/} split /:/, $ENV{PATH};
+plan tests => 6;
 
 use File::Temp qw( tempdir );
 chomp(my $cwd=`pwd`);

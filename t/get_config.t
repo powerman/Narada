@@ -36,15 +36,25 @@ SKIP: {
 like get_config('version'), qr/\d/,
     'read version';
 
-system('echo -n > config/empty');
+Echo('config/empty', q{});
 is get_config('empty'), q{}, 'empty';
-system('echo test > config/test');
+Echo('config/test', "test\n");
 is get_config('test'), "test\n", 'single line with \n';
-system('echo -n test > config/test-n');
+Echo('config/test-n', "test");
 is get_config('test-n'), "test", 'single line without \n';
-system('echo -e "test\ntest2" > config/test_multi');
+Echo('config/test_multi', "test\ntest2\n");
 is get_config('test_multi'), "test\ntest2\n", 'multi line';
-system('mkdir config/testdir; echo testdir > config/testdir/test');
+mkdir 'config/testdir' or die "mkdir: $!";
+Echo('config/testdir/test', "testdir\n");
 is get_config('testdir/test'), "testdir\n", 'variable in directory';
 
 chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+
+sub Echo {
+    my ($file, $data) = @_;
+    open my $fh, '>', $file or die "open: $!";
+    print {$fh} $data;
+    close $fh or die "close: $!";
+    return;
+}

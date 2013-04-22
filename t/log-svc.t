@@ -1,21 +1,24 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-use Test::More tests => 5;
+use Test::More;
 use Test::Exception;
 
-BEGIN {
-    use File::Temp qw( tempdir );
-    chomp(my $cwd=`pwd`); $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
-    chdir tempdir( CLEANUP => 1 )
-        and system('narada-new') == 0
-        or die "Unable to create project: $!";
 
-    ok !-e 'var/log/current', 'log file not exists';
-    system('runsv ./service/log/ &>/dev/null & sleep 1');
-    ok -e 'var/log/current', 'log file exists';
-}
-use Narada::Log qw( $LOGSOCK );
+plan skip_all => 'runit not installed' if !grep {-x "$_/runsv"} split /:/, $ENV{PATH};
+plan tests => 5;
+
+use File::Temp qw( tempdir );
+chomp(my $cwd=`pwd`); $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
+chdir tempdir( CLEANUP => 1 )
+    and system('narada-new') == 0
+    or die "Unable to create project: $!";
+
+ok !-e 'var/log/current', 'log file not exists';
+system('runsv ./service/log/ &>/dev/null & sleep 1');
+ok -e 'var/log/current', 'log file exists';
+our $LOGSOCK;
+eval 'use Narada::Log qw( $LOGSOCK )';
 
 ok ref $LOGSOCK, 'log object imported';
 

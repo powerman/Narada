@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.2.1');
+use version; our $VERSION = qv('1.2.2');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -80,7 +80,7 @@ narada-setup-db - initialize project database
 
 =head1 VERSION
 
-This document describes narada-setup-db version 1.2.1
+This document describes narada-setup-db version 1.2.2
 
 =head1 USAGE
 
@@ -94,7 +94,7 @@ Initialize/drop your Narada project's MySQL database.
 If "config/db/db" absent or empty do nothing.
 
 When executed without params will create database (if needed) and load sql dumps
-into database (if any).
+into database (if C<var/sql/db.scheme.sql> exist).
 
 When executed with --clean option will drop project's database with all tables.
 
@@ -129,6 +129,11 @@ narada-setup-db use these configuration files:
     config/db/host
     config/db/port
 
+Database initialized using these files (db.scheme.sql must exist and will
+be loaded first, other files will be loaded in undefined order):
+
+    var/sql/db.scheme.sql
+    var/sql/*.sql
 
 =head1 DEPENDENCIES
 
@@ -151,12 +156,12 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-Alex Efros C<< <powerman-asdf@ya.ru> >>
+Alex Efros C<< <powerman.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman-asdf@ya.ru> >>. All rights reserved.
+Copyright (c) 2008-2013 Alex Efros C<< <powerman.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

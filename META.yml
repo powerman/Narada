@@ -1,7 +1,7 @@
 ---
 abstract: 'framework for ease development/deploy/support for medium/big projects'
 author:
-  - 'Alex Efros <powerman-asdf@ya.ru>'
+  - 'Alex Efros <powerman@cpan.org>'
 build_requires: {}
 configure_requires:
   Module::Build: 0.40
@@ -15,16 +15,16 @@ name: Narada
 provides:
   Narada:
     file: lib/Narada.pm
-    version: v1.2.1
+    version: v1.2.2
   Narada::Config:
     file: lib/Narada/Config.pm
-    version: v1.2.1
+    version: v1.2.2
   Narada::Lock:
     file: lib/Narada/Lock.pm
-    version: v1.2.1
+    version: v1.2.2
   Narada::Log:
     file: lib/Narada/Log.pm
-    version: v1.2.1
+    version: v1.2.2
 recommends:
   Pod::Coverage: 0.18
   Test::CheckManifest: 0.9
@@ -32,6 +32,7 @@ recommends:
   Test::Pod: 1.22
   Test::Pod::Coverage: 1.08
 requires:
+  DBD::mysql: 0
   DBI: 0
   Log::Fast: 0
   Perl6::Export::Attrs: 0
@@ -42,4 +43,4 @@ requires:
   version: 0.77
 resources:
   license: http://dev.perl.org/licenses/
-version: v1.2.1
+version: v1.2.2

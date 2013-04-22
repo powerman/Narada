@@ -42,7 +42,7 @@ sub between {
     my $t = time();
     $code->();
     $t = time()-$t;
-    ok $min <= $t && $t <= $max, "... done in $min .. $max sec";
+    ok $min <= $t && $t <= $max, "... done in $min .. $max sec ($t sec)";
     return;
 }
 
@@ -67,20 +67,20 @@ between 0, 0.5, sub { ok shared_lock(2), 'shared_lock(2) successful' };
 
 # shared_lock()  with `narada-lock-exclusive sleep 1` in background
 #   - set lock in 1 second
-unlock(); system('narada-lock-exclusive sleep 1 & sleep 0.2');
+unlock(); system('narada-lock-exclusive sleep 1 &'); sleep 0.2;
 between 0.5, 1.5, sub { ok shared_lock(), 'shared_lock() successful after exclusive' };
 # shared_lock(0)  with `narada-lock-exclusive sleep 1` in background
 #   - return error immediately
-unlock(); system('narada-lock-exclusive sleep 1 & sleep 0.2');
+unlock(); system('narada-lock-exclusive sleep 1 &'); sleep 0.2;
 between 0, 0.5, sub { ok !shared_lock(0), 'shared_lock(0) failed while exclusive' };
 shared_lock();  # wait for narada-lock-exclusive finish
 # shared_lock(2)  with `narada-lock-exclusive sleep 1` in background
 #   - set lock in 1 second
-unlock(); system('narada-lock-exclusive sleep 1 & sleep 0.2');
+unlock(); system('narada-lock-exclusive sleep 1 &'); sleep 0.2;
 between 0.5, 1.5, sub { ok shared_lock(2), 'shared_lock(2) successful after exclusive' };
 # shared_lock(1)  with `narada-lock-exclusive sleep 2` in background
 #   - return error in 1 second
-unlock(); system('narada-lock-exclusive sleep 2 & sleep 0.2');
+unlock(); system('narada-lock-exclusive sleep 2 &'); sleep 0.2;
 between 0.5, 1.5, sub { ok !shared_lock(1), 'shared_lock(1) failed while exclusive' };
 shared_lock();  # wait for narada-lock-exclusive finish
 unlock();
@@ -101,11 +101,11 @@ ok !has_ex(),   'no  exclusive lock after unlock()';
 
 # exclusive_lock()  with `narada-lock sleep 1` in background
 #   - set lock in 1 second
-unlock_new(); unlock(); system('narada-lock sleep 1 & sleep 0.2');
+unlock_new(); unlock(); system('narada-lock sleep 1 &'); sleep 0.2;
 between 0.5, 1.5, sub { exclusive_lock() };
 # exclusive_lock()  with `narada-lock-exclusive sleep 1` in background
 #   - set lock in 1 second, create file LOCKNEW
-unlock_new(); unlock(); system('narada-lock-exclusive sleep 1 & sleep 0.2');
+unlock_new(); unlock(); system('narada-lock-exclusive sleep 1 &'); sleep 0.2;
 between 0.5, 1.5, sub { exclusive_lock() };
 ok -e LOCKNEW, 'has LOCKNEW file after exclusive_lock()';
 # exclusive_lock(), unlock()
@@ -122,13 +122,14 @@ between 0, 0.5, sub { ok shared_lock(0), 'shared_lock(0) successful without LOCK
 
 # run process, which will do shared_lock(), run sleep 1 & and exits
 #   - there should be no lock
-unlock_new(); unlock(); system('perl','-MNarada::Lock=shared_lock,child_inherit_lock','-e',
+my @I = map {"-I$_"} @INC;
+unlock_new(); unlock(); system('perl',@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
     'shared_lock(); system("sleep 1 &")');
 ok !has_sh(), 'no  shared lock without child_inherit_lock(1)';
 # run process, which will do shared_lock(), child_inherit_lock(1),
 # run sleep 1 & sleep 2 & and exits
 #   - there should be lock, and it should be unlocked in 2 seconds
-unlock_new(); unlock(); system('perl','-MNarada::Lock=shared_lock,child_inherit_lock','-e',
+unlock_new(); unlock(); system('perl',@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
     'shared_lock(); child_inherit_lock(1); system("sleep 1 & sleep 2 &")');
 ok has_sh(),  'has shared lock with child_inherit_lock(1)';
 sleep 2.5;
@@ -136,7 +137,7 @@ ok !has_sh(), 'no  shared lock after childs exit';
 # run process, which will do shared_lock(), child_inherit_lock(1),
 # run sleep 1 &, will do child_inherit_lock(0), run sleep 2 & and exits
 #   - there should be lock, and it should be unlocked in 1 second
-unlock_new(); unlock(); system('perl','-MNarada::Lock=shared_lock,child_inherit_lock','-e',
+unlock_new(); unlock(); system('perl',@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
     'shared_lock(); child_inherit_lock(1); system("sleep 1 &");
      child_inherit_lock(0); system("sleep 2 &")');
 ok has_sh(),  'has shared lock with child_inherit_lock(1)';
@@ -144,3 +145,5 @@ sleep 1.5;
 ok !has_sh(), 'no  shared lock after first child exit';
 
 chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+

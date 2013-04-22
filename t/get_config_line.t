@@ -16,20 +16,29 @@ chdir tempdir( CLEANUP => 1 )
 throws_ok { get_config_line('no_file') }        qr/no such config:/,
     'no such config: no_file';
 
-system('echo > config/empty');
+Echo('config/empty', "\n");
 is get_config_line('empty'), q{}, 'empty with \n';
-system('echo -n > config/empty-n');
+Echo('config/empty-n', q{});
 is get_config_line('empty-n'), q{}, 'empty without \n';
-system('echo test > config/test');
+Echo('config/test', "test\n");
 is get_config_line('test'), 'test', 'single line with \n';
-system('echo -n test > config/test-n');
+Echo('config/test-n', "test");
 is get_config_line('test-n'), 'test', 'single line without \n';
-system('echo -ne "test\n  \n  \n" > config/test_multi_newline');
+Echo('config/test_multi_newline', "test\n  \n  \n");
 is get_config_line('test_multi_newline'), 'test', 'single line with multi newlines';
-system('echo -ne "test\n  \n  " > config/test_multi_space');
+Echo('config/test_multi_space', "test\n  \n  ");
 is get_config_line('test_multi_space'), 'test',   'single line with multi newlines and spaces';
-system('echo -ne "test\ntest2" > config/test_multi');
+Echo('config/test_multi', "test\ntest2");
 throws_ok { get_config_line('test_multi') }         qr/more than one line/,
     'multi line';
 
 chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+
+sub Echo {
+    my ($file, $data) = @_;
+    open my $fh, '>', $file or die "open: $!";
+    print {$fh} $data;
+    close $fh or die "close: $!";
+    return;
+}
