@@ -70,6 +70,7 @@ my $builder = $class->new(
         'version'               => '0.77',
         'Perl6::Export::Attrs'  => 0,
         'Log::Fast'             => 0,
+        'FindBin'               => 0,
     },
     auto_features => {
         mysql_support => {

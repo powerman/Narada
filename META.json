@@ -21,6 +21,7 @@
       },
       "runtime" : {
          "requires" : {
+            "FindBin" : "0",
             "Log::Fast" : "0",
             "Perl6::Export::Attrs" : "0",
             "perl" : "v5.10.0",
@@ -31,19 +32,19 @@
    "provides" : {
       "Narada" : {
          "file" : "lib/Narada.pm",
-         "version" : "v1.3.0"
+         "version" : "v1.3.1"
       },
       "Narada::Config" : {
          "file" : "lib/Narada/Config.pm",
-         "version" : "v1.3.0"
+         "version" : "v1.3.1"
       },
       "Narada::Lock" : {
          "file" : "lib/Narada/Lock.pm",
-         "version" : "v1.3.0"
+         "version" : "v1.3.1"
       },
       "Narada::Log" : {
          "file" : "lib/Narada/Log.pm",
-         "version" : "v1.3.0"
+         "version" : "v1.3.1"
       }
    },
    "release_status" : "stable",
@@ -52,5 +53,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "v1.3.0"
+   "version" : "v1.3.1"
 }

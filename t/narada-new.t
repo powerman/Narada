@@ -4,7 +4,9 @@ use strict;
 use Test::More tests => 13;
 use Test::Exception;
 use File::Temp qw( tempdir );
+use FindBin;
 
+$ENV{PATH}="$FindBin::Bin/../blib/script:$ENV{PATH}";
 require 'blib/script/narada-new';
 
 my $data_pos = tell DATA;

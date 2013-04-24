@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.3.0" # based on remote-2.0.2
+VERSION="1.3.1" # based on remote-2.0.2
 
 if ! [ -f config/remote -a -s config/remote ]; then
     echo "error: configure config/remote first"
@@ -32,7 +32,7 @@ narada-download - use scp to download project files from remote host
 
 =head1 VERSION
 
-This document describes narada-download version 1.3.0
+This document describes narada-download version 1.3.1
 
 =head1 USAGE
 

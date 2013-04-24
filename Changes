@@ -1,5 +1,8 @@
 Revision history for Narada
 
+1.3.1	Thu Apr 25 01:11:28 EEST 2013
+	fix tests
+
 1.3.0	Wed Apr 24 22:32:23 EEST 2013
 	add Narada::Config::get_db_config
 	fix portability issues in tests
