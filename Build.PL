@@ -3,6 +3,11 @@ use warnings;
 use Module::Build;
 
 die "Windows not supported\n" if $^O =~ /Win/;
+for my $cmd (qw( find chmod tar base64 )) {
+    if (!grep {-x "$_/$cmd"} split /:/, $ENV{PATH}) {
+        die "command not found: $cmd\n"
+    }
+}
 
 # WARNING:  Empty directories in skel/ MUST contain .keep file to force
 #           inclusion of these directories in MANIFEST and module distribution.
@@ -21,6 +26,10 @@ sub ACTION_build {
     $self->_inject_skel('blib/script/narada-new');
 }
 
+sub ACTION_config_data {
+    # we use feature detection only within Build.PL
+}
+
 sub _inject_skel {
     my ($self, $script) = @_;
     print "Injecting skel/ into $script ...\n";
@@ -31,8 +40,10 @@ sub _inject_skel {
     open my $f, '>', $filename or die "open: $!";
     print {$f} $new;
     close $f;
-    system("find skel/ -type f -exec chmod u+w {} +");
-    system("tar cf - -C skel --exclude .keep ./ | base64 >> \Q$filename\E");
+    system("find skel/ -type f -exec chmod u+w {} +")
+        == 0 or die "system: $?\n";
+    system("tar cf - -C skel --exclude .keep ./ | base64 >> \Q$filename\E")
+        == 0 or die "system: $?\n";
     my ($atime, $mtime) = (stat($script))[8,9];
     utime $atime, $mtime, $filename or die "utime: $!";
     rename $filename, $script or die "rename: $!";
@@ -53,33 +64,48 @@ my $builder = $class->new(
     module_name         => 'Narada',
     license             => 'perl',
     dist_author         => 'Alex Efros <powerman@cpan.org>',
+    dynamic_config      => 1,
     requires => {
         'perl'                  => '5.10.0',
         'version'               => '0.77',
+        'Perl6::Export::Attrs'  => 0,
+        'Log::Fast'             => 0,
+    },
+    auto_features => {
+        mysql_support => {
+            description => 'MySQL support',
+            requires => {
+                'DBI'                   => 0,
+                'DBD::mysql'            => 0,
+            },
+        },
+    },
+    test_requires => {
         'Test::Differences'     => 0,
         'Test::Exception'       => 0,
         'Test::MockModule'      => 0,
-        'Perl6::Export::Attrs'  => 0,
-        'Log::Fast'             => 0,
-        'DBI'                   => 0,
-        'DBD::mysql'            => 0,
-    },
-    recommends => {
         'Test::CheckManifest'   => '0.9',
         'Test::Perl::Critic'    => 0,
+        'Test::Pod'             => '1.22',
         'Test::Pod::Coverage'   => '1.08',
         'Pod::Coverage'         => '0.18',
-        'Test::Pod'             => '1.22',
     },
 #     add_to_cleanup      => [ 'Narada-*' ],
 );
 $builder->create_build_script;
 
 my ($db, $login, $pass) = (q{}, q{}, q{});
-$db = $builder->prompt("\nEnter NON-EXISTING database name (empty to skip test):", 'test_nosuch');
-if ($db ne q{}) {
-    $login = $builder->prompt("Enter login for database '$db':", 'test');
-    $pass  = $builder->prompt("Enter pass for login '$login':", '');
+if ($builder->feature('mysql_support')) {
+    my $default_db = 'test_nosuch';
+    if (`mysql -u test \Q$default_db\E </dev/null 2>&1` !~ /Unknown database/ms) {
+        $default_db = q{};
+    }
+    $db = $builder->prompt("\nEnter NON-EXISTING database name (empty/space to skip test):", $default_db);
+    $db =~ s/\s+//msg;
+    if ($db ne q{}) {
+        $login = $builder->prompt("Enter login for database '$db':", 'test');
+        $pass  = $builder->prompt("Enter pass for login '$login':", '');
+    }
 }
 open my $f, '> t/.answers' or die "open: $!";
 printf {$f} "%s\n%s\n%s\n", $db, $login, $pass;

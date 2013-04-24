@@ -35,7 +35,7 @@ sub filldir {
         mkdir dir               &&
         echo ok > dir/file      &&
         touch dir/.hidden
-    ") == 0 or die "system: $!";
+    ") == 0 or die "system: $?";
     return;
 }
 
@@ -69,7 +69,7 @@ for my $dir ($dir1, $dir2) {
         echo val > config/var   &&
         touch var/data          &&
         echo test >> var/log/current
-    ") == 0 or die "system: $!";
+    ") == 0 or die "system: $?";
 }
 filldir("$dir1/tmp/");
 filldir("$dir1/var/backup/");
@@ -78,13 +78,13 @@ is system("cd \Q$dir1\E; narada-backup"), 0, 'first backup';
 ok -e "$dir1/var/backup/full.tar", 'full.tar created';
 ok ! -e "$dir1/var/backup/incr.tar", 'incr.tar not created';
 check_backup("$dir1/var/backup/full.tar");
-system("cd \Q$dir1\E; cp var/backup/full.tar tmp/full1.tar") == 0 or die "system: $!";
+system("cd \Q$dir1\E; cp var/backup/full.tar tmp/full1.tar") == 0 or die "system: $?";
 
 my $old_size = -s "$dir1/var/backup/full.tar";
 is system("cd \Q$dir1\E; narada-backup"), 0, 'second backup';
 ok $old_size < -s "$dir1/var/backup/full.tar", 'full.tar grow up';
 ok -e "$dir1/var/backup/incr.tar", 'incr.tar created';
-system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr1.tar") == 0 or die "system: $!";
+system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr1.tar") == 0 or die "system: $?";
 
 sleep 1;    # tar will detect changes based on mtime
 for my $dir ($dir1, $dir2) {
@@ -100,7 +100,7 @@ filldir("$dir1/var/patch/.prev/");
 system("cd \Q$dir1\E && rm tmp/file && rmdir tmp/.hiddendir");
 
 is system("cd \Q$dir1\E; narada-backup"), 0, 'third backup';
-system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr2.tar") == 0 or die "system: $!";
+system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr2.tar") == 0 or die "system: $?";
 check_backup("$dir1/var/backup/full.tar");
 check_backup("$dir1/tmp/full1.tar", "$dir1/tmp/incr1.tar", "$dir1/tmp/incr2.tar");
 

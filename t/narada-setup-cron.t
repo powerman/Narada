@@ -19,7 +19,7 @@ sub Echo {
 # prepare sandbox
 my $dst = tempdir(CLEANUP => 1);
 system('blib/script/narada-new', $dst) == 0             
-                                or die "system: can't create tmp proj: $!";
+                                or die "system: can't create tmp proj: $?";
 chdir $dst                      or die "chdir: $!"; 
 
 # - main()

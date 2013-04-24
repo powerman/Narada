@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.2.2');
+use version; our $VERSION = qv('1.3.0');
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Perl6::Export::Attrs;
@@ -34,6 +34,23 @@ sub get_config_line :Export { ## no critic (RequireArgUnpacking)
     return $val;
 }
 
+sub get_db_config :Export {
+    my %db;
+    $db{db} = eval { get_config_line('db/db') };
+    if (!defined $db{db} || !length $db{db}) {
+        return;
+    }
+    $db{login}= get_config_line('db/login');
+    $db{pass} = get_config_line('db/pass');
+    $db{host} = eval { get_config_line('db/host') } || q{};
+    $db{port} = eval { get_config_line('db/port') } || q{};
+    $db{dsn_nodb}  = 'dbi:mysql:';
+    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic
+    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic
+    $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
+    return \%db;
+}
+
 sub set_config :Export { ## no critic (RequireArgUnpacking)
     my ($var, $val) = @_;
     croak 'Usage: set_config(NAME, VALUE)' if @_ != 2;
@@ -59,7 +76,7 @@ Narada::Config - manage project configuration
 
 =head1 VERSION
 
-This document describes Narada::Config version 1.2.2
+This document describes Narada::Config version 1.3.0
 
 
 =head1 SYNOPSIS
@@ -69,6 +86,9 @@ This document describes Narada::Config version 1.2.2
     my $version = get_config_line("version");
     my $exclude = get_config("backup/exclude");
     set_config("log/output", "/dev/stderr");
+
+    my $db = get_db_config();
+    my $dbh = DBI->connect($db->{dsn}, $db->{login}, $db->{pass});
 
 
 =head1 DESCRIPTION
@@ -102,6 +122,21 @@ It must not contain "./" or "../".
 
 Return: contents of file 'config/VARIABLE_NAME' as scalar without last \n
 (if any). Raise exception if file contain more than one line.
+
+
+=item B<get_db_config>()
+
+Helper for reading database configuration from C<config/db/*>.
+
+Return: nothing if database not configured, or hashref with keys:
+
+    {db}        contents of config/db/db
+    {login}     contents of config/db/login
+    {pass}      contents of config/db/pass
+    {host}      contents of config/db/host
+    {port}      contents of config/db/port
+    {dsn_nodb}  'dbi:mysql:;host=$host;port=$port'
+    {dsn}       'dbi:mysql:;host=$host;port=$port;database=$db'
 
 
 =item B<set_config>( VARIABLE_NAME, VARIABLE_VALUE )

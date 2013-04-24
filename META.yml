@@ -15,32 +15,21 @@ name: Narada
 provides:
   Narada:
     file: lib/Narada.pm
-    version: v1.2.2
+    version: v1.3.0
   Narada::Config:
     file: lib/Narada/Config.pm
-    version: v1.2.2
+    version: v1.3.0
   Narada::Lock:
     file: lib/Narada/Lock.pm
-    version: v1.2.2
+    version: v1.3.0
   Narada::Log:
     file: lib/Narada/Log.pm
-    version: v1.2.2
-recommends:
-  Pod::Coverage: 0.18
-  Test::CheckManifest: 0.9
-  Test::Perl::Critic: 0
-  Test::Pod: 1.22
-  Test::Pod::Coverage: 1.08
+    version: v1.3.0
 requires:
-  DBD::mysql: 0
-  DBI: 0
   Log::Fast: 0
   Perl6::Export::Attrs: 0
-  Test::Differences: 0
-  Test::Exception: 0
-  Test::MockModule: 0
   perl: v5.10.0
   version: 0.77
 resources:
   license: http://dev.perl.org/licenses/
-version: v1.2.2
+version: v1.3.0

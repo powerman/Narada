@@ -22,7 +22,7 @@ throws_ok { _main(1, 2, 3) }             qr/Usage:/,  'too many params';
 mkdir("$dst/somedir")                               or die "mkdir: $!";
 throws_ok { _main($dst) }                qr/directory not empty/;
 rmdir "$dst/somedir"                                or die "rmdir: $!";
-system("touch \Q$dst\E/somefile") == 0              or die "system: touch: $!";
+system("touch \Q$dst\E/somefile") == 0              or die "system: touch: $?";
 throws_ok { _main($dst) }                qr/directory not empty/;
 throws_ok { _main("$dst/somefile") }     qr/not a directory/;
 unlink "$dst/somefile"                              or die "unlink: $!";
