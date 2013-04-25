@@ -123,13 +123,13 @@ between 0, 0.5, sub { ok shared_lock(0), 'shared_lock(0) successful without LOCK
 # run process, which will do shared_lock(), run sleep 1 & and exits
 #   - there should be no lock
 my @I = map {"-I$_"} @INC;
-unlock_new(); unlock(); system('perl',@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
+unlock_new(); unlock(); system($^X,@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
     'shared_lock(); system("sleep 1 &")');
 ok !has_sh(), 'no  shared lock without child_inherit_lock(1)';
 # run process, which will do shared_lock(), child_inherit_lock(1),
 # run sleep 1 & sleep 2 & and exits
 #   - there should be lock, and it should be unlocked in 2 seconds
-unlock_new(); unlock(); system('perl',@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
+unlock_new(); unlock(); system($^X,@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
     'shared_lock(); child_inherit_lock(1); system("sleep 1 & sleep 2 &")');
 ok has_sh(),  'has shared lock with child_inherit_lock(1)';
 sleep 2.5;
@@ -137,7 +137,7 @@ ok !has_sh(), 'no  shared lock after childs exit';
 # run process, which will do shared_lock(), child_inherit_lock(1),
 # run sleep 1 &, will do child_inherit_lock(0), run sleep 2 & and exits
 #   - there should be lock, and it should be unlocked in 1 second
-unlock_new(); unlock(); system('perl',@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
+unlock_new(); unlock(); system($^X,@I,'-MNarada::Lock=shared_lock,child_inherit_lock','-e',
     'shared_lock(); child_inherit_lock(1); system("sleep 1 &");
      child_inherit_lock(0); system("sleep 2 &")');
 ok has_sh(),  'has shared lock with child_inherit_lock(1)';

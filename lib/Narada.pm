@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.1');
+use version; our $VERSION = qv('1.3.2');
 
 1; # Magic true value required at end of module
 __END__
@@ -15,7 +15,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 =head1 VERSION
 
-This document describes Narada version 1.3.1
+This document describes Narada version 1.3.2
 
 
 =head1 SYNOPSIS
