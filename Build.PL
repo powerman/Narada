@@ -26,10 +26,6 @@ sub ACTION_build {
     $self->_inject_skel('blib/script/narada-new');
 }
 
-sub ACTION_config_data {
-    # we use feature detection only within Build.PL
-}
-
 sub _inject_skel {
     my ($self, $script) = @_;
     print "Injecting skel/ into $script ...\n";
@@ -71,15 +67,8 @@ my $builder = $class->new(
         'Perl6::Export::Attrs'  => 0,
         'Log::Fast'             => 0,
         'FindBin'               => 0,
-    },
-    auto_features => {
-        mysql_support => {
-            description => 'MySQL support',
-            requires => {
-                'DBI'                   => 0,
-                'DBD::mysql'            => 0,
-            },
-        },
+        'DBI'                   => 0,
+        'DBD::mysql'            => 0,
     },
     test_requires => {
         'Test::Differences'     => 0,
@@ -96,17 +85,15 @@ my $builder = $class->new(
 $builder->create_build_script;
 
 my ($db, $login, $pass) = (q{}, q{}, q{});
-if ($builder->feature('mysql_support')) {
-    my $default_db = 'test_nosuch';
-    if (`mysql -u test \Q$default_db\E </dev/null 2>&1` !~ /Unknown database/ms) {
-        $default_db = q{};
-    }
-    $db = $builder->prompt("\nEnter NON-EXISTING database name (empty/space to skip test):", $default_db);
-    $db =~ s/\s+//msg;
-    if ($db ne q{}) {
-        $login = $builder->prompt("Enter login for database '$db':", 'test');
-        $pass  = $builder->prompt("Enter pass for login '$login':", '');
-    }
+my $default_db = 'test_nosuch';
+if (`mysql -u test \Q$default_db\E </dev/null 2>&1` !~ /Unknown database/ms) {
+    $default_db = q{};
+}
+$db = $builder->prompt("\nEnter NON-EXISTING database name (empty/space to skip test):", $default_db);
+$db =~ s/\s+//msg;
+if ($db ne q{}) {
+    $login = $builder->prompt("Enter login for database '$db':", 'test');
+    $pass  = $builder->prompt("Enter pass for login '$login':", '');
 }
 open my $f, '> t/.answers' or die "open: $!";
 printf {$f} "%s\n%s\n%s\n", $db, $login, $pass;
