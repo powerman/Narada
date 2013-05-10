@@ -11,3 +11,4 @@ CVS
 ^\.cvsignore$
 ^Narada-.*\.tar\.gz$
 ^t/.answers$
+^Makefile$

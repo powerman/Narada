@@ -6,6 +6,7 @@ use Test::Exception;
 use File::Temp qw( tempdir );
 use FindBin;
 
+umask 0022;
 $ENV{PATH}="$FindBin::Bin/../blib/script:$ENV{PATH}";
 require 'blib/script/narada-new';
 

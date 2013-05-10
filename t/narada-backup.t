@@ -11,6 +11,7 @@ $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 $ENV{PERL5LIB} ||= q{};
 $ENV{PERL5LIB} = "$cwd/blib:$ENV{PERL5LIB}";
 
+umask 0022;
 my $dir1 = narada_new();
 my $dir2 = narada_new();
 

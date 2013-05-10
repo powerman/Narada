@@ -1184,6 +1184,10 @@ add_packages = Exporter
 # allow = 
 
 
+[Variables::ProhibitReusedNames]
+allow = $this $self $c
+
+
 # Don't ask for storage you don't need.
 [Variables::ProhibitUnusedVariables]
 # set_themes                         = core maintenance

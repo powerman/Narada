@@ -26,6 +26,7 @@ lib/Narada.pm
 lib/Narada/Config.pm
 lib/Narada/Lock.pm
 lib/Narada/Log.pm
+Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 META.json

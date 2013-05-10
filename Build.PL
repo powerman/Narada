@@ -3,7 +3,7 @@ use warnings;
 use Module::Build;
 
 die "Windows not supported\n" if $^O =~ /Win/;
-for my $cmd (qw( find chmod tar base64 )) {
+for my $cmd (qw( find chmod tar )) {
     if (!grep {-x "$_/$cmd"} split /:/, $ENV{PATH}) {
         die "command not found: $cmd\n"
     }
@@ -35,11 +35,13 @@ sub _inject_skel {
     my $filename = mktemp("$script.XXXXXXXX");
     open my $f, '>', $filename or die "open: $!";
     print {$f} $new;
-    close $f;
     system("find skel/ -type f -exec chmod u+w {} +")
         == 0 or die "system: $?\n";
-    system("tar cf - -C skel --exclude .keep ./ | base64 >> \Q$filename\E")
-        == 0 or die "system: $?\n";
+    open my $tar, '-|', 'tar cf - -C skel --exclude .keep ./' or die "open: $!";
+    use MIME::Base64;
+    local $/;
+    print {$f} encode_base64(<$tar>);
+    close $f or die "close: $!";
     my ($atime, $mtime) = (stat($script))[8,9];
     utime $atime, $mtime, $filename or die "utime: $!";
     rename $filename, $script or die "rename: $!";
@@ -69,6 +71,7 @@ my $builder = $class->new(
         'FindBin'               => 0,
         'DBI'                   => 0,
         'DBD::mysql'            => 0,
+        'MIME::Base64'          => 0,
     },
     test_requires => {
         'Test::Differences'     => 0,
@@ -81,6 +84,7 @@ my $builder = $class->new(
         'Pod::Coverage'         => '0.18',
     },
 #     add_to_cleanup      => [ 'Narada-*' ],
+    create_makefile_pl          => 'small',
 );
 $builder->create_build_script;
 

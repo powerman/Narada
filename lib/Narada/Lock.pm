@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.3.3');
+use version; our $VERSION = qv('1.3.4');
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Time::HiRes qw( sleep );
@@ -80,7 +80,7 @@ Narada::Lock - manage project locks
 
 =head1 VERSION
 
-This document describes Narada::Lock version 1.3.3
+This document describes Narada::Lock version 1.3.4
 
 
 =head1 SYNOPSIS
@@ -279,12 +279,12 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-Alex Efros  C<< <powerman.org> >>
+Alex Efros  C<< <powerman@cpan.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman.org> >>. All rights reserved.
+Copyright (c) 2008-2013 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
