@@ -2,11 +2,12 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.4');
+use version; our $VERSION = qv('1.3.5');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada::Config qw(set_config);
+use MIME::Base64;
 
 main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 
@@ -32,9 +33,9 @@ sub main {  ## no critic (RequireArgUnpacking)
     local $/;
     my $skel = <DATA>;
     local $SIG{PIPE} = 'IGNORE';
-    open my $unpack, q{|-}, "base64 -d | tar xpf - -C \Q$dst\E"
+    open my $unpack, q{|-}, "tar xpf - -C \Q$dst\E"
                                         or err 'unpack failed';
-    print {$unpack} $skel;
+    print {$unpack} decode_base64($skel);
     close $unpack                       or err 'unpack failed';
 
     # Enter project.
@@ -71,7 +72,7 @@ narada-new - creates a skeleton project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-new version 1.3.4
+This document describes narada-new version 1.3.5
 
 
 =head1 USAGE
@@ -150,9 +151,8 @@ Target directory exists, but not empty.
 =item C<< narada-new: unpack failed >>
 
 Script failed to unpack skeleton directory. Most likely reason - target
-directory doesn't writable. While unpacking it use tools `base64` and
-`tar`, so maybe there some issue with these tools. Or this script was
-damaged (reinstall recommended).
+directory doesn't writable. While unpacking it use `tar`, so maybe there
+some issue with it. Or this script was damaged (reinstall recommended).
 
 
 =item C<< narada-new: unable to detect project name >>
