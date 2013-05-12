@@ -15,16 +15,16 @@ name: Narada
 provides:
   Narada:
     file: lib/Narada.pm
-    version: v1.3.5
+    version: v1.3.6
   Narada::Config:
     file: lib/Narada/Config.pm
-    version: v1.3.5
+    version: v1.3.6
   Narada::Lock:
     file: lib/Narada/Lock.pm
-    version: v1.3.5
+    version: v1.3.6
   Narada::Log:
     file: lib/Narada/Log.pm
-    version: v1.3.5
+    version: v1.3.6
 requires:
   DBD::mysql: 0
   DBI: 0
@@ -36,4 +36,4 @@ requires:
   version: 0.77
 resources:
   license: http://dev.perl.org/licenses/
-version: v1.3.5
+version: v1.3.6

@@ -8,6 +8,7 @@ for my $cmd (qw( find chmod tar )) {
         die "command not found: $cmd\n"
     }
 }
+die "GNU tar required\n" if `tar --version` !~ /GNU/ms;
 
 # WARNING:  Empty directories in skel/ MUST contain .keep file to force
 #           inclusion of these directories in MANIFEST and module distribution.
