@@ -1,14 +1,38 @@
-^Build$
-^_build
-^blib
-^cover_db
+# Avoid version control files.
+\bRCS\b
+\bCVS\b
+,v$
+\b\.svn\b
+\b\.git\b
+\b\.hg\b
+.cvsignore
+
+# Avoid Makemaker generated and utility files.
+\bMakefile$
+\bblib
+\bMakeMaker-\d
+\bpm_to_blib$
+\bblibdirs$
+^MANIFEST\.SKIP$
+
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\b_build
+^t/.answers$
+
+# Avoid temp and backup files.
+~$
+\.tmp$
+\.old$
+\.bak$
+\#$
+\b\.#
+\.swp$
+^tmp/
+
+cover_db
+tmon.out
+\.tar\.gz$
+
 ^MYMETA\.yml$
 ^MYMETA\.json$
-~$
-\.bak$
-\.swp$
-CVS
-^\.cvsignore$
-^Narada-.*\.tar\.gz$
-^t/.answers$
-^Makefile$

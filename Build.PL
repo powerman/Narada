@@ -1,8 +1,9 @@
+use 5.010;
 use strict;
 use warnings;
 use Module::Build;
 
-die "Windows not supported\n" if $^O =~ /Win/;
+die "OS unsupported\n" if $^O =~ /Win/;
 for my $cmd (qw( find chmod tar )) {
     if (!grep {-x "$_/$cmd"} split /:/, $ENV{PATH}) {
         die "command not found: $cmd\n"
@@ -65,7 +66,7 @@ my $builder = $class->new(
     dist_author         => 'Alex Efros <powerman@cpan.org>',
     dynamic_config      => 1,
     requires => {
-        'perl'                  => '5.10.0',
+        'perl'                  => 5.010,
         'version'               => '0.77',
         'Perl6::Export::Attrs'  => 0,
         'Log::Fast'             => 0,
@@ -85,7 +86,6 @@ my $builder = $class->new(
         'Pod::Coverage'         => '0.18',
     },
 #     add_to_cleanup      => [ 'Narada-*' ],
-    create_makefile_pl          => 'small',
 );
 $builder->create_build_script;
 

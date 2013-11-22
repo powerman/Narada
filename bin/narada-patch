@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.6');
+use version; our $VERSION = qv('1.3.7');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -64,7 +64,7 @@ sub basename {
     return $file;
 }
 
-sub main {  ## no critic (RequireArgUnpacking)
+sub main {
     rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
     die "Usage: narada-patch\n"
         if @_ > 1
@@ -204,7 +204,7 @@ narada-patch - apply pending patches on Narada project
 
 =head1 VERSION
 
-This document describes narada-patch version 1.3.6
+This document describes narada-patch version 1.3.7
 
 
 =head1 USAGE

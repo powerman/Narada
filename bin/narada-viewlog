@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.6');
+use version; our $VERSION = qv('1.3.7');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -22,7 +22,7 @@ main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 
 sub err { die "narada-viewlog: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
 
-sub main { ## no critic (RequireArgUnpacking)
+sub main {
     my ($opt, @files) = parse_opt(@_);
     if (@files) {
         for (@files) {
@@ -35,7 +35,7 @@ sub main { ## no critic (RequireArgUnpacking)
     return;
 }
 
-sub parse_opt { ## no critic (RequireArgUnpacking)
+sub parse_opt {
     my ($simple, $complex, $default) = qw( dtmfliph LR tmli );
     my %opt = map {$_=>1} map {split //xms,substr $_,1} grep {m/\A-[$simple]+\z/xms} @_;
     if (!keys %opt) {
@@ -170,7 +170,7 @@ narada-viewlog - log viewer for project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-viewlog version 1.3.6
+This document describes narada-viewlog version 1.3.7
 
 
 =head1 USAGE

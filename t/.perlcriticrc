@@ -641,7 +641,7 @@ severity                           = 4
 # forbid = abstract bases close contract last left no record right second set
 
 
-[NamingConventions::Capitalization]
+[-NamingConventions::Capitalization]
 file_lexical_variables = :no_restriction
 
 # Write `@{ $array_ref }' instead of `@$array_ref'.
@@ -843,7 +843,7 @@ severity                           = 4
 
 
 # Always unpack `@_' first.
-[Subroutines::RequireArgUnpacking]
+[-Subroutines::RequireArgUnpacking]
 # set_themes                         = core maintenance pbp
 # add_themes                         =
 # severity                           = 4
@@ -923,6 +923,7 @@ allow = refs
 # add_themes                         =
 # severity                           = 5
 # maximum_violations_per_document    = 1
+equivalent_modules		    = Mojo::Base
 
 
 # Always `use warnings'.
@@ -931,6 +932,7 @@ allow = refs
 # add_themes                         =
 # severity                           = 4
 # maximum_violations_per_document    = 1
+equivalent_modules		    = Mojo::Base
 
 
 # Don't use the comma operator as a statement separator.
@@ -1007,6 +1009,7 @@ allow = refs
 # add_themes                         =
 # severity                           = 2
 # maximum_violations_per_document    = no_limit
+max_chain_length                    = 5
 
 # The number of chained calls to allow.
 # Minimum value 1. No maximum.
@@ -1134,7 +1137,7 @@ severity                           = 4
 
 
 # Use `my' instead of `local', except when you have to.
-[Variables::ProhibitLocalVars]
+[-Variables::ProhibitLocalVars]
 # set_themes                         = core maintenance pbp
 # add_themes                         =
 # severity                           = 2
@@ -1227,6 +1230,7 @@ severity                           = 5
 # add_themes                         =
 # severity                           = 4
 # maximum_violations_per_document    = no_limit
+allow = $DATA @DATA %DATA
 
 
 # Negative array index should be used.

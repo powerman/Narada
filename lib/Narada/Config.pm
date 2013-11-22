@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.3.6');
+use version; our $VERSION = qv('1.3.7');
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Perl6::Export::Attrs;
@@ -15,7 +15,7 @@ use constant MAXPERM => 0666; ## no critic (ProhibitLeadingZeros)
 my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*[\w.-]+\z}xms;
 
 
-sub get_config :Export { ## no critic (RequireArgUnpacking)
+sub get_config :Export {
     my ($var) = @_;
     croak 'Usage: get_config(NAME)' if @_ != 1;
     $var =~ /$VAR_NAME/xms              or croak "bad config: $var";
@@ -27,7 +27,7 @@ sub get_config :Export { ## no critic (RequireArgUnpacking)
     return $val;
 }
 
-sub get_config_line :Export { ## no critic (RequireArgUnpacking)
+sub get_config_line :Export {
     my ($val) = get_config(@_);
     $val =~ s/\n\s*\z//xms;
     croak 'config contain more than one line' if $val =~ /\n/xms;
@@ -51,7 +51,7 @@ sub get_db_config :Export {
     return \%db;
 }
 
-sub set_config :Export { ## no critic (RequireArgUnpacking)
+sub set_config :Export {
     my ($var, $val) = @_;
     croak 'Usage: set_config(NAME, VALUE)' if @_ != 2;
     $var =~ /$VAR_NAME/xms              or croak "bad config: $var";
@@ -76,7 +76,7 @@ Narada::Config - manage project configuration
 
 =head1 VERSION
 
-This document describes Narada::Config version 1.3.6
+This document describes Narada::Config version 1.3.7
 
 
 =head1 SYNOPSIS

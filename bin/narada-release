@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.6');
+use version; our $VERSION = qv('1.3.7');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -35,6 +35,10 @@ sub main {
     symlink "$pwd/doc/ChangeLog",                 "$dir4diff/new/doc/ChangeLog"  or err "symlink: $!";
     symlink "$pwd/var/patch/.prev/config/version","$dir4diff/old/config/version" or err "symlink: $!";
     symlink "$pwd/var/patch/.prev/doc/ChangeLog", "$dir4diff/old/doc/ChangeLog"  or err "symlink: $!";
+    for my $pluginver (grep {-f $_ && -f "var/patch/.prev/$_"} glob 'config/version.*') {
+        symlink "$pwd/$pluginver",                "$dir4diff/new/$pluginver" or err "symlink: $!";
+        symlink "$pwd/var/patch/.prev/$pluginver","$dir4diff/old/$pluginver" or err "symlink: $!";
+    }
     my $patch = "$pwd/var/patch/\Q$v_new\E.\Q$ENV{USER}\E.99.patch";
     system("cd \Q$dir4diff\E; LANG= diff -uNr old new > $patch") >> WAIT2EXIT!=2 or err "system(diff): $!";
 
@@ -127,7 +131,7 @@ narada-release - release current changes in Narada project
 
 =head1 VERSION
 
-This document describes narada-release version 1.3.6
+This document describes narada-release version 1.3.7
 
 
 =head1 USAGE
