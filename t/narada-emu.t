@@ -20,7 +20,7 @@ chdir tempdir( CLEANUP => 1 )
 $ENV{PATH} = "./tmp:$ENV{PATH}";
 chomp(my $orig = `which emu-g`);
 open my $f, '>', 'tmp/emu-g'                or die "open: $!";
-printf {$f} "%s\n", '#!/bin/bash';
+printf {$f} "%s\n", '#!/usr/bin/env bash';
 printf {$f} "%s\n", '[ -r /dev/stdin ] && stdin=/dev/stdin || stdin=/dev/null';
 printf {$f} "%s %s\n", $orig, '"$@" <$stdin &';
 printf {$f} "%s\n", 'wait 2>/dev/null';

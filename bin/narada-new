@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.7');
+use version; our $VERSION = qv('1.3.8');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -33,7 +33,8 @@ sub main {
     local $/;
     my $skel = <DATA>;
     local $SIG{PIPE} = 'IGNORE';
-    open my $unpack, q{|-}, "tar xpf - -C \Q$dst\E"
+    my $TAR = (grep {-x "$_/gtar"} split /:/ms, $ENV{PATH}) ? 'gtar' : 'tar';
+    open my $unpack, q{|-}, "$TAR xpf - -C \Q$dst\E"
                                         or err 'unpack failed';
     print {$unpack} decode_base64($skel);
     close $unpack                       or err 'unpack failed';
@@ -52,7 +53,7 @@ sub main {
     }
 
     # Initialize patch system.
-    system 'tar cf - ./ --exclude var/patch/.prev | tar xpf - -C var/patch/.prev/';
+    system $TAR.' cf - ./ --exclude var/patch/.prev | tar xpf - -C var/patch/.prev/';
 
     # Make initial archive for installing this project elsewhere.
     system 'narada-backup';
@@ -72,7 +73,7 @@ narada-new - creates a skeleton project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-new version 1.3.7
+This document describes narada-new version 1.3.8
 
 
 =head1 USAGE

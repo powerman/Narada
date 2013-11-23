@@ -35,19 +35,19 @@
    "provides" : {
       "Narada" : {
          "file" : "lib/Narada.pm",
-         "version" : "v1.3.7"
+         "version" : "v1.3.8"
       },
       "Narada::Config" : {
          "file" : "lib/Narada/Config.pm",
-         "version" : "v1.3.7"
+         "version" : "v1.3.8"
       },
       "Narada::Lock" : {
          "file" : "lib/Narada/Lock.pm",
-         "version" : "v1.3.7"
+         "version" : "v1.3.8"
       },
       "Narada::Log" : {
          "file" : "lib/Narada/Log.pm",
-         "version" : "v1.3.7"
+         "version" : "v1.3.8"
       }
    },
    "release_status" : "stable",
@@ -56,7 +56,7 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "v1.3.7",
+   "version" : "v1.3.8",
    "x_test_requires" : {
       "Pod::Coverage" : "0.18",
       "Test::CheckManifest" : "0.9",

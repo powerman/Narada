@@ -4,12 +4,13 @@ use warnings;
 use Module::Build;
 
 die "OS unsupported\n" if $^O =~ /Win/;
-for my $cmd (qw( find chmod tar )) {
+my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
+for my $cmd (qw( bash find chmod ), $TAR) {
     if (!grep {-x "$_/$cmd"} split /:/, $ENV{PATH}) {
         die "command not found: $cmd\n"
     }
 }
-die "GNU tar required\n" if `tar --version` !~ /GNU/ms;
+die "GNU tar required\n" if `$TAR --version` !~ /GNU/ms;
 
 # WARNING:  Empty directories in skel/ MUST contain .keep file to force
 #           inclusion of these directories in MANIFEST and module distribution.
@@ -39,7 +40,8 @@ sub _inject_skel {
     print {$f} $new;
     system("find skel/ -type f -exec chmod u+w {} +")
         == 0 or die "system: $?\n";
-    open my $tar, '-|', 'tar cf - -C skel --exclude .keep ./' or die "open: $!";
+    my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
+    open my $tar, '-|', $TAR.' cf - -C skel --exclude .keep ./' or die "open: $!";
     use MIME::Base64;
     local $/;
     print {$f} encode_base64(<$tar>);

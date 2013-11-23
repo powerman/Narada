@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.3.7');
+use version; our $VERSION = qv('1.3.8');
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Perl6::Export::Attrs;
@@ -76,7 +76,7 @@ Narada::Config - manage project configuration
 
 =head1 VERSION
 
-This document describes Narada::Config version 1.3.7
+This document describes Narada::Config version 1.3.8
 
 
 =head1 SYNOPSIS

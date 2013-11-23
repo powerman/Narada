@@ -1,14 +1,2 @@
 Replace dependency on mutt in `narada-patch-send` with POWER::Email and
 POWER::GPG (have to release both to CPAN first).
-
-Use gtar instead of tar on *BSD. Fix these places:
-
-    ./bin/powerdiff:        system 'tar', 'czf', "$output.tgz", '-C', $dir2, map { substr $_, 1 } @TAR;
-    ./bin/narada-patch:                system "tar xzvf \Q$file\E";
-    ./bin/narada-new:    open my $unpack, q{|-}, "tar xpf - -C \Q$dst\E"
-    ./bin/narada-new:    system 'tar cf - ./ --exclude var/patch/.prev | tar xpf - -C var/patch/.prev/';
-    ./bin/narada-backup:    LANG= tar "$@" &>$tmp
-    ./t/narada-backup.t:        system("tar -x -p -g /dev/null -f \Q$file\E &>/dev/null");
-    ./Build.PL:for my $cmd (qw( find chmod tar )) {
-    ./Build.PL:die "GNU tar required\n" if `tar --version` !~ /GNU/ms;
-    ./Build.PL:    open my $tar, '-|', 'tar cf - -C skel --exclude .keep ./' or die "open: $!";

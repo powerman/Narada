@@ -43,20 +43,24 @@ sub filldir {
 sub check_backup {
     my (@files) = @_;
     chdir tempdir( CLEANUP => 1 ) or die "chdir: $!";
+    my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
     for my $file (@files) {
-        system("tar -x -p -g /dev/null -f \Q$file\E &>/dev/null");
+        system("$TAR -x -p -g /dev/null -f \Q$file\E &>/dev/null");
     }
     # looks like dir size on raiserfs differ and break this test (ext3 works ok)
-    my $wait = `
-        cd \Q$dir2\E
-        find -not -path './var/patch/.prev/*' -type d -printf "%M        %p %l\n" | sort
-        find -not -path './var/patch/.prev/*' -type f -printf "%M %6s %p %l\n" | sort
-        `;
-    my $list = `
-        find -type d -printf "%M        %p %l\n" | sort
-        find -type f -printf "%M %6s %p %l\n" | sort
-        `;
-    eq_or_diff $list, $wait, 'backup contents ok';
+    SKIP: {
+        skip 'GNU find required', 1 if `find --version 2>/dev/null` !~ /GNU/ms;
+        my $wait = `
+            cd \Q$dir2\E
+            find -not -path './var/patch/.prev/*' -type d -printf "%M        %p %l\n" | sort
+            find -not -path './var/patch/.prev/*' -type f -printf "%M %6s %p %l\n" | sort
+            `;
+        my $list = `
+            find -type d -printf "%M        %p %l\n" | sort
+            find -type f -printf "%M %6s %p %l\n" | sort
+            `;
+        eq_or_diff $list, $wait, 'backup contents ok';
+    }
     return;
 }
 
