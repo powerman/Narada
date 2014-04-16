@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.8');
+use version; our $VERSION = qv('1.3.9');
 
 1; # Magic true value required at end of module
 __END__
@@ -15,7 +15,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 =head1 VERSION
 
-This document describes Narada version 1.3.8
+This document describes Narada version 1.3.9
 
 
 =head1 SYNOPSIS
@@ -515,7 +515,7 @@ Nick Levchenko C<< <project129@yandex.ru> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

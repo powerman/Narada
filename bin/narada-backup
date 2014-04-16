@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='1.3.8'
+VERSION='1.3.9'
 
 [ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
 
@@ -54,7 +54,7 @@ narada-backup - prepare consistent project backup
 
 =head1 VERSION
 
-This document describes narada-backup version 1.3.8
+This document describes narada-backup version 1.3.9
 
 =head1 USAGE
 
@@ -127,7 +127,7 @@ Alex Efros C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

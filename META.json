@@ -4,7 +4,7 @@
       "Alex Efros <powerman@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4007, CPAN::Meta::Converter version 2.132510",
+   "generated_by" : "Module::Build version 0.42",
    "license" : [
       "perl_5"
    ],
@@ -16,7 +16,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.40"
+            "Module::Build" : "0.42"
          }
       },
       "runtime" : {
@@ -30,24 +30,36 @@
             "perl" : "5.01",
             "version" : "0.77"
          }
+      },
+      "test" : {
+         "requires" : {
+            "Pod::Coverage" : "0.18",
+            "Test::CheckManifest" : "0.9",
+            "Test::Differences" : "0",
+            "Test::Exception" : "0",
+            "Test::MockModule" : "0",
+            "Test::Perl::Critic" : "0",
+            "Test::Pod" : "1.22",
+            "Test::Pod::Coverage" : "1.08"
+         }
       }
    },
    "provides" : {
       "Narada" : {
          "file" : "lib/Narada.pm",
-         "version" : "v1.3.8"
+         "version" : "v1.3.9"
       },
       "Narada::Config" : {
          "file" : "lib/Narada/Config.pm",
-         "version" : "v1.3.8"
+         "version" : "v1.3.9"
       },
       "Narada::Lock" : {
          "file" : "lib/Narada/Lock.pm",
-         "version" : "v1.3.8"
+         "version" : "v1.3.9"
       },
       "Narada::Log" : {
          "file" : "lib/Narada/Log.pm",
-         "version" : "v1.3.8"
+         "version" : "v1.3.9"
       }
    },
    "release_status" : "stable",
@@ -56,15 +68,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "v1.3.8",
-   "x_test_requires" : {
-      "Pod::Coverage" : "0.18",
-      "Test::CheckManifest" : "0.9",
-      "Test::Differences" : "0",
-      "Test::Exception" : "0",
-      "Test::MockModule" : "0",
-      "Test::Perl::Critic" : "0",
-      "Test::Pod" : "1.22",
-      "Test::Pod::Coverage" : "1.08"
-   }
+   "version" : "v1.3.9"
 }

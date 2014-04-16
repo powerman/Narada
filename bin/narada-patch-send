@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='1.3.8'
+VERSION='1.3.9'
 
 perl -ne 'print if ($rec+=/^\S/) == 1' doc/ChangeLog  >tmp/ChangeLog.$$
 # Mutt options:
@@ -33,7 +33,7 @@ narada-patch-send - send latests patch files by email to other developers
 
 =head1 VERSION
 
-This document describes narada-patch-send version 1.3.8
+This document describes narada-patch-send version 1.3.9
 
 =head1 USAGE
 
@@ -85,7 +85,7 @@ Alex Efros C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

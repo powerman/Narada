@@ -1,2 +1,5 @@
+narada-setup-cron (any may be others too) doesn't complain when run
+not in project root dir.
+
 Replace dependency on mutt in `narada-patch-send` with POWER::Email and
 POWER::GPG (have to release both to CPAN first).

@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.3.8');
+use version; our $VERSION = qv('1.3.9');
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Narada::Config qw( get_config_line );
@@ -64,7 +64,7 @@ Narada::Log - setup project log
 
 =head1 VERSION
 
-This document describes Narada::Log version 1.3.8
+This document describes Narada::Log version 1.3.9
 
 
 =head1 SYNOPSIS
@@ -136,7 +136,7 @@ Alex Efros  C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2013 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
