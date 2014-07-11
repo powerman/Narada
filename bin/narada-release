@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.9');
+use version; our $VERSION = qv('1.3.10');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -27,7 +27,7 @@ sub main {
     my ($v_old, $v_new) = get_versions();
 
     my $dir4diff = tempdir( CLEANUP => 1 );
-    for my $subdir qw(old old/doc old/config new new/doc new/config) {
+    for my $subdir (qw(old old/doc old/config new new/doc new/config)) {
         mkdir "$dir4diff/$subdir" or err "mkdir($subdir): $!";
     }
     chomp(my $pwd = `pwd`);
@@ -131,7 +131,7 @@ narada-release - release current changes in Narada project
 
 =head1 VERSION
 
-This document describes narada-release version 1.3.9
+This document describes narada-release version 1.3.10
 
 
 =head1 USAGE

@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.9');
+use version; our $VERSION = qv('1.3.10');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -123,7 +123,6 @@ sub apply_patches {
         for my $file (@files) {
             color_printf "Applying %s ...\n", bold2(basename($file));
             my ($ext) = $file =~ /.*[.](.*)/xms;
-            ## no critic (ProhibitCascadingIfElse)
             if ($ext eq 'patch') {
                 if (defined $addon && $file =~ /[.]99[.]patch\z/ms) {
                     $file = replace_addon_patch($addon, $file);
@@ -205,7 +204,7 @@ narada-patch - apply pending patches on Narada project
 
 =head1 VERSION
 
-This document describes narada-patch version 1.3.9
+This document describes narada-patch version 1.3.10
 
 
 =head1 USAGE

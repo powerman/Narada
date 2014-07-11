@@ -4,7 +4,8 @@ use strict;
 use Test::More;
 use Test::Exception;
 
-plan skip_all => 'OS Inferno not installed' if !grep {-x "$_/emu-g" && /inferno/} split /:/, $ENV{PATH};
+plan skip_all => 'OS Inferno not installed'  if !grep {-x "$_/emu-g" && /inferno/} split /:/, $ENV{PATH};
+plan skip_all => 'OS Inferno not configured' if `emu-g echo ok 2>/dev/null` !~ /ok/ms;
 plan tests => 6;
 
 use File::Temp qw( tempdir );

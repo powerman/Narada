@@ -245,7 +245,7 @@ severity                           = 3
 
 # The maximum number of alternatives that will be allowed.
 # Minimum value 1. No maximum.
-# max_elsif = 2
+max_elsif = 4
 
 
 # Don't write deeply nested loops and conditionals.
