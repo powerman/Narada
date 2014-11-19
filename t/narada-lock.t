@@ -30,10 +30,13 @@ ok `narada-lock $cmd & narada-lock $cmd & wait` =~ /1\n1\n2\n2\n/,
     'two shared_lock passes simultaneously';
 ok `narada-lock-exclusive $cmd & narada-lock-exclusive $cmd & wait` =~ /1\n2\n1\n2\n/,
     'two exclusive_lock passes sequentially (in any order)';
-my $cmd2 = 'bash -c \'echo 1x; sleep 1; echo 2x\'';
-my $s = "narada-lock $cmd & sleep 0.2; narada-lock-exclusive $cmd2 & sleep 0.2; narada-lock $cmd & wait";
-ok `$s` =~ /1\n2\n1x\n2x\n1\n2\n/,
-    'single shared_lock, then exclusive_lock, then shared_lock passes sequentially (in order)';
+SKIP: {
+    skip 'Too many broken cpan tester setups.', 1 if $ENV{AUTOMATED_TESTING};
+    my $cmd2 = 'bash -c \'echo 1x; sleep 1; echo 2x\'';
+    my $s = "narada-lock $cmd & sleep 0.2; narada-lock-exclusive $cmd2 & sleep 0.2; narada-lock $cmd & wait";
+    ok `$s` =~ /1\n2\n1x\n2x\n1\n2\n/,
+        'single shared_lock, then exclusive_lock, then shared_lock passes sequentially (in order)';
+}
 ok `narada-lock-exclusive narada-lock-exclusive narada-lock echo ok` =~ /ok/,
     '$NARADA_SKIP_LOCK';
 

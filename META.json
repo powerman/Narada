@@ -4,7 +4,7 @@
       "Alex Efros <powerman@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.42",
+   "generated_by" : "Module::Build version 0.4205",
    "license" : [
       "perl_5"
    ],
@@ -47,19 +47,19 @@
    "provides" : {
       "Narada" : {
          "file" : "lib/Narada.pm",
-         "version" : "v1.3.10"
+         "version" : "v1.3.11"
       },
       "Narada::Config" : {
          "file" : "lib/Narada/Config.pm",
-         "version" : "v1.3.10"
+         "version" : "v1.3.11"
       },
       "Narada::Lock" : {
          "file" : "lib/Narada/Lock.pm",
-         "version" : "v1.3.10"
+         "version" : "v1.3.11"
       },
       "Narada::Log" : {
          "file" : "lib/Narada/Log.pm",
-         "version" : "v1.3.10"
+         "version" : "v1.3.11"
       }
    },
    "release_status" : "stable",
@@ -68,5 +68,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "v1.3.10"
+   "version" : "v1.3.11"
 }

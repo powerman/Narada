@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="1.3.10" # based on remote-2.0.2
+VERSION="1.3.11" # based on remote-2.0.2
 
 if ! [ -f config/remote -a -s config/remote ]; then
     echo "error: configure config/remote first"
@@ -32,7 +32,7 @@ narada-upload - use scp to upload project files to remote host
 
 =head1 VERSION
 
-This document describes narada-upload version 1.3.10
+This document describes narada-upload version 1.3.11
 
 =head1 USAGE
 

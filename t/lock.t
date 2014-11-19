@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-use Test::More tests => 39;
+use Test::More;
 use Test::Exception;
 
 use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_lock );
@@ -9,11 +9,17 @@ use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_
 use Time::HiRes qw( time sleep );
 use Fcntl qw(:DEFAULT :flock F_SETFD FD_CLOEXEC);
 use Errno;
+use File::Temp qw( tempdir );
 
 use constant LOCKNEW    => Narada::Lock::LOCKNEW;
 use constant LOCKFILE   => Narada::Lock::LOCKFILE;
 
-use File::Temp qw( tempdir );
+if ($ENV{AUTOMATED_TESTING}) {
+    plan skip_all => 'Too many broken cpan tester setups.';
+} else {
+    plan tests => 39;
+}
+
 chomp(my $cwd=`pwd`);
 $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 $ENV{PERL5LIB} ||= q{};

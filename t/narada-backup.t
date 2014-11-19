@@ -11,6 +11,10 @@ $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 $ENV{PERL5LIB} ||= q{};
 $ENV{PERL5LIB} = "$cwd/blib:$ENV{PERL5LIB}";
 
+my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
+# output tar version to debug why some CPANTesters fail some tests
+diag `$TAR --version | head -n 1`;
+
 umask 0022;
 my $dir1 = narada_new();
 my $dir2 = narada_new();
@@ -43,7 +47,6 @@ sub filldir {
 sub check_backup {
     my (@files) = @_;
     chdir tempdir( CLEANUP => 1 ) or die "chdir: $!";
-    my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
     for my $file (@files) {
         system("$TAR -x -p -g /dev/null -f \Q$file\E &>/dev/null");
     }
