@@ -94,7 +94,7 @@ ok $old_size < -s "$dir1/var/backup/full.tar", 'full.tar grow up';
 ok -e "$dir1/var/backup/incr.tar", 'incr.tar created';
 system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr1.tar") == 0 or die "system: $?";
 
-sleep 1;    # tar will detect changes based on mtime
+sleep 2;    # tar will detect changes based on mtime
 for my $dir ($dir1, $dir2) {
     filldir("$dir/t/");
     system("

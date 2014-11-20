@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.11');
+use version; our $VERSION = qv('1.3.12');
 
 1; # Magic true value required at end of module
 __END__

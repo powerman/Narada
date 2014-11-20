@@ -23,7 +23,7 @@ name: Narada
 provides:
   Narada:
     file: lib/Narada.pm
-    version: v1.3.11
+    version: v1.3.12
   Narada::Config:
     file: lib/Narada/Config.pm
     version: v1.3.11
@@ -44,4 +44,4 @@ requires:
   version: '0.77'
 resources:
   license: http://dev.perl.org/licenses/
-version: v1.3.11
+version: v1.3.12
