@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='1.3.11'
+VERSION='1.3.13'
 
 # compatibility with Narada <1.2.0
 [ -d ./var/patch/prev ] && mv ./var/patch/prev ./var/patch/.prev
@@ -31,7 +31,7 @@ narada-diff - prepare patch from previous version to current
 
 =head1 VERSION
 
-This document describes narada-diff version 1.3.11
+This document describes narada-diff version 1.3.13
 
 =head1 USAGE
 

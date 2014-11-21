@@ -47,19 +47,19 @@
    "provides" : {
       "Narada" : {
          "file" : "lib/Narada.pm",
-         "version" : "v1.3.12"
+         "version" : "v1.3.13"
       },
       "Narada::Config" : {
          "file" : "lib/Narada/Config.pm",
-         "version" : "v1.3.11"
+         "version" : "v1.3.13"
       },
       "Narada::Lock" : {
          "file" : "lib/Narada/Lock.pm",
-         "version" : "v1.3.11"
+         "version" : "v1.3.13"
       },
       "Narada::Log" : {
          "file" : "lib/Narada/Log.pm",
-         "version" : "v1.3.11"
+         "version" : "v1.3.13"
       }
    },
    "release_status" : "stable",
@@ -68,5 +68,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "v1.3.12"
+   "version" : "v1.3.13"
 }
