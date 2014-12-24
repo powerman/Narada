@@ -12,7 +12,7 @@ build_requires:
   Test::Pod: '1.22'
   Test::Pod::Coverage: '1.08'
 configure_requires:
-  Module::Build: '0.42'
+  Module::Build: '0.4004'
 dynamic_config: 1
 generated_by: 'Module::Build version 0.4205, CPAN::Meta::Converter version 2.140640'
 license: perl
@@ -23,16 +23,16 @@ name: Narada
 provides:
   Narada:
     file: lib/Narada.pm
-    version: v1.3.13
+    version: v1.3.14
   Narada::Config:
     file: lib/Narada/Config.pm
-    version: v1.3.13
+    version: v1.3.14
   Narada::Lock:
     file: lib/Narada/Lock.pm
-    version: v1.3.13
+    version: v1.3.14
   Narada::Log:
     file: lib/Narada/Log.pm
-    version: v1.3.13
+    version: v1.3.14
 requires:
   DBD::mysql: '0'
   DBI: '0'
@@ -44,4 +44,4 @@ requires:
   version: '0.77'
 resources:
   license: http://dev.perl.org/licenses/
-version: v1.3.13
+version: v1.3.14

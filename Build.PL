@@ -67,6 +67,9 @@ my $builder = $class->new(
     license             => 'perl',
     dist_author         => 'Alex Efros <powerman@cpan.org>',
     dynamic_config      => 1,
+    configure_requires => {
+        'Module::Build'         => 0.4004, # for test_requires
+    },
     requires => {
         'perl'                  => 5.010,
         'version'               => '0.77',

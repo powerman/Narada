@@ -1,5 +1,8 @@
 Revision history for Narada
 
+1.3.14  Wed Dec 24 12:01:59 EET 2014
+	fix dependencies
+
 1.3.13  Thu Nov 20 06:05:42 EET 2014
 	give up on tar test
 

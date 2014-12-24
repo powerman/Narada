@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="1.3.13" # based on remote-2.0.2
+VERSION="1.3.14" # based on remote-2.0.2
 
 if ! [ -f config/remote -a -s config/remote ]; then
     echo "error: configure config/remote first"
@@ -30,7 +30,7 @@ narada-remote - use ssh to execute command on remote host in project root
 
 =head1 VERSION
 
-This document describes narada-remote version 1.3.13
+This document describes narada-remote version 1.3.14
 
 =head1 USAGE
 

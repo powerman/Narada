@@ -770,7 +770,7 @@ severity                           = 5
 
 
 # Don't call functions with a leading ampersand sigil.
-[Subroutines::ProhibitAmpersandSigils]
+[-Subroutines::ProhibitAmpersandSigils]
 # set_themes                         = core maintenance pbp
 # add_themes                         =
 # severity                           = 2
