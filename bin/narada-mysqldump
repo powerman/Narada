@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.14');
+use version; our $VERSION = qv('1.3.15');
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -11,6 +11,8 @@ use Narada::Config qw( get_config get_config_line );
 use DBI;
 use Time::Local;
 use List::Util qw( max );
+use File::Temp qw( tempfile );
+use Fcntl qw(F_SETFD);
 
 use constant SCHEME => 'var/sql/db.scheme.sql';
 use constant REQUIRED_TABLE => 0;
@@ -24,7 +26,7 @@ use constant DESC_KEY       => 3;
 use constant DESC_DEFAULT   => 4;
 use constant DESC_EXTRA     => 5;
 
-# GLOBALS:  $::dbh, $::MYSQLDUMP
+# GLOBALS:  $::dbh, $::mycnf, $::MYSQLDUMP
 
 main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
 
@@ -62,11 +64,17 @@ sub init_globals {
     my $db = get_config_db() or return;
     $::dbh = DBI->connect($db->{dsn}, $db->{login}, $db->{pass},
         {RaiseError=>1}) or err DBI->errstr;
-    $::MYSQLDUMP = "mysqldump -u \Q$db->{login}\E";
-    $::MYSQLDUMP .= " -p\Q$db->{pass}\E"  if length $db->{pass}; ## no critic
-    $::MYSQLDUMP .= " -h \Q$db->{host}\E" if length $db->{host}; ## no critic
-    $::MYSQLDUMP .= " -P \Q$db->{port}\E" if length $db->{port}; ## no critic
-    $::MYSQLDUMP .= " \Q$db->{db}\E";
+    $::mycnf = tempfile(DIR=>'tmp');
+    print {$::mycnf} "[client]\n";
+    print {$::mycnf} "user     = $db->{login}\n";
+    print {$::mycnf} "password = $db->{pass}\n"  if length $db->{pass}; ## no critic
+    print {$::mycnf} "host     = $db->{host}\n"  if length $db->{host}; ## no critic
+    print {$::mycnf} "port     = $db->{port}\n"  if length $db->{port}; ## no critic
+    $::mycnf->flush;
+    sysseek $::mycnf, 0, 0 or err "sysseek: $!";
+    fcntl $::mycnf, F_SETFD, 0 or err "fcntl: $!";
+    my $fd = fileno $::mycnf;
+    $::MYSQLDUMP = "mysqldump --defaults-file=/proc/self/fd/\Q$fd\E \Q$db->{db}\E";
     return 1;
 }
 
@@ -236,7 +244,7 @@ narada-mysqldump - dump project database
 
 =head1 VERSION
 
-This document describes narada-mysqldump version 1.3.14
+This document describes narada-mysqldump version 1.3.15
 
 =head1 USAGE
 
@@ -378,7 +386,7 @@ Alex Efros C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2015 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

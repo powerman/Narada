@@ -3,7 +3,7 @@ package Narada;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.14');
+use version; our $VERSION = qv('1.3.15');
 
 1; # Magic true value required at end of module
 __END__
@@ -15,7 +15,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 =head1 VERSION
 
-This document describes Narada version 1.3.14
+This document describes Narada version 1.3.15
 
 
 =head1 SYNOPSIS
@@ -124,7 +124,7 @@ project backup" feature.
 C<var/.lock>. All Narada does is create that file when generate new
 project and acquire exclusive lock on it while executing C<narada-backup>.
 But to really have consistent backups B<you> must acquire shared lock on
-that file while modifying any project files or database in any of your
+that file when accessing any project files or database in any of your
 scripts! In perl scripts you can use helper module L<Narada::Lock>, and
 it's not a big deal to manually use flock(2) in any other language. If you
 fail to do this, you backups won't be guaranteed to be consistent anymore!
@@ -335,6 +335,10 @@ C<var/log.sock>.
 
 This directory contains project log files.
 
+=item C<var/log/config>
+
+Optional configuration for logger service (filtering, rotation, etc.).
+
 =back
 
 =head2 Services
@@ -423,7 +427,7 @@ TCP port of database server.
 =item C<var/.lock>
 
 This file should be shared-locked using flock(2) or Narada::Lock or
-C<narada-lock> before modifying any project's files or database by usual
+C<narada-lock> before accessing any project's files or database by usual
 applications, and exclusive-locked while project's backup, update or
 manual maintenance.
 
@@ -432,13 +436,18 @@ manual maintenance.
 This file created before trying to exclusive-lock C<var/.lock>. All
 applications wanted to shared-lock C<var/.lock> should first check is
 C<var/.lock.new> exists and if yes then delay/avoid locking C<var/.lock>.
-After exclusive lock will be acquired C<var/.lock.new> will be removed.
 This is needed to guarantee exclusive lock will be acquired as soon as
 possible.
 
-If server will be rebooted while waiting for exclusive lock then file
-C<var/.lock.new> won't be removed and project applications won't continue
-working after booting server until this file will be removed manually.
+After exclusive lock will be acquired and critical operations requiring it
+will be completed - C<var/.lock.new> will be removed.
+
+If server will be rebooted while waiting for exclusive lock or in the
+middle of critical operations requiring it then file C<var/.lock.new>
+won't be removed and project applications won't continue working after
+booting server until this file will be removed manually or another
+operation requiring exclusive lock will be started and successfully
+finished.
 
 =back
 
@@ -515,7 +524,7 @@ Nick Levchenko C<< <project129@yandex.ru> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2015 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

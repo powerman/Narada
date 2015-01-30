@@ -1,6 +1,6 @@
 \A\./var/
 \A\./tmp/
-\A\./service/.*/supervise
+\A\./service/.*/supervise(/|\z)
 \A\./doc/ChangeLog\z
 \A\./.hg
 \A\./.git

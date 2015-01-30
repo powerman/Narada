@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='1.3.14'
+VERSION='1.3.15'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -10,11 +10,19 @@ if [ ! -s config/db/db ]; then
     echo "ERROR: config/db/db absent or empty!"
     exit
 fi
-opt=( -u "$(< config/db/login )" )
-[ -s config/db/pass ] && opt=( "${opt[@]}" "-p$(< config/db/pass )" )
-[ -s config/db/host ] && opt=( "${opt[@]}" -h "$(< config/db/host )" )
-[ -s config/db/port ] && opt=( "${opt[@]}" -P "$(< config/db/port )" )
-exec mysql --pager=less\ -XSFe "${opt[@]}" "$(< config/db/db )"
+
+restore_umask=$(umask -p)
+umask 0077
+echo '[client]' > tmp/my.cnf.$$
+$restore_umask
+echo database   = "$(< config/db/db )"          >> tmp/my.cnf.$$
+echo user       = "$(< config/db/login )"       >> tmp/my.cnf.$$
+[ -s config/db/pass ] && echo password  = "$(< config/db/pass )" >> tmp/my.cnf.$$
+[ -s config/db/host ] && echo host      = "$(< config/db/host )" >> tmp/my.cnf.$$
+[ -s config/db/port ] && echo port      = "$(< config/db/port )" >> tmp/my.cnf.$$
+exec 3< tmp/my.cnf.$$
+rm tmp/my.cnf.$$
+exec mysql --defaults-file=/proc/self/fd/3 --pager=less\ -XSFe
 
 
 : <<'=cut'
@@ -25,7 +33,7 @@ narada-mysql - start mysql client for this project
 
 =head1 VERSION
 
-This document describes narada-mysql version 1.3.14
+This document describes narada-mysql version 1.3.15
 
 =head1 USAGE
 
@@ -84,7 +92,7 @@ Alex Efros C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2014 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2015 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
