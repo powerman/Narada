@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v1.4.0'
+VERSION='v1.4.2'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -34,7 +34,7 @@ narada-mysql - start mysql client for this project
 
 =head1 VERSION
 
-This document describes narada-mysql version v1.4.0
+This document describes narada-mysql version v1.4.2
 
 
 =head1 USAGE
