@@ -2,6 +2,9 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v1.4.1  2015-02-05 22:29:00 EET
+	add Travis CI support
+
 v1.4.0  2015-02-05 22:09:55 EET
 	change license to MIT
 	migrate to Dist::Milla

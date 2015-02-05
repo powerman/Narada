@@ -1,10 +1,12 @@
+[![Build Status](https://travis-ci.org/powerman/Narada.svg?branch=master)](https://travis-ci.org/powerman/Narada)
+
 # NAME
 
 Narada - framework for ease development/deploy/support for medium/big projects
 
 # VERSION
 
-This document describes Narada version v1.4.0
+This document describes Narada version v1.4.1
 
 # SYNOPSIS
 
