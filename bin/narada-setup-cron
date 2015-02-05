@@ -123,7 +123,7 @@ narada-setup-cron - synchronize project crontab with user crontab
 
 =head1 VERSION
 
-This document describes narada-setup-cron version v1.4.2
+This document describes narada-setup-cron version v1.4.3
 
 
 =head1 USAGE
