@@ -1,8 +1,37 @@
+# We do not use sudo and declaring so allows us to access
+# the container based Travis infrastructure.
+# - http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
+sudo: false
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
 language: perl
 perl:
+  - "5.10"
   - "5.12"
   - "5.14"
   - "5.16"
   - "5.18"
   - "5.20"
+  - "blead"
+
+matrix:
+  allow_failures:
+    - perl: "blead"
+  fast_finish: true
+
+install:
+  - export HARNESS_OPTIONS=j10:c HARNESS_TIMER=1
+  - export AUTOMATED_TESTING=1 NONINTERACTIVE_TESTING=1
+  - cpanm -nq --installdeps .
+  - cpanm -nq Devel::Cover::Report::Coveralls
+  - export RELEASE_TESTING=1
+  - export EXTENDED_TESTING=1
+script:
+  - perl Build.PL && ./Build && cover -test
+after_success:
+  - cover -report coveralls
 
