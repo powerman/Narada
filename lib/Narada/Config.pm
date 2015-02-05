@@ -211,10 +211,11 @@ Alex Efros  C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2015 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+This software is Copyright (c) 2008-2015 by Alex Efros E<lt>powerman@cpan.orgE<gt>.
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+This is free software, licensed under:
+
+  The MIT (X11) License
 
 
 =head1 DISCLAIMER OF WARRANTY

@@ -457,10 +457,11 @@ Nick Levchenko <project129@yandex.ru>
 
 # LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2015 Alex Efros <powerman@cpan.org>. All rights reserved.
+This software is Copyright (c) 2008-2015 by Alex Efros <powerman@cpan.org>.
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See [perlartistic](https://metacpan.org/pod/perlartistic).
+This is free software, licensed under:
+
+    The MIT (X11) License
 
 # DISCLAIMER OF WARRANTY
 

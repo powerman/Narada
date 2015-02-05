@@ -22,7 +22,7 @@ my %module_build_args = (
   ],
   "dist_name" => "Narada",
   "dist_version" => "1.3.15",
-  "license" => "perl",
+  "license" => "mit",
   "module_name" => "Narada",
   "recommends" => {},
   "recursive_test_files" => 1,
