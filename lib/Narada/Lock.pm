@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = '1.3.15';
+our $VERSION = 'v1.4.0';
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Time::HiRes qw( sleep );
@@ -80,7 +80,7 @@ Narada::Lock - manage project locks
 
 =head1 VERSION
 
-This document describes Narada::Lock version 1.3.15
+This document describes Narada::Lock version v1.4.0
 
 
 =head1 SYNOPSIS

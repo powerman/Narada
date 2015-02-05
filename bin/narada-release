@@ -131,7 +131,7 @@ narada-release - release current changes in Narada project
 
 =head1 VERSION
 
-This document describes narada-release version 1.3.15
+This document describes narada-release version v1.4.0
 
 
 =head1 USAGE
@@ -234,4 +234,3 @@ RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
 FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
 SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
-

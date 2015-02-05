@@ -284,4 +284,3 @@ sub quote_path {
     $path =~ s{\\([/,._-])}{$1}xmsg;    # unquote safe chars for readability
     return $path;
 }
-

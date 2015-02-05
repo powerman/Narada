@@ -1,6 +1,9 @@
 Revision history for Narada
 
 {{$NEXT}}
+
+v1.4.0  2015-02-05 22:09:55 EET
+	change license to MIT
 	migrate to Dist::Milla
 	create on GitHub
 	imported into git using App::cpangitify
