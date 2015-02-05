@@ -109,7 +109,7 @@ your website visitors won't even notice your daily backup!
 =back
 
 
-=head1 INTERFACE 
+=head1 INTERFACE
 
 Narada, as a framework, provide you with some interface (mostly it's just
 conventions about some files and directories), and you B<MUST> conform to
@@ -514,17 +514,17 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
-Alex Efros  C<< <powerman@cpan.org> >>
+Alex Efros E<lt>powerman@cpan.orgE<gt>
 
 
 =head1 CONTRIBUTORS
 
-Nick Levchenko C<< <project129@yandex.ru> >>
+Nick Levchenko E<lt>project129@yandex.ruE<gt>
 
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2015 Alex Efros C<< <powerman@cpan.org> >>. All rights reserved.
+Copyright (c) 2008-2015 Alex Efros E<lt>powerman@cpan.orgE<gt>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
