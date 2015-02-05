@@ -1,8 +1,9 @@
 #!/usr/bin/perl
+use 5.010001;
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.15');    # based on powerdiff-0.1.1
+our $VERSION = '1.3.15';
 
 use File::Temp qw( tempdir );
 use Getopt::Long qw(:config bundling);

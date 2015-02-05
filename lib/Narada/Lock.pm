@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('1.3.15');
+our $VERSION = '1.3.15';
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Time::HiRes qw( sleep );

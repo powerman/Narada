@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use version; our $VERSION = qv('1.3.15');
+our $VERSION = '1.3.15';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -24,9 +24,11 @@ __END__
 
 narada-lock-exclusive - run command under exclusive lock
 
+
 =head1 VERSION
 
 This document describes narada-lock-exclusive version 1.3.15
+
 
 =head1 USAGE
 
