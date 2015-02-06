@@ -16,12 +16,6 @@ perl:
   - "5.16"
   - "5.18"
   - "5.20"
-  - "blead"
-
-matrix:
-  allow_failures:
-    - perl: "blead"
-  fast_finish: true
 
 install:
   - export HARNESS_OPTIONS=j1:c HARNESS_TIMER=1

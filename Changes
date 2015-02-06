@@ -2,6 +2,9 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v1.4.4  2015-02-06 04:11:49 EET
+	fix travis setup and mysql-related tests
+
 v1.4.3  2015-02-05 22:50:10 EET
 	force commit for bin/* after release
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v1.4.3'
+VERSION='v1.4.4'
 
 narada-remote "rm var/patch/$(cat config/version).$USER.* 2>/dev/null"
 narada-upload var/patch/$(cat config/version).$USER.*        &&
@@ -15,7 +15,7 @@ narada-patch-remote - upload latests patch files and apply patch on remote side
 
 =head1 VERSION
 
-This document describes narada-patch-remote version v1.4.3
+This document describes narada-patch-remote version v1.4.4
 
 
 =head1 USAGE

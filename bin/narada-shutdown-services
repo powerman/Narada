@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="v1.4.3"
+VERSION="v1.4.4"
 
 kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
 
@@ -13,7 +13,7 @@ narada-shutdown-services - kill services and their supervisors
 
 =head1 VERSION
 
-This document describes narada-shutdown-services version v1.4.3
+This document describes narada-shutdown-services version v1.4.4
 
 
 =head1 USAGE

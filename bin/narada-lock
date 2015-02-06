@@ -24,7 +24,7 @@ narada-lock - run command under shared lock
 
 =head1 VERSION
 
-This document describes narada-lock version v1.4.3
+This document describes narada-lock version v1.4.4
 
 
 =head1 USAGE
