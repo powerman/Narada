@@ -69,6 +69,8 @@ sub set_config :Export {
 1; # Magic true value required at end of module
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 Narada::Config - manage project configuration
@@ -112,7 +114,6 @@ It must not contain "./" or "../".
 
 Return: contents of file 'config/VARIABLE_NAME' as scalar.
 
-
 =item B<get_config_line>( VARIABLE_NAME )
 
 Suitable for reading files which contain single string (with/without \n at end).
@@ -122,7 +123,6 @@ It must not contain "./" or "../".
 
 Return: contents of file 'config/VARIABLE_NAME' as scalar without last \n
 (if any). Raise exception if file contain more than one line.
-
 
 =item B<get_db_config>()
 
@@ -138,7 +138,6 @@ Return: nothing if database not configured, or hashref with keys:
     {dsn_nodb}  'dbi:mysql:;host=$host;port=$port'
     {dsn}       'dbi:mysql:;host=$host;port=$port;database=$db'
 
-
 =item B<set_config>( VARIABLE_NAME, VARIABLE_VALUE )
 
 See limitation for VARIABLE_VALUE above.
@@ -148,7 +147,6 @@ If 'config/VARIABLE_NAME' doesn't exist it will be created (including
 parent directories if needed).
 
 Return: nothing.
-
 
 =back
 
@@ -161,11 +159,9 @@ Return: nothing.
 
 Thrown by set_config() and get_config() on wrong VARIABLE_NAME.
 
-
 =item C<< no such config: %s >>
 
 Thrown by get_config() if file 'config/VARIABLE_NAME' doesn't exist.
-
 
 =item C<< open(config/%s): %s >>
 
@@ -174,7 +170,6 @@ Thrown by get_config() if file 'config/VARIABLE_NAME' doesn't exist.
 =item C<< rename to config/%s: %s >>
 
 Internal errors.
-
 
 =back
 
@@ -218,25 +213,4 @@ This is free software, licensed under:
   The MIT (X11) License
 
 
-=head1 DISCLAIMER OF WARRANTY
-
-BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
-OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
-ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
-YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
-NECESSARY SERVICING, REPAIR, OR CORRECTION.
-
-IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
-LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
-OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
-THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
-RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
-FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
-SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGES.
+=cut
