@@ -11,7 +11,7 @@ chomp(my ($db, $login, $pass) = `cat t/.answers`);
 if ($db eq q{}) {
     plan skip_all => 'No database provided for testing';
 } else {
-    plan tests => 9;
+    plan tests => 8;
 }
 
 use File::Temp qw( tempdir );
@@ -40,11 +40,8 @@ set_config('db/login', $login);
 set_config('db/pass', $pass);
 is   scalar `narada-mysql       </dev/null 2>&1`, q{}, 'auth ok';
 is   scalar `echo "SELECT 1+2;" | narada-mysql 2>&1`, "1+2\n3\n", 'simple select';
-set_config('db/host', '127.0.0.172');
-set_config('db/port', '3306');
-like scalar `narada-mysql       </dev/null 2>&1`, qr/Can't connect/i, 'bad host';
 set_config('db/host', '127.0.0.1');
-set_config('db/port', '3307');
+set_config('db/port', '36');
 like scalar `narada-mysql       </dev/null 2>&1`, qr/Can't connect/i, 'bad port';
 set_config('db/port', '3306');
 is   scalar `narada-mysql       </dev/null 2>&1`, q{}, 'good host:port';
