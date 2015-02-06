@@ -25,11 +25,12 @@ matrix:
 
 install:
   - export HARNESS_OPTIONS=j10:c HARNESS_TIMER=1
-  - export AUTOMATED_TESTING=1 NONINTERACTIVE_TESTING=1
+  - export AUTOMATED_TESTING=1 NONINTERACTIVE_TESTING=1 PERL_MM_USE_DEFAULT=1
   - cpanm -nq --installdeps .
   - cpanm -nq Devel::Cover::Report::Coveralls
   - export RELEASE_TESTING=1
   - export EXTENDED_TESTING=1
+  - export TEST_MYSQL_USER=travis TEST_MYSQL_PASS=
 script:
   - perl Build.PL && ./Build && cover -test
 after_success:
