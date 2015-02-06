@@ -24,7 +24,7 @@ matrix:
   fast_finish: true
 
 install:
-  - export HARNESS_OPTIONS=j10:c HARNESS_TIMER=1
+  - export HARNESS_OPTIONS=j1:c HARNESS_TIMER=1
   - export AUTOMATED_TESTING=1 NONINTERACTIVE_TESTING=1 PERL_MM_USE_DEFAULT=1
   - cpanm -nq --installdeps .
   - cpanm -nq Devel::Cover::Report::Coveralls
