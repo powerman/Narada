@@ -5,4 +5,3 @@
 MYMETA.*
 !META.json
 /.prove
-/inc/Devel/**/*.pm
