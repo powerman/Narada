@@ -33,7 +33,7 @@ is   scalar `narada-mysql param </dev/null 2>&1`, "Usage: narada-mysql\n", 'usag
 is   scalar `narada-mysql       </dev/null 2>&1`, "ERROR: config/db/db absent or empty!\n", 'no db';
 set_config('db/db', $db);
 set_config('db/login', 'wrong login');
-is   scalar `narada-mysql       </dev/null 2>&1`, q{}, 'bad login, empty pass';
+like scalar `narada-mysql       </dev/null 2>&1`, qr/Access denied|\A\z/i, 'bad login, empty pass';
 set_config('db/pass', 'wrong pass');
 like scalar `narada-mysql       </dev/null 2>&1`, qr/Access denied/i, 'bad pass';
 set_config('db/login', $login);
