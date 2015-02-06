@@ -201,9 +201,14 @@ sub get_table_status {
     my $val = $::dbh->selectrow_hashref('SHOW TABLE STATUS LIKE ?',
         undef, $table)->{$field};
     if ($field =~ /_time\z/xms) {
-        my @datetime = reverse split /\D+/xms, $val;
-        $datetime[TIMELOCAL_MONTH]--;
-        $val = timelocal(@datetime);
+        if (!defined $val) {
+            $val = 0;
+        }
+        else {
+            my @datetime = reverse split /\D+/xms, $val;
+            $datetime[TIMELOCAL_MONTH]--;
+            $val = timelocal(@datetime);
+        }
     }
     return $val;
 }

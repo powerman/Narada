@@ -10,6 +10,9 @@ patch must be released as separate patch on project, several plugin's
 patches shouldn't be combined in one massive project's update (at least,
 automatically).
 
+FIXME Test/add Innodb support (mysqldump tests which pass on MyISAM are
+fails on Innodb).
+
 `narada-new`::
   - write into `config/version` version without leading zeroes: "0.1.0",
     for semver compatiblity

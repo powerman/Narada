@@ -48,6 +48,7 @@ ok !$::MYSQLDUMP,   'init_globals: $::MYSQLDUMP undefined';
 ok init_globals(),  'init_globals return true';
 ok $::dbh,          'init_globals: $::dbh defined';
 ok $::MYSQLDUMP,    'init_globals: $::MYSQLDUMP defined';
+$::dbh->do('SET default_storage_engine=MYISAM');
 
 # - list_tables()
 #   * db/dump/incremental: required
@@ -125,7 +126,8 @@ is_deeply detect_unchanged($full), [],
     'detect_unchanged: no dumps';
 
 SKIP: {
-    skip 'user "test" do not have LOCK TABLES privilege', 38 if $login eq 'test';
+    skip 'user do not have LOCK TABLES privilege', 38
+        if `echo "lock table a read;" | narada-mysql 2>&1` =~ /Access denied/i;
 
 dump_full($full, []);
 sleep 1;    # emulate delay in main()
@@ -352,6 +354,9 @@ is_deeply [sort glob 'var/sql/*.sql'], [
     'var/sql/db.scheme.sql',
     ],
     'main: no previous dumps, no tables';
+
+# XXX why I have to repeat this here?
+$::dbh->do('SET default_storage_engine=MYISAM');
 
 $::dbh->do('CREATE TABLE incr_a (i INT AUTO_INCREMENT PRIMARY KEY, s TEXT)');
 $::dbh->do('CREATE TABLE incr_b (i INT AUTO_INCREMENT PRIMARY KEY, s TEXT)');
