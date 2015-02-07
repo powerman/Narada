@@ -63,11 +63,18 @@ sub _prompt_db {
 
     my $auth= "-u \Q$user\E" . ($pass ne q{} ? " -p\Q$pass\E" : q{});
     if (`mysql $auth \Q$db\E </dev/null 2>&1` !~ /Unknown database/ms) {
-        $db = $self->prompt("\nEnter NON-EXISTING database name (empty to skip test):", $db);
+        $db = $self->prompt("\nEnter NON-EXISTING database name (empty/space to skip test):", $db);
         $db =~ s/\s+//msg;
         if ($db ne q{} && $user eq q{}) {
             $user = $self->prompt("Enter username for database '$db':", 'test');
             $pass = $self->prompt("Enter password for username '$user':", q{});
+        }
+        $auth = "-u \Q$user\E" . ($pass ne q{} ? " -p\Q$pass\E" : q{});
+        my $err = `mysql $auth \Q$db\E </dev/null 2>&1`;
+        if ($err !~ /Unknown database/ms) {
+            warn "Disable MySQL tests:\n";
+            warn $err =~ /ERROR/ ? "$err\n" : "ERROR: Database '$db' exists\n\n";
+            $db = $user = $pass = q{};
         }
     }
 
