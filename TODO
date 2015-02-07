@@ -4,24 +4,6 @@ not in project root dir.
 Replace dependency on mutt in `narada-patch-send` with Email::Sender and
 POWER::GPG (release it to CPAN first).
 
-BUG Plugins are currently broken: if they contain *.42.pl which convert
-database, then it must be run on each deployment - i.e. each plugin's
-patch must be released as separate patch on project, several plugin's
-patches shouldn't be combined in one massive project's update (at least,
-automatically).
-
 FIXME Test/add Innodb support (mysqldump tests which pass on MyISAM are
 fails on Innodb).
-
-`narada-new`::
-  - write into `config/version` version without leading zeroes: "0.1.0",
-    for semver compatiblity
-  - remove project name from `config/version` - looks like it doesn't have
-    any real use (as project name)
-  - update doc
-
-`narada-release`::
-  - if `config/version` match `/\A\d+\.\d+\.\d+\z/`, then instead of
-    incrementing last number in string instead increment second and set
-    third to zero (for semver compatiblity)
 
