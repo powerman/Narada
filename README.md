@@ -7,7 +7,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 # VERSION
 
-This document describes Narada version v1.4.4
+This document describes Narada version v1.4.5
 
 # SYNOPSIS
 
@@ -434,21 +434,45 @@ used by `narada-new` to initialize `config/patch/send/$USER`; by
 `narada-patch-send` to avoid sending email to yourself; by
 `narada-release` when adding header lines into `doc/ChangeLog`.
 
-# DEPENDENCIES
+# SUPPORT
 
-None.
+## Bugs / Feature Requests
 
-# INCOMPATIBILITIES
+Please report any bugs or feature requests through the issue tracker
+at [https://github.com/powerman/Narada/issues](https://github.com/powerman/Narada/issues).
+You will be notified automatically of any progress on your issue.
 
-None reported.
+## Source Code
 
-# BUGS AND LIMITATIONS
+This is open source software. The code repository is available for
+public review and contribution under the terms of the license.
+Feel free to fork the repository and submit pull requests.
 
-No bugs have been reported.
+[https://github.com/powerman/Narada](https://github.com/powerman/Narada)
 
-Please report any bugs or feature requests to
-`bug-narada@rt.cpan.org`, or through the web interface at
-[http://rt.cpan.org](http://rt.cpan.org).
+    git clone https://github.com/powerman/Narada.git
+
+## Resources
+
+- MetaCPAN Search
+
+    [https://metacpan.org/search?q=Narada](https://metacpan.org/search?q=Narada)
+
+- CPAN Ratings
+
+    [http://cpanratings.perl.org/dist/Narada](http://cpanratings.perl.org/dist/Narada)
+
+- AnnoCPAN: Annotated CPAN documentation
+
+    [http://annocpan.org/dist/Narada](http://annocpan.org/dist/Narada)
+
+- CPAN Testers Matrix
+
+    [http://matrix.cpantesters.org/?dist=Narada](http://matrix.cpantesters.org/?dist=Narada)
+
+- CPANTS: A CPAN Testing Service (Kwalitee)
+
+    [http://cpants.cpanauthors.org/dist/Narada](http://cpants.cpanauthors.org/dist/Narada)
 
 # AUTHOR
 
@@ -458,33 +482,10 @@ Alex Efros <powerman@cpan.org>
 
 Nick Levchenko <project129@yandex.ru>
 
-# LICENSE AND COPYRIGHT
+# COPYRIGHT AND LICENSE
 
 This software is Copyright (c) 2008-2015 by Alex Efros <powerman@cpan.org>.
 
 This is free software, licensed under:
 
     The MIT (X11) License
-
-# DISCLAIMER OF WARRANTY
-
-BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
-OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
-ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
-YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
-NECESSARY SERVICING, REPAIR, OR CORRECTION.
-
-IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
-LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
-OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
-THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
-RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
-FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
-SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGES.

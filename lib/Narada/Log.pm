@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = 'v1.4.4';
+our $VERSION = 'v1.4.5';
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Narada::Config qw( get_config_line );
@@ -66,7 +66,7 @@ Narada::Log - setup project log
 
 =head1 VERSION
 
-This document describes Narada::Log version v1.4.4
+This document describes Narada::Log version v1.4.5
 
 
 =head1 SYNOPSIS

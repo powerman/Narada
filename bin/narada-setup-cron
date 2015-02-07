@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-our $VERSION = 'v1.4.4';
+our $VERSION = 'v1.4.5';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -125,7 +125,7 @@ narada-setup-cron - synchronize project crontab with user crontab
 
 =head1 VERSION
 
-This document describes narada-setup-cron version v1.4.4
+This document describes narada-setup-cron version v1.4.5
 
 
 =head1 USAGE

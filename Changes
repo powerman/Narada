@@ -1,7 +1,12 @@
 Revision history for Narada
 
 {{$NEXT}}
+
+v1.4.5  2015-02-07 07:44:20 EET
+	fix mysql detection for tests
+	cleanup POD
 	remove occasionally bundled Devel::CheckOS
+	add coveralls badge
 
 v1.4.4  2015-02-06 04:11:49 EET
 	fix travis setup and mysql-related tests

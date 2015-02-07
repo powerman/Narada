@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v1.4.4';
+our $VERSION = 'v1.4.5';
 
 use File::Temp qw( tempdir );
 use Getopt::Long qw(:config bundling);
