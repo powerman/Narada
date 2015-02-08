@@ -3,11 +3,12 @@ use warnings;
 use strict;
 use Test::More tests => 8;
 use Test::Exception;
+use Cwd qw( cwd );
 
 use Narada::Config qw( get_config_line );
 
 use File::Temp qw( tempdir );
-chomp(my $cwd=`pwd`); $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
+$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
 chdir tempdir( CLEANUP => 1 )
     and system('narada-new-1') == 0
     or die "Unable to create project: $!";

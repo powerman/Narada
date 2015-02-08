@@ -18,6 +18,8 @@ main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 sub err { die "narada-release: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
 
 sub main {
+    system('narada-detect narada-1 >/dev/null') == 0 or exit 1;
+
     rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
 
     update_version();
@@ -142,6 +144,8 @@ This document describes narada-release version v1.4.5
 
 
 =head1 DESCRIPTION
+
+Should be executed in Narada 1.x project root directory.
 
 Generate project update in files C<var/patch/VERSION.$USER.*> where
 VERSION is contents of C<config/version>. This update should be then

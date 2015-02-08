@@ -8,6 +8,8 @@ use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada::Lock qw( exclusive_lock unlock_new );
 
+system('narada-detect narada-deploy narada-1 >/dev/null') == 0 or exit 1;
+
 local @ARGV = @ARGV ? @ARGV : ('env', 'PS1=[LOCKED] \u@\h \w \$ ', 'bash', '--norc');
 
 exclusive_lock();
@@ -39,6 +41,9 @@ This document describes narada-lock-exclusive version v1.4.5
 
 =head1 DESCRIPTION
 
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
+
 Wrapper for running other process under exclusive_lock().
 Will also set environment variable NARADA_SKIP_LOCK to "1", so all scripts
 executed under this wrapper will not try to set their own locks.
@@ -48,8 +53,6 @@ in $PS1.
 
 Exit status of narada-lock-exclusive will be same as exit status of executed
 command.
-
-Script must be executed only from "project root directory".
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

@@ -4,6 +4,8 @@ VERSION='v1.4.5'
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
+narada-detect narada-deploy narada-1 >/dev/null || exit 1
+
 [ $# -eq 0 ] || die "Usage: narada-mysql"
 
 if [ ! -s config/db/db ]; then
@@ -46,9 +48,10 @@ This document describes narada-mysql version v1.4.5
 
 =head1 DESCRIPTION
 
-Start mysql client using connection details from config/db/*.
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
 
-Script must be executed only from "project root directory".
+Start mysql client using connection details from config/db/*.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

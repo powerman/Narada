@@ -23,6 +23,7 @@ main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 sub err { die "narada-viewlog: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
 
 sub main {
+    system('narada-detect narada-deploy narada-1 >/dev/null') == 0 or exit 1;
     my ($opt, @files) = parse_opt(@_);
     if (@files) {
         for (@files) {
@@ -181,6 +182,9 @@ This document describes narada-viewlog version v1.4.5
 
 
 =head1 DESCRIPTION
+
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
 
 Output logs in ease to read format (control output fields and can filter
 log records).

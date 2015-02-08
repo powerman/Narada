@@ -4,6 +4,8 @@ VERSION='v1.4.5'
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
+narada-detect >/dev/null || exit 1
+
 while [ $# -gt 1 -o "${1:0:1}" == "-" ]; do
     opts=(${opts[@]} $1)
     shift
@@ -38,13 +40,13 @@ This document describes narada-emu version v1.4.5
 
 =head1 DESCRIPTION
 
-Start emu-g using project root directory as OS Inferno's user home directory.
+Should be executed in project directory.
+
+Start emu-g using current directory as OS Inferno's user home directory.
 
 With "command" parameter will initialize emu in usual way
 (/lib/sh/profile), run given "command", and after "command" exits will
 shutdown emu (even if there still some active background processes).
-
-Script must be executed only from "project root directory".
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

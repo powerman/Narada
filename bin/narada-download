@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
-VERSION="v1.4.5" # based on remote-2.0.2
+VERSION='v1.4.5' # based on remote-2.0.2
+
+warn()  { echo "$@" >&2;        }
+die()   { warn "$@"; exit 1;    }
+
+narada-detect narada-deploy narada-1 >/dev/null || exit 1
 
 if ! [ -f config/remote -a -s config/remote ]; then
-    echo "error: configure config/remote first"
-    exit 1;
+    die "error: configure config/remote first"
 fi
 host=$(sed 's,:.*,,'     < config/remote);
 path=$(sed 's,^[^:]*:,,' < config/remote);
 if [ "$host" == "" ]; then
-    echo "error: config/remote should contain: [user@]host:[path/to/dir/]"
-    exit 1
+    die "error: config/remote should contain: [user@]host:[path/to/dir/]"
 fi
 if [ $# -lt 1 ]; then
-    echo "Usage: $(basename $0) file_or_dir_for_upload_here ..."
-    exit 1
+    die "Usage: $(basename $0) file_or_dir_for_upload_here ..."
 fi
 for dst in "$@"; do
     src=$(dirname "$dst")"/"
@@ -45,7 +47,8 @@ This document describes narada-download version v1.4.5
 
 =head1 DESCRIPTION
 
-Script must be executed only from "project root directory".
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
 
 Before using set C<config/remote> to remote address in ssh format:
 

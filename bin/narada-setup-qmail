@@ -17,6 +17,8 @@ sub err {   ## no critic (ProhibitBuiltinHomonyms)
 }
 
 sub main {
+    system('narada-detect narada-deploy narada-1 >/dev/null') == 0 or exit 1;
+
     die "Usage: narada-setup-qmail [--clean]\n"
         if (@_ >  1)
         || (@_ == 1 && $_[0] ne '--clean');
@@ -122,9 +124,10 @@ This document describes narada-setup-qmail version v1.4.5
 
 =head1 DESCRIPTION
 
-Sync Narada project's qmail configuration with user's ~/.qmail-* files.
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
 
-Script must be executed in "project root directory".
+Sync Narada project's qmail configuration with user's ~/.qmail-* files.
 
 When executed with --clean option will remove all ~/.qmail-* files related to
 this project.

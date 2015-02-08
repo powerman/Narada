@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 VERSION="v1.4.5"
 
+narada-detect narada-deploy narada-1 >/dev/null || exit 1
+
 kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
 
 exit
@@ -25,7 +27,7 @@ This document describes narada-shutdown-services version v1.4.5
 
 =head1 DESCRIPTION
 
-Script must be executed only from "project root directory".
+Should be executed in Narada 1.x project root directory.
 
 Service supervisors usually started by cron, and may continue working
 even after project directory will be removed - with undefined result.

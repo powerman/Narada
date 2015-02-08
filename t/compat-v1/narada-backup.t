@@ -4,12 +4,12 @@ use strict;
 use Test::More tests => 13;
 use Test::Exception;
 use Test::Differences;
+use Cwd qw( cwd );
 
 use File::Temp qw( tempdir );
-chomp(my $cwd=`pwd`);
-$ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
+$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
 $ENV{PERL5LIB} ||= q{};
-$ENV{PERL5LIB} = "$cwd/blib:$ENV{PERL5LIB}";
+$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
 
 my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
 

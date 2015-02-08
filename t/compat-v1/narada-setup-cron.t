@@ -6,8 +6,9 @@ use Test::Exception;
 use Test::MockModule;
 use File::Temp qw{tempdir};
 use FindBin;
+use Cwd qw( cwd );
 
-$ENV{PATH}="$FindBin::Bin/../blib/script:$ENV{PATH}";
+$ENV{PATH}=cwd()."/blib/script:$ENV{PATH}";
 require 'blib/script/narada-setup-cron';
 
 sub Echo {

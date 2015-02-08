@@ -181,7 +181,11 @@ backup, but not in updates.
 
 =back
 
-=head2 Team development and versioning project
+=head2 Team development and versioning Narada 1.x project
+
+B<WARNING!>
+Everything in this section is related only to Narada 1.x projects.
+These files/directories doesn't exists in current Narada projects.
 
 =over
 
@@ -468,12 +472,7 @@ Read man pages of these tools for details.
     narada-backup
     narada-mysqldump
 
-    narada-diff
     narada-release
-    narada-patch-remote
-    narada-patch-send
-    narada-patch-pull
-    narada-patch
 
     narada-remote
     narada-upload
@@ -486,8 +485,20 @@ Read man pages of these tools for details.
     narada-lock
     narada-lock-exclusive
 
+These tools are exists only for compatibility with Narada 1.x:
+
+    narada-new-1
+    narada-diff
+    narada-release-1
+    narada-patch-remote
+    narada-patch-send
+    narada-patch-pull
+    narada-patch
+
 
 =head1 CONFIGURATION AND ENVIRONMENT
+
+=head2 Only in Narada 1.x
 
 $NARADA_USER optionally can be set to user's email. If set, it will be
 used by C<narada-new> to initialize C<config/patch/send/$USER>; by

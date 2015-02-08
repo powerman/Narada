@@ -1,66 +1,83 @@
 #!/usr/bin/env bash
-VERSION="v1.4.5" # based on remote-2.0.2
+VERSION='v1.4.5'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
-narada-detect narada-deploy narada-1 >/dev/null || exit 1
+main() {
+	local detect=
+	test -f VERSION         && test -f install.narada   && detect=narada-source
+	test -f VERSION         && test -d var/backup/      && detect=narada-deploy
+	test -f config/version  && test -d var/patch/       && detect=narada-1
+	local types=
+	while test $# != "0"; do
+		if test "$1" = "$detect"; then
+			echo "$detect"
+			exit
+		fi
+		types="$types or $1"
+		shift
+	done
+	die "current directory is not ${types:4} directory"
+}
 
-if ! [ -f config/remote -a -s config/remote ]; then
-    echo "error: configure config/remote first"
-    exit 1;
-fi
-host=$(sed 's,:.*,,'     < config/remote);
-path=$(sed 's,^[^:]*:,,' < config/remote);
-if [ "$host" == "" ]; then
-    echo "error: config/remote should contain: [user@]host:[path/to/dir/]"
-    exit 1
-fi
-if [ $# =  2 -a "$1" = '-t' ]; then
-    ssh_param='-t'
-    shift
-fi
-if [ $# != 1 ]; then
-    echo "Usage: $(basename $0) [-t] 'your command here'"
-    exit 1
-fi
-ssh $ssh_param "$host" bash -l -c \' 'cd "'"$path"'";'"$1" \'
+test "$#" != 0 && args=("$@") || args=(narada-source narada-deploy narada-1)
+main "${args[@]}"
 
-exit
+
 : <<'=cut'
 
 =encoding utf8
 
 =head1 NAME
 
-narada-remote - use ssh to execute command on remote host in project root
+narada-detect - check/detect type of current directory
 
 
 =head1 VERSION
 
-This document describes narada-remote version v1.4.5
+This document describes narada-detect version v1.4.5
 
 
 =head1 USAGE
 
-    narada-remote [-t] 'your command here'
+    narada-detect [type ...]
 
 
 =head1 DESCRIPTION
 
-Should be executed in project deploy directory (or Narada 1.x project root
-directory).
+When run without params works like all possible types was given in params.
 
-Before using set C<config/remote> to remote address in ssh format:
+Detect type of current directory and output it type to STDOUT if it match
+one of given params or error to STDERR otherwise.
 
-    [user@]host:[path/to/dir/]
+Parameter C<type> should have one of values listed in L</"DIRECTORY
+TYPES">.
 
-When executed with -t option will call ssh with -t parameter.
+If error was printed to STDERR will exit with error status.
+
+=head2 DIRECTORY TYPES
+
+=over
+
+=item narada-source
+
+Source directory of Narada project.
+
+=item narada-deploy
+
+Deploy directory of Narada project.
+
+=item narada-1
+
+Root directory of old (Narada 1.x) project.
+
+=back
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-config/remote
+None.
 
 
 =head1 SUPPORT

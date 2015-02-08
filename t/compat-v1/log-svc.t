@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use Test::More;
 use Test::Exception;
+use Cwd qw( cwd );
 
 
 plan skip_all => 'runit not installed'      if !grep {-x "$_/runsv"} split /:/, $ENV{PATH};
@@ -10,7 +11,7 @@ plan skip_all => 'socklog not installed'    if !grep {-x "$_/socklog"} split /:/
 plan tests => 5;
 
 use File::Temp qw( tempdir );
-chomp(my $cwd=`pwd`); $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
+$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
 chdir tempdir( CLEANUP => 1 )
     and system('narada-new-1') == 0
     or die "Unable to create project: $!";

@@ -5,6 +5,8 @@ use Test::More;
 use Test::Exception;
 use Test::MockModule;
 use DBI;
+use Cwd qw( cwd );
+
 use Narada::Config qw( set_config );
 
 require 'blib/script/narada-setup-mysql';
@@ -40,9 +42,8 @@ sub list_tables {
 
 
 use File::Temp qw( tempdir );
-chomp(my $cwd=`pwd`);
-$ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
-$ENV{PERL5LIB} = "$cwd/blib:$ENV{PERL5LIB}";
+$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
+$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
 chdir tempdir( CLEANUP => 1 )
     and system('narada-new-1') == 0
     or die "Unable to create project: $!";

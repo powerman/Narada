@@ -35,6 +35,8 @@ sub err {   ## no critic (ProhibitBuiltinHomonyms)
 }
 
 sub main {
+    system('narada-detect narada-deploy narada-1 >/dev/null') == 0 or exit 1;
+
     die "Usage: narada-mysqldump\n" if @_;
 
     init_globals() or return;
@@ -261,6 +263,9 @@ This document describes narada-mysqldump version v1.4.5
 
 =head1 DESCRIPTION
 
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
+
 Backup your Narada project's MySQL database.
 
 If "config/db/db" absent or empty do nothing.
@@ -332,8 +337,6 @@ incremental dumps will be automatically removed and replaced by new ones.
 
 Tables listed in "config/db/dump/empty" and "config/db/dump/incremental"
 must exists; listed in "config/db/dump/ignore" may not exists.
-
-Script must be executed only from "project root directory".
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

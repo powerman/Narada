@@ -1,6 +1,3 @@
-narada-setup-cron (any may be others too) doesn't complain when run
-not in project root dir.
-
 Replace dependency on mutt in `narada-patch-send` with Email::Sender and
 POWER::GPG (release it to CPAN first).
 

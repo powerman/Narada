@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
+narada-detect narada-1 >/dev/null || exit 1
+
 # compatibility with Narada <1.2.0
 [ -d ./var/patch/prev ] && mv ./var/patch/prev ./var/patch/.prev
 
@@ -44,7 +46,7 @@ This document describes narada-diff version v1.4.5
 
 =head1 DESCRIPTION
 
-Script must be executed only from "project root directory".
+Should be executed in Narada 1.x project root directory.
 
 When executed, script will delete C<var/patch/CURRENT.*> files, then
 detect all changes between previous and current project versions and

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
+narada-detect narada-1 >/dev/null || exit 1
+
 { ls -d var/patch/*; ls -d var/patch/*; narada-remote "ls -d var/patch/*"; } |
 	sort | uniq -u | xargs -r narada-download
 
@@ -26,7 +28,8 @@ This document describes narada-patch-pull version v1.4.5
 
 =head1 DESCRIPTION
 
-Script must be executed only from "project root directory".
+Should be executed in Narada 1.x project root directory.
+
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

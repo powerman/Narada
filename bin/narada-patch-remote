@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
+narada-detect narada-1 >/dev/null || exit 1
+
 narada-remote "rm var/patch/$(cat config/version).$USER.* 2>/dev/null"
 narada-upload var/patch/$(cat config/version).$USER.*        &&
 narada-remote -t "narada-lock-exclusive narada-patch --no-prev" # --no-prev for compatibility with <0.9.3
@@ -27,7 +29,7 @@ This document describes narada-patch-remote version v1.4.5
 
 =head1 DESCRIPTION
 
-Script must be executed only from "project root directory".
+Should be executed in Narada 1.x project root directory.
 
 Narada must be installed on remote side too.
 

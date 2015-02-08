@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 VERSION="v1.4.5" # based on remote-2.0.2
 
+warn()  { echo "$@" >&2;        }
+die()   { warn "$@"; exit 1;    }
+
+narada-detect narada-deploy narada-1 >/dev/null || exit 1
+
 if ! [ -f config/remote -a -s config/remote ]; then
     echo "error: configure config/remote first"
     exit 1;
@@ -45,7 +50,8 @@ This document describes narada-upload version v1.4.5
 
 =head1 DESCRIPTION
 
-Script must be executed only from "project root directory".
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
 
 Before using set C<config/remote> to remote address in ssh format:
 

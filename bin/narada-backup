@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
+DETECT=$(narada-detect narada-deploy narada-1) || exit 1
+
 [ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
 
 
-# compatibility with Narada before 0.9
-[ -d config/backup ] || mkdir config/backup || exit 1
-[ -f config/backup/exclude ] || cat >config/backup/exclude <<'EOF' || exit 1
+if test "$DETECT" = "narada-1"; then
+	# compatibility with Narada before 0.9
+	[ -d config/backup ] || mkdir config/backup || exit 1
+	[ -f config/backup/exclude ] || cat >config/backup/exclude <<'EOF' || exit 1
 ./var/.lock.new
 ./tmp/*
 ./var/backup/*
 ./var/patch/.prev/*
 EOF
-# compatibility with Narada before 1.2.0
-perl -i -pe 's{var/patch/prev/}{var/patch/.prev/}' config/backup/exclude
+	# compatibility with Narada before 1.2.0
+	perl -i -pe 's{var/patch/prev/}{var/patch/.prev/}' config/backup/exclude
+fi
 
 
 snap='var/backup/snap'
@@ -67,6 +71,9 @@ This document describes narada-backup version v1.4.5
 
 =head1 DESCRIPTION
 
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
+
 At first run prepare full project backup in 'var/backup/full.tar'.
 On next runs prepare incremental backup in 'var/backup/incr.tar' plus
 append it to full backup in 'var/backup/full.tar' (using tar -A).
@@ -87,8 +94,6 @@ Files and directories listed in config/backup/exclude (use syntax suitable
 for tar's --exclude option) will not be included in backup.
 
 Will exit with non-zero exit status if backup process failed.
-
-Script must be executed only from "project root directory".
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

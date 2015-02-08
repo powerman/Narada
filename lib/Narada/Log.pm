@@ -11,7 +11,7 @@ use Narada::Config qw( get_config_line );
 use Log::Fast;
 
 
-if (-f 'config/version') {
+if (-f 'config/log/output') {
     _init_log();
 }
 
