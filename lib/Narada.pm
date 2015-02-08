@@ -195,7 +195,7 @@ Project name and version in flexible format: one string, which must
 contain at least one digit, and doesn't contain whitespace or C</>).
 Example: "App-0.1.000" (without quotes).
 
-C<narada-new> will create this file with content "PROJECTNAME-0.0.000"
+C<narada-new-1> will create this file with content "PROJECTNAME-0.0.000"
 where PROJECTNAME is name of project root directory.
 
 Last number in this string will be automatically incremented by
@@ -212,7 +212,7 @@ Each file contain one line with email of team member, who wanna receive
 emails with project updates. Used by C<narada-patch-send>. File names are
 not important, but usually they match team member's $USER.
 
-If $NARADA_USER is set, then C<narada-new> will put it value into
+If $NARADA_USER is set, then C<narada-new-1> will put it value into
 C<config/patch/send/$USER>.
 
 =item C<config/patch/exclude>
@@ -501,7 +501,7 @@ These tools are exists only for compatibility with Narada 1.x:
 =head2 Only in Narada 1.x
 
 $NARADA_USER optionally can be set to user's email. If set, it will be
-used by C<narada-new> to initialize C<config/patch/send/$USER>; by
+used by C<narada-new-1> to initialize C<config/patch/send/$USER>; by
 C<narada-patch-send> to avoid sending email to yourself; by
 C<narada-release-1> when adding header lines into C<doc/ChangeLog>.
 
