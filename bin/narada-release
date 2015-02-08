@@ -28,7 +28,7 @@ else
 fi
 
 git update-index -q --refresh --unmerged >/dev/null
-git diff-index -q HEAD || die "work directory isn't 'clean', commit all changes first"
+git diff-index --quiet HEAD || die "work directory isn't 'clean', commit all changes first"
 
 git tags | grep -q -x -F "$new" && die "version already exists"
 
