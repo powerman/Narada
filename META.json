@@ -77,19 +77,19 @@
    "provides" : {
       "Narada" : {
          "file" : "lib/Narada.pm",
-         "version" : "v1.4.5"
+         "version" : "v1.4.6"
       },
       "Narada::Config" : {
          "file" : "lib/Narada/Config.pm",
-         "version" : "v1.4.5"
+         "version" : "v1.4.6"
       },
       "Narada::Lock" : {
          "file" : "lib/Narada/Lock.pm",
-         "version" : "v1.4.5"
+         "version" : "v1.4.6"
       },
       "Narada::Log" : {
          "file" : "lib/Narada/Log.pm",
-         "version" : "v1.4.5"
+         "version" : "v1.4.6"
       }
    },
    "release_status" : "stable",
@@ -104,6 +104,6 @@
          "web" : "https://github.com/powerman/Narada"
       }
    },
-   "version" : "v1.4.5"
+   "version" : "v1.4.6"
 }
 

@@ -7,7 +7,7 @@ Narada - framework for ease development/deploy/support for medium/big projects
 
 # VERSION
 
-This document describes Narada version v1.4.5
+This document describes Narada version v1.4.6
 
 # SYNOPSIS
 
