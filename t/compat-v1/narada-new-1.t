@@ -8,7 +8,7 @@ use FindBin;
 
 umask 0022;
 $ENV{PATH}="$FindBin::Bin/../blib/script:$ENV{PATH}";
-require 'blib/script/narada-new';
+require 'blib/script/narada-new-1';
 
 my $data_pos = tell DATA;
 sub _main {

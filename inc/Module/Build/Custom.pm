@@ -13,7 +13,7 @@ die "GNU tar required\n" if `$TAR --version` !~ /GNU/ms;
 
 # WARNING:  Empty directories in skel/ MUST contain .keep file to force
 #           inclusion of these directories in MANIFEST and module distribution.
-#           These files will not be installed by `narada-new`.
+#           These files will not be installed by `narada-new-1`.
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -27,7 +27,7 @@ sub ACTION_build {
     print "Forcing skel/var/patch/ChangeLog to be symlink ...\n";
     unlink 'skel/var/patch/ChangeLog';
     symlink '../../doc/ChangeLog', 'skel/var/patch/ChangeLog' or die "symlink: $!";
-    $self->_inject_skel('blib/script/narada-new');
+    $self->_inject_skel('blib/script/narada-new-1');
 }
 
 sub _inject_skel {

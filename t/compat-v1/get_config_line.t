@@ -9,7 +9,7 @@ use Narada::Config qw( get_config_line );
 use File::Temp qw( tempdir );
 chomp(my $cwd=`pwd`); $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 chdir tempdir( CLEANUP => 1 )
-    and system('narada-new') == 0
+    and system('narada-new-1') == 0
     or die "Unable to create project: $!";
 
 

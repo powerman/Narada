@@ -51,7 +51,7 @@ my %module_build_args = (
     "bin/narada-lock-exclusive",
     "bin/narada-mysql",
     "bin/narada-mysqldump",
-    "bin/narada-new",
+    "bin/narada-new-1",
     "bin/narada-patch",
     "bin/narada-patch-pull",
     "bin/narada-patch-remote",

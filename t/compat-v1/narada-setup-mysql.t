@@ -44,7 +44,7 @@ chomp(my $cwd=`pwd`);
 $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 $ENV{PERL5LIB} = "$cwd/blib:$ENV{PERL5LIB}";
 chdir tempdir( CLEANUP => 1 )
-    and system('narada-new') == 0
+    and system('narada-new-1') == 0
     or die "Unable to create project: $!";
 
 $::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});

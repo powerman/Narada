@@ -10,7 +10,7 @@ $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 $ENV{PERL5LIB} ||= q{};
 $ENV{PERL5LIB} = "$cwd/blib:$ENV{PERL5LIB}";
 chdir tempdir( CLEANUP => 1 )
-    and system('narada-new') == 0
+    and system('narada-new-1') == 0
     or die "Unable to create project: $!";
 
 system('narada-lock bash -c "exit 2"');

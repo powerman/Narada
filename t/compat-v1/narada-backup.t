@@ -20,7 +20,7 @@ my $dir2 = narada_new();
 sub narada_new {
     my $dir = tempdir( CLEANUP => 1 );
     chdir $dir
-        and system('narada-new') == 0
+        and system('narada-new-1') == 0
         or die "Unable to create project: $!";
     $dir =~ m{([^/]+)\z};
     unlink "var/patch/$1-0.0.000.tar", 'var/backup/snap'

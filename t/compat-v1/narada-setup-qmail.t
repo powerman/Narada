@@ -18,7 +18,7 @@ $ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
 sub sandbox {
     $ENV{HOME} = tempdir(CLEANUP => 1);
     chdir tempdir(CLEANUP => 1)                 or die "chdir(tempdir()): $!";
-    system('narada-new') == 0                   or die "system(narada-new): $!";
+    system('narada-new-1') == 0                 or die "system(narada-new-1): $!";
     return;
 }
 
@@ -39,7 +39,7 @@ sub qmail_flood {   # WARNING call ONLY after sandbox()
     symlink cwd().'/var/qmail/2', "$ENV{HOME}/.qmail-2" or die "symlink: $!";
     touch("$ENV{HOME}/.qmail-file");
     my $other = tempdir(CLEANUP => 1);
-    system('narada-new', $other) == 0           or die "system(narada-new): $!";
+    system('narada-new-1', $other) == 0         or die "system(narada-new-1): $!";
     touch("$other/var/qmail/3");
     symlink $other.'/var/qmail/3', "$ENV{HOME}/.qmail-3" or die "symlink: $!";
     symlink $other.'/var/qmail/4', "$ENV{HOME}/.qmail-4" or die "symlink: $!";

@@ -12,7 +12,7 @@ plan tests => 5;
 use File::Temp qw( tempdir );
 chomp(my $cwd=`pwd`); $ENV{PATH} = "$cwd/blib/script:$ENV{PATH}";
 chdir tempdir( CLEANUP => 1 )
-    and system('narada-new') == 0
+    and system('narada-new-1') == 0
     or die "Unable to create project: $!";
 
 ok !-e 'var/log/current', 'log file not exists';
