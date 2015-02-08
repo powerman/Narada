@@ -60,7 +60,7 @@ sub setup_qmail {
     for my $file (grep {! -f "config/qmail/$_"} ls('var/qmail')) {
         unlink "var/qmail/$file"                or err "unlink(var/qmail/$file): $!";
     }
-    for my $file (grep {! -f $_} ls_qmail()) {
+    for my $file (grep {! -f} ls_qmail()) {
         unlink $file                            or err "unlink($file): $!";
     }
 
@@ -70,7 +70,7 @@ sub setup_qmail {
 sub ls_qmail {
     my $cwd = cwd();
     my @files =
-        grep {-l $_ && _readlink($_) =~ m{\A\Q$cwd\E/}xms}
+        grep {-l && _readlink($_) =~ m{\A\Q$cwd\E/}xms}
         map {"$ENV{HOME}/$_"}
         grep { m/\A[.]qmail-/xms }
         ls($ENV{HOME});

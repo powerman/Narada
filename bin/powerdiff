@@ -58,7 +58,7 @@ sub main { ## no critic (ProhibitExcessComplexity)
         'version'           => sub { warn "powerdiff $VERSION\n"; exit 1 },
     ) and @ARGV == 2 or die USAGE;
     my ($dir1, $dir2) = @ARGV;
-    die "not a directory: $_\n" for grep {!-d $_} $dir1, $dir2; ## no critic (ProhibitPostfixControls)
+    die "not a directory: $_\n" for grep {!-d} $dir1, $dir2;    ## no critic (ProhibitPostfixControls)
     chomp(my $cwd = `pwd`);
     $dir1 = "$cwd/$dir1" if $dir1 !~ m{\A/}xms;                 ## no critic (ProhibitPostfixControls)
     $dir2 = "$cwd/$dir2" if $dir2 !~ m{\A/}xms;                 ## no critic (ProhibitPostfixControls)

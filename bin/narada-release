@@ -37,7 +37,7 @@ sub main {
     symlink "$pwd/doc/ChangeLog",                 "$dir4diff/new/doc/ChangeLog"  or err "symlink: $!";
     symlink "$pwd/var/patch/.prev/config/version","$dir4diff/old/config/version" or err "symlink: $!";
     symlink "$pwd/var/patch/.prev/doc/ChangeLog", "$dir4diff/old/doc/ChangeLog"  or err "symlink: $!";
-    for my $pluginver (grep {-f $_ && -f "var/patch/.prev/$_"} glob 'config/version.*') {
+    for my $pluginver (grep {-f && -f "var/patch/.prev/$_"} glob 'config/version.*') {
         symlink "$pwd/$pluginver",                "$dir4diff/new/$pluginver" or err "symlink: $!";
         symlink "$pwd/var/patch/.prev/$pluginver","$dir4diff/old/$pluginver" or err "symlink: $!";
     }

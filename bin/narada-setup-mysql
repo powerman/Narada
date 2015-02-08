@@ -39,7 +39,7 @@ sub main {
         }
         if (-f SCHEME) {
             import_sql(SCHEME);
-            for (grep {-f $_ && $_ ne SCHEME} glob 'var/sql/*.sql') {
+            for (grep {-f && $_ ne SCHEME} glob 'var/sql/*.sql') {
                 import_sql($_);
             }
         }
