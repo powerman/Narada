@@ -199,8 +199,8 @@ C<narada-new> will create this file with content "PROJECTNAME-0.0.000"
 where PROJECTNAME is name of project root directory.
 
 Last number in this string will be automatically incremented by
-C<narada-release> unless this file was manually modified since previous
-C<narada-release> run.
+C<narada-release-1> unless this file was manually modified since previous
+C<narada-release-1> run.
 
 =item C<config/version.*>
 
@@ -223,7 +223,7 @@ be listed in this file.
 
 =item C<doc/ChangeLog>
 
-Project's change log, in standard format. C<narada-release> will ask you
+Project's change log, in standard format. C<narada-release-1> will ask you
 to enter changes using $EDITOR and then automatically insert/update line
 with date/version.
 
@@ -234,7 +234,7 @@ Change logs of installed addons.
 =item C<var/patch/>
 
 Contains all project updates (patches). C<narada-diff> will create new
-update candidate in this directory for manual review; C<narada-release>
+update candidate in this directory for manual review; C<narada-release-1>
 will turn candidate into released update; C<narada-patch> will apply
 updates found this this directory to project; etc.
 
@@ -503,7 +503,7 @@ These tools are exists only for compatibility with Narada 1.x:
 $NARADA_USER optionally can be set to user's email. If set, it will be
 used by C<narada-new> to initialize C<config/patch/send/$USER>; by
 C<narada-patch-send> to avoid sending email to yourself; by
-C<narada-release> when adding header lines into C<doc/ChangeLog>.
+C<narada-release-1> when adding header lines into C<doc/ChangeLog>.
 
 
 =head1 SUPPORT

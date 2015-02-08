@@ -1,136 +1,54 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
+#!/usr/bin/env bash
+VERSION='v1.4.5'
 
-our $VERSION = 'v1.4.5';
+warn()  { echo "$@" >&2;        }
+die()   { warn "$@"; exit 1;    }
 
-use FindBin;
-use lib "$FindBin::Bin/../lib/perl5";
-use Narada::Config qw(get_config_line set_config);
-use File::Temp qw( tempdir );
-
-use constant WAIT2EXIT => 8;
+DETECT=$(narada-detect narada-source narada-1) || exit 1
+test "$DETECT" = "narada-1" && exec narada-release-1 "$@"
 
 
-main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+test $# == "1" || die "Usage: narada-release --major|--minor|--patch|<version>"
+
+if test "$1" = "--major" -o "$1" = "--minor" -o "$1" = "--patch"; then
+        cur=$(perl -0777 -nE 'say $1 while /^VERSION\s+(\S+)\s*\n/msg' install.narada | tail -n 1)
+        re='/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/'
+        if test "$1" = "--major"; then
+                new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",1+$1,0,0   if '$re)
+        elif test "$1" = "--minor"; then
+                new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",$1,1+$2,0  if '$re)
+        else
+                new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",$1,$2,1+$3 if '$re)
+        fi
+        test -n "$new" || die "can't increment current version '$cur'"
+else
+        new="$1"
+        echo "$new" | grep -q -P '[\x00-\x1F\x7F /?*`"'"'"'\\]' && die "version contain bad symbols"
+        git check-ref-format --allow-onelevel "$new" || die "version contain bad symbols"
+fi
+
+git update-index -q --refresh --unmerged >/dev/null
+git diff-index -q HEAD || die "work directory isn't 'clean', commit all changes first"
+
+git tags | grep -q -x -F "$new" && die "version already exists"
 
 
-sub err { die "narada-release: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
-
-sub main {
-    system('narada-detect narada-1 >/dev/null') == 0 or exit 1;
-
-    rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
-
-    update_version();
-    system($ENV{EDITOR}, 'doc/ChangeLog') == 0  or err "system(EDITOR): $!";
-    update_changelog();
-
-    my ($v_old, $v_new) = get_versions();
-
-    my $dir4diff = tempdir( CLEANUP => 1 );
-    for my $subdir (qw(old old/doc old/config new new/doc new/config)) {
-        mkdir "$dir4diff/$subdir" or err "mkdir($subdir): $!";
-    }
-    chomp(my $pwd = `pwd`);
-    symlink "$pwd/config/version",                "$dir4diff/new/config/version" or err "symlink: $!";
-    symlink "$pwd/doc/ChangeLog",                 "$dir4diff/new/doc/ChangeLog"  or err "symlink: $!";
-    symlink "$pwd/var/patch/.prev/config/version","$dir4diff/old/config/version" or err "symlink: $!";
-    symlink "$pwd/var/patch/.prev/doc/ChangeLog", "$dir4diff/old/doc/ChangeLog"  or err "symlink: $!";
-    for my $pluginver (grep {-f && -f "var/patch/.prev/$_"} glob 'config/version.*') {
-        symlink "$pwd/$pluginver",                "$dir4diff/new/$pluginver" or err "symlink: $!";
-        symlink "$pwd/var/patch/.prev/$pluginver","$dir4diff/old/$pluginver" or err "symlink: $!";
-    }
-    my $patch = "$pwd/var/patch/\Q$v_new\E.\Q$ENV{USER}\E.99.patch";
-    system("cd \Q$dir4diff\E; LANG= diff -uNr old new > $patch") >> WAIT2EXIT!=2 or err "system(diff): $!";
-
-    for my $diff (grep {-f} glob 'var/patch/CURRENT.*') {
-        (my $ext = $diff) =~ s{\Avar/patch/CURRENT[.]}{}xms;
-        rename $diff, "var/patch/$v_new.$ENV{USER}.$ext" or err "rename($diff): $!";
-    }
-    for my $pending (grep {-f && -s} glob 'var/patch/PENDING.*') {
-        (my $ext = $pending) =~ s{\Avar/patch/PENDING[.]}{}xms;
-        if ($ext =~ /\A(?:10[.]sh|20[.]patch|30[.]tgz|40[.]sh|99[.]patch)\z/xms) {
-            warn "WARNING! PENDING file $pending may overwrite another file!\n";
-        }
-        rename $pending, "var/patch/$v_new.$ENV{USER}.$ext" or err "rename($pending): $!";
-        touch($pending);
-    }
-
-    return;
-}
-
-sub get_versions {
-    chdir 'var/patch/.prev'                 or err "chdir(var/patch/.prev): $!";
-    my $v_old = get_config_line('version');
-    chdir '../../..'                        or err "chdir(../../..): $!";
-    my $v_new = get_config_line('version');
-    $v_new =~ /\S/xms           or err 'UNABLE TO DETECT VERSION';
-    $v_new !~ m{/}xms           or err 'VERSION MUST NOT CONTAIN /';
-    $v_new !~ m{\s}xms          or err 'VERSION MUST NOT CONTAIN WHITESPACES';
-    return ($v_old, $v_new);
-}
-
-sub touch {
-    my ($f) = @_;
-    open my $fd, '>', $f or err "touch($f): $!"; ## no critic (RequireBriefOpen)
-    return;
-}
-
-sub read_file {
-    my ($file) = @_;
-    open my $f, '<', $file              or err "open($file): $!";
-    local $/ = undef;
-    my $val = <$f>;
-    close $f                            or err "close: $!";
-    return $val;
-}
-
-# Read (in update if needed) version.
-sub update_version {
-    my ($v_old, $v_new) = get_versions();
-    if ($v_old eq $v_new) {
-        $v_new =~ s/^(.*\D)?(\d+)/(my $v=$2)++; ($1||q{}) . $v/xmse
-            or err 'VERSION MUST CONTAIN NUMBER';
-        set_config('version', $v_new."\n");
-    }
-    return;
-}
-
-# Ensure ChangeLog has record for this version (if not - create empty) and
-# correct it header.
-sub update_changelog {
-    -f 'doc/ChangeLog'                          or err 'CHANGELOG NOT FOUND';
-    my $changelog_old   = read_file('var/patch/.prev/doc/ChangeLog');
-    my $changelog       = read_file('doc/ChangeLog');
-    my $modified        = $changelog_old ne $changelog;
-    if ($modified) {
-        $changelog =~ s/\A (?: \s* \n )* (?: \S[^\n]*\n (?: \s* \n )* )?//xms;
-    }
-    else {
-        warn "... you forget to update ChangeLog, adding fake record. :-(\n";
-    }
-    chomp(my $date = `LANG= date`);
-    open my $f, '>', "tmp/ChangeLog.$$"         or err "open(tmp/ChangeLog): $!";
-    printf {$f} "\t\n\n%-30s %-14s %s\n%s\n%s",
-        $date, $ENV{NARADA_USER} // $ENV{USER}, get_config_line('version'),
-        ($modified ? q{} : "\n\t???"),
-        $changelog;
-    close $f                                    or err "close: $!";
-    rename "tmp/ChangeLog.$$", 'doc/ChangeLog'  or err "rename(doc/ChangeLog): $!";
-    return;
-}
+set -x
+./build --test &&
+echo -ne "\\nVERSION $new\\n\\n" >> install.narada &&
+git add install.narada &&
+git commit -m "narada-release $new" &&
+git tag ${NARADA_GIT_TAG:--a} "$new" &&
+./release
 
 
-1; # Magic true value required at end of module
-
-## no critic (RequirePodAtEnd)
+: <<'=cut'
 
 =encoding utf8
 
 =head1 NAME
 
-narada-release - release current changes in Narada project
+narada-release - release new version
 
 
 =head1 VERSION
@@ -140,42 +58,27 @@ This document describes narada-release version v1.4.5
 
 =head1 USAGE
 
-    narada-release
+    narada-release --major|--minor|--patch|<version>
 
 
 =head1 DESCRIPTION
 
-Should be executed in Narada 1.x project root directory.
+Should be executed in source directory of Narada project.
 
-Generate project update in files C<var/patch/VERSION.$USER.*> where
-VERSION is contents of C<config/version>. This update should be then
-applied locally on C<var/patch/.prev/> (just run C<narada-patch>) and
-can be applied on another installation of this project by uploading
-these files into C<var/patch/> of that installation and executing
-C<narada-patch>.
+Release new tagged version for current commit (HEAD).
 
-=head2 Process of generating update files
+There are some requirements: work directory must be "clean", build and
+build-time tests must run without errors (they'll be executed automatically by
+narada-release), tag equal to given version shouldn't exists.
 
-Increment version number in C<config/version> if this file wasn't modified
-manually since last update.
-
-Run C<$EDITOR doc/ChangeLog> to let you enter changes for this update.
-After you exit from editor will add/update header line in C<doc/ChangeLog>.
-
-Create C<var/patch/VERSION.$USER.99.patch> with changes for files
-C<config/version> and C<doc/ChangeLog>.
-
-Rename C<var/patch/CURRENT.*> to C<var/patch/VERSION.$USER.*>.
-
-Rename C<var/patch/PENDING.*> to C<var/patch/VERSION.$USER.*>.
-
-Create empty C<var/patch/PENDING.*> (just for convenience).
+Use options C<--major>, C<--minor> or C<--patch> to automatically choose new
+version, but they works only if format of last version in C<install.narada>
+conform to L<Semantic Versioning|http://semver.org/> specification.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-    $EDITOR
-    $USER
+None.
 
 
 =head1 SUPPORT
@@ -225,7 +128,7 @@ L<http://cpants.cpanauthors.org/dist/Narada>
 
 =head1 AUTHOR
 
-Alex Efros  E<lt>powerman@cpan.orgE<gt>
+Alex Efros E<lt>powerman@cpan.orgE<gt>
 
 
 =head1 COPYRIGHT AND LICENSE
