@@ -6,9 +6,9 @@ die()   { warn "$@"; exit 1;    }
 
 main() {
 	local detect=
-	test -f VERSION         && test -f install.narada   && detect=narada-source
-	test -f VERSION         && test -d var/backup/      && detect=narada-deploy
-	test -f config/version  && test -d var/patch/       && detect=narada-1
+	test -f VERSION         && test -f migrate      && detect=narada-source
+	test -f VERSION         && test -d var/backup/  && detect=narada-deploy
+	test -f config/version  && test -d var/patch/   && detect=narada-1
 	local types=
 	while test $# != "0"; do
 		if test "$1" = "$detect"; then

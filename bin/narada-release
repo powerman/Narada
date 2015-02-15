@@ -11,7 +11,7 @@ test "$DETECT" = "narada-1" && exec narada-release-1 "$@"
 test $# == "1" || die "Usage: narada-release --major|--minor|--patch|<version>"
 
 if test "$1" = "--major" -o "$1" = "--minor" -o "$1" = "--patch"; then
-        cur=$(perl -0777 -nE 'say $1 while /^VERSION\s+(\S+)\s*\n/msg' install.narada | tail -n 1)
+        cur=$(grep '^VERSION' migrate | sed 's/^VERSION\s\+\(\S\+\)\s*$/\1/' | tail -n 1)
         re='/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/'
         if test "$1" = "--major"; then
                 new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",1+$1,0,0   if '$re)
@@ -35,8 +35,8 @@ git tags | grep -q -x -F "$new" && die "version already exists"
 
 set -x
 ./build --test &&
-echo -ne "\\nVERSION $new\\n\\n" >> install.narada &&
-git add install.narada &&
+echo -ne "\\nINSTALL $new\\nVERSION $new\\n\\n" >> migrate &&
+git add migrate &&
 git commit -m "narada-release $new" &&
 git tag ${NARADA_GIT_TAG:--a} "$new" &&
 ./release
@@ -72,7 +72,7 @@ build-time tests must run without errors (they'll be executed automatically by
 narada-release), tag equal to given version shouldn't exists.
 
 Use options C<--major>, C<--minor> or C<--patch> to automatically choose new
-version, but they works only if format of last version in C<install.narada>
+version, but they works only if format of last version in C<migrate>
 conform to L<Semantic Versioning|http://semver.org/> specification.
 
 

@@ -5,6 +5,7 @@ warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
 
+INITIAL_VERSION="0.0.0"
 dir="."
 repo="https://github.com/powerman/narada-base.git"
 branch="socklog"
@@ -37,7 +38,7 @@ set -x
 cd "$dir" &&
 git init &&
 git commit --allow-empty -m 'empty' &&
-git tag -a -m empty 0.0.0 &&
+git tag -a -m empty "$INITIAL_VERSION" &&
 git remote add narada-base -t "$branch" -m "$branch" -f "$repo" &&
 git merge narada-base -m 'narada-new: merge narada-base' &&
 touch VERSION &&
