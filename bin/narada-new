@@ -8,21 +8,20 @@ die()   { warn "$@"; exit 1;    }
 INITIAL_VERSION="0.0.0"
 dir="."
 repo="https://github.com/powerman/narada-base.git"
-branch="socklog"
+branch="master"
 
 while test "$#" != "0"; do
-        if test "$1" = "-b" -a test "$#" -ge 2; then
+        if test "$1" = "-r" -a test "$#" -ge 2; then
                 repo="${2:-$repo}"
-                branch="master"
                 shift 2
-        elif test "$1" = "-t" -a test "$#" -ge 2; then
+        elif test "$1" = "-b" -a test "$#" -ge 2; then
                 branch="${2:-master}"
                 shift 2
         elif test "$#" = "1"; then
                 dir="${1:-.}"
                 shift
         else
-                die "Usage: narada-new [-b base_repository] [-t branch] [directory]"
+                die "Usage: narada-new [-r base_repository] [-b branch] [directory]"
         fi
 done
 
@@ -34,15 +33,15 @@ else
         mkdir "$dir" || exit 1
 fi
 
-set -x
-cd "$dir" &&
-git init &&
-git commit --allow-empty -m 'empty' &&
-git tag -a -m empty "$INITIAL_VERSION" &&
-git remote add narada-base -t "$branch" -m "$branch" -f "$repo" &&
-git merge narada-base -m 'narada-new: merge narada-base' &&
-touch VERSION &&
-NARADA_GIT_TAG="-a -m narada-new" narada-release 0.1.0 &&
+set -ex
+cd "$dir"
+git init
+git commit --allow-empty -m 'empty'
+git tag -a -m empty "$INITIAL_VERSION"
+git remote add narada-base -t "$branch" -m "$branch" -f "$repo"
+git merge narada-base -m 'narada-new: merge narada-base'
+touch VERSION
+NARADA_GIT_TAG="-a -m narada-new" narada-release 0.1.0
 ./deploy
 
 
@@ -62,7 +61,7 @@ This document describes narada-new version v1.4.5
 
 =head1 USAGE
 
-    narada-new [-b base_repository] [-t branch] [directory]
+    narada-new [-r base_repository] [-b branch] [directory]
 
 
 =head1 DESCRIPTION
@@ -84,8 +83,7 @@ commands should be executed in (one of) these directories.
 
 It will merge C<base_repository>'s C<branch>, release version 0.1.0 and deploy
 it to C<_live/>. Default base repository is
-https://github.com/powerman/narada-base.git; default branch for this repository
-is "socklog", for other repositories is "master".
+L<https://github.com/powerman/narada-base.git>; default branch is "master".
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
