@@ -21,8 +21,9 @@ sub import {
     my $pkg = caller 0;
     no strict 'refs';
     for (@args) {
-        next if !m/\A\$(.*)/xms;
-        *{$pkg.q{::}.$1} = \Log::Fast->global();
+        if (m/\A\$(.*)/xms) {
+                *{$pkg.q{::}.$1} = \Log::Fast->global();
+        }
     }
     return;
 }

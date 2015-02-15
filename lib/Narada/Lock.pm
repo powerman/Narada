@@ -199,7 +199,7 @@ This is acceptable only if we don't run child in background or if
 child will get own locks on start.
 
 In other cases you should call child_inherit_lock() with true value in
-$is_inherit to force child to inherit our lock (just like djb's `setlock`
+$is_inherit to force child to inherit our lock (just like DJB's `setlock`
 or Pepe's `chpst -[lL]` do).
 Calling child_inherit_lock() with false value in $is_inherit will switch
 back to default behaviour (new child will not inherit FD with lock).

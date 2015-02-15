@@ -220,7 +220,7 @@ This document describes narada-patch version v1.4.5
 Should be executed in Narada 1.x project root directory.
 
 Apply updates found in C<var/patch/*> files on both Narada 1.x project root and
-C<var/patch/.prev/>. Then apply addon updates in C<var/patch/*/*> files on
+C<var/patch/.prev/>. Then apply add-on updates in C<var/patch/*/*> files on
 project root. Automatically detect which updates should be applied.
 Update may include C<.sh>, C<.patch>, C<.tgz>, C<.sql> and C<.pl> files.
 

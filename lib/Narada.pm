@@ -46,7 +46,7 @@ is simple and can be easily conformed without using special helpers.
 Typical example of project which wins a lot when managed by Narada is web
 or network service, which consists of several scripts (which all should
 have common runtime environment, logs, etc.) with different entry points
-(cgi, rpc, cron, email).
+(CGI, RPC, cron, email).
 
 =head2 Main Features
 
@@ -65,7 +65,7 @@ update to production server.
 =item Ease project setup after installation/update.
 
 Narada provide helpers to update project environment (cron tasks, qmail
-handlers, mysql scheme) according to current project's configuration.
+handlers, MySQL scheme) according to current project's configuration.
 
 =item Reliable services.
 
@@ -204,7 +204,7 @@ C<narada-release-1> run.
 
 =item C<config/version.*>
 
-Name and version of installed addons.
+Name and version of installed add-ons.
 
 =item C<config/patch/send/*>
 
@@ -229,7 +229,7 @@ with date/version.
 
 =item C<doc/ChangeLog.*>
 
-Change logs of installed addons.
+Change logs of installed add-ons.
 
 =item C<var/patch/>
 
@@ -260,7 +260,7 @@ manually!
 
 =item C<var/patch/*/>
 
-Contains "addon" patches.
+Contains "add-on" patches.
 
 =back
 
@@ -314,12 +314,12 @@ Contains helper files required for incremental backups and backups itself.
 
 Define type of logging: C<syslog> (default if this file not exists) or
 C<file>. If set to C<syslog> then C<config/log/output> should contain path
-to syslog's unix socket (like C<var/log.sock> or C</dev/log>).
+to syslog's UNIX socket (like C<var/log.sock> or C</dev/log>).
 C<narada-new> initialize this file with C<syslog> value.
 
 =item C<config/log/output>
 
-File name where project applications should write their logs: either unix
+File name where project applications should write their logs: either UNIX
 socket (to syslog-compatible daemon) or usual file (or C</dev/stdout>).
 C<narada-new> initialize this file with C<var/log.sock> value.
 
@@ -390,7 +390,7 @@ Only qmail supported at this time.
 Files with qmail configuration (in .qmail format).
 Commands listed in these files (lines beginning with C<|>) will be
 executed in project root directory, instead of user's home directory
-(qmail's default behavour).
+(qmail's default behaviour).
 
 =item C<var/qmail/*>
 
@@ -417,7 +417,7 @@ Login/pass for database.
 
 =item C<config/db/host>
 
-Host name of database server. if this file doesn't exists or empty unix
+Host name of database server. if this file doesn't exists or empty UNIX
 socket will be used to connect to MySQL server.
 
 =item C<config/db/port>

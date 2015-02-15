@@ -69,9 +69,9 @@ sub init_globals {
     $::mycnf = tempfile(DIR=>'tmp');
     print {$::mycnf} "[client]\n";
     print {$::mycnf} "user     = $db->{login}\n";
-    print {$::mycnf} "password = $db->{pass}\n"  if length $db->{pass}; ## no critic
-    print {$::mycnf} "host     = $db->{host}\n"  if length $db->{host}; ## no critic
-    print {$::mycnf} "port     = $db->{port}\n"  if length $db->{port}; ## no critic
+    print {$::mycnf} "password = $db->{pass}\n"  if length $db->{pass}; ## no critic (ProhibitPostfixControls)
+    print {$::mycnf} "host     = $db->{host}\n"  if length $db->{host}; ## no critic (ProhibitPostfixControls)
+    print {$::mycnf} "port     = $db->{port}\n"  if length $db->{port}; ## no critic (ProhibitPostfixControls)
     $::mycnf->flush;
     sysseek $::mycnf, 0, 0 or err "sysseek: $!";
     fcntl $::mycnf, F_SETFD, 0 or err "fcntl: $!";
@@ -91,8 +91,8 @@ sub get_config_db {
     $db{host} = eval { get_config_line('db/host') } || q{};
     $db{port} = eval { get_config_line('db/port') } || q{};
     $db{dsn_nodb}  = 'dbi:mysql:';
-    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic
-    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic
+    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
+    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)
     $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
     return \%db;
 }
@@ -219,7 +219,7 @@ sub get_key {
     my ($table) = @_;
     my $desc = $::dbh->selectall_arrayref('DESC '.$table);
     err "First field in table $table must be: INT AUTO_INCREMENT PRIMARY KEY\n"
-        if !(@$desc                             ## no critic
+        if !(@{ $desc }                         ## no critic (ProhibitPostfixControls)
         && $desc->[0][DESC_TYPE]=~/\A\w*int\b/xms
         && $desc->[0][DESC_KEY] eq 'PRI'
         && $desc->[0][DESC_EXTRA] eq 'auto_increment'
@@ -332,7 +332,7 @@ use mtime on next dump to detect table change.
 All incremental tables MUST have first column's type "INT AUTO_INCREMENT
 PRIMARY KEY" (can also use "MEDIUMINT", etc.).
 
-After ALTERing incremental table or doing TRUNCATE existing files with
+After ALTER incremental table or doing TRUNCATE existing files with
 incremental dumps will be automatically removed and replaced by new ones.
 
 Tables listed in "config/db/dump/empty" and "config/db/dump/incremental"

@@ -83,7 +83,7 @@ sub set_user_crontab {
     return;
 }
 
-sub force_last_CR {
+sub force_last_cr {
     my ($s) = @_;
     if ($s =~ /[^\n]\z/xms) {
         $s .= "\n";
@@ -93,12 +93,12 @@ sub force_last_CR {
 
 sub set_cron {
     my ($crontab) = @_;
-    $crontab = force_last_CR($crontab);
+    $crontab = force_last_cr($crontab);
 
     my $user_crontab = get_user_crontab();
     my ($re, $start, $end) = get_markers();
     if ($user_crontab !~ /$re/xms) {
-        $user_crontab = force_last_CR($user_crontab);
+        $user_crontab = force_last_cr($user_crontab);
         $user_crontab .= "$start\n$end\n";
     }
 

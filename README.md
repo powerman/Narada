@@ -34,7 +34,7 @@ is simple and can be easily conformed without using special helpers.
 Typical example of project which wins a lot when managed by Narada is web
 or network service, which consists of several scripts (which all should
 have common runtime environment, logs, etc.) with different entry points
-(cgi, rpc, cron, email).
+(CGI, RPC, cron, email).
 
 ## Main Features
 
@@ -51,7 +51,7 @@ have common runtime environment, logs, etc.) with different entry points
 - Ease project setup after installation/update.
 
     Narada provide helpers to update project environment (cron tasks, qmail
-    handlers, mysql scheme) according to current project's configuration.
+    handlers, MySQL scheme) according to current project's configuration.
 
 - Reliable services.
 
@@ -156,7 +156,11 @@ These directories will be created in project root:
     Variable files required for Narada and your project. Will be included in
     backup, but not in updates.
 
-## Team development and versioning project
+## Team development and versioning Narada 1.x project
+
+__WARNING!__
+Everything in this section is related only to Narada 1.x projects.
+These files/directories doesn't exists in current Narada projects.
 
 - `config/version`
 
@@ -164,16 +168,16 @@ These directories will be created in project root:
     contain at least one digit, and doesn't contain whitespace or `/`).
     Example: "App-0.1.000" (without quotes).
 
-    `narada-new` will create this file with content "PROJECTNAME-0.0.000"
+    `narada-new-1` will create this file with content "PROJECTNAME-0.0.000"
     where PROJECTNAME is name of project root directory.
 
     Last number in this string will be automatically incremented by
-    `narada-release` unless this file was manually modified since previous
-    `narada-release` run.
+    `narada-release-1` unless this file was manually modified since previous
+    `narada-release-1` run.
 
 - `config/version.*`
 
-    Name and version of installed addons.
+    Name and version of installed add-ons.
 
 - `config/patch/send/*`
 
@@ -181,7 +185,7 @@ These directories will be created in project root:
     emails with project updates. Used by `narada-patch-send`. File names are
     not important, but usually they match team member's $USER.
 
-    If $NARADA\_USER is set, then `narada-new` will put it value into
+    If $NARADA\_USER is set, then `narada-new-1` will put it value into
     `config/patch/send/$USER`.
 
 - `config/patch/exclude`
@@ -192,18 +196,18 @@ These directories will be created in project root:
 
 - `doc/ChangeLog`
 
-    Project's change log, in standard format. `narada-release` will ask you
+    Project's change log, in standard format. `narada-release-1` will ask you
     to enter changes using $EDITOR and then automatically insert/update line
     with date/version.
 
 - `doc/ChangeLog.*`
 
-    Change logs of installed addons.
+    Change logs of installed add-ons.
 
 - `var/patch/`
 
     Contains all project updates (patches). `narada-diff` will create new
-    update candidate in this directory for manual review; `narada-release`
+    update candidate in this directory for manual review; `narada-release-1`
     will turn candidate into released update; `narada-patch` will apply
     updates found this this directory to project; etc.
 
@@ -229,7 +233,7 @@ These directories will be created in project root:
 
 - `var/patch/*/`
 
-    Contains "addon" patches.
+    Contains "add-on" patches.
 
 ## Backup
 
@@ -275,12 +279,12 @@ These directories will be created in project root:
 
     Define type of logging: `syslog` (default if this file not exists) or
     `file`. If set to `syslog` then `config/log/output` should contain path
-    to syslog's unix socket (like `var/log.sock` or `/dev/log`).
+    to syslog's UNIX socket (like `var/log.sock` or `/dev/log`).
     `narada-new` initialize this file with `syslog` value.
 
 - `config/log/output`
 
-    File name where project applications should write their logs: either unix
+    File name where project applications should write their logs: either UNIX
     socket (to syslog-compatible daemon) or usual file (or `/dev/stdout`).
     `narada-new` initialize this file with `var/log.sock` value.
 
@@ -339,7 +343,7 @@ Only qmail supported at this time.
     Files with qmail configuration (in .qmail format).
     Commands listed in these files (lines beginning with `|`) will be
     executed in project root directory, instead of user's home directory
-    (qmail's default behavour).
+    (qmail's default behaviour).
 
 - `var/qmail/*`
 
@@ -361,7 +365,7 @@ Only MySQL supported at this time.
 
 - `config/db/host`
 
-    Host name of database server. if this file doesn't exists or empty unix
+    Host name of database server. if this file doesn't exists or empty UNIX
     socket will be used to connect to MySQL server.
 
 - `config/db/port`
@@ -409,12 +413,7 @@ Read man pages of these tools for details.
     narada-backup
     narada-mysqldump
 
-    narada-diff
     narada-release
-    narada-patch-remote
-    narada-patch-send
-    narada-patch-pull
-    narada-patch
 
     narada-remote
     narada-upload
@@ -427,12 +426,24 @@ Read man pages of these tools for details.
     narada-lock
     narada-lock-exclusive
 
+These tools are exists only for compatibility with Narada 1.x:
+
+    narada-new-1
+    narada-diff
+    narada-release-1
+    narada-patch-remote
+    narada-patch-send
+    narada-patch-pull
+    narada-patch
+
 # CONFIGURATION AND ENVIRONMENT
 
+## Only in Narada 1.x
+
 $NARADA\_USER optionally can be set to user's email. If set, it will be
-used by `narada-new` to initialize `config/patch/send/$USER`; by
+used by `narada-new-1` to initialize `config/patch/send/$USER`; by
 `narada-patch-send` to avoid sending email to yourself; by
-`narada-release` when adding header lines into `doc/ChangeLog`.
+`narada-release-1` when adding header lines into `doc/ChangeLog`.
 
 # SUPPORT
 

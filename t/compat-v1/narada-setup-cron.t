@@ -201,7 +201,7 @@ unlike($expected, $re, 'get_markers: start.\n.end.junk.\n');
 
 # get_user_crontab(), set_user_crontab()
 #   . Test MANUALLY!
-# - force_last_CR()
+# - force_last_cr()
 #   . Will be tested while testing set_cron().
 # - set_cron()
 #   . project crontab variants:
@@ -271,10 +271,10 @@ unlike($expected, $re, 'get_markers: start.\n.end.junk.\n');
             for (sort keys %user_crontab){
                 if ($action eq 'add'){
                     $user_crontab = $user_crontab{$_};
-                    $expected = force_last_CR($user_crontab{$_})
+                    $expected = force_last_cr($user_crontab{$_})
                               . $start
                               . "\n"
-                              . force_last_CR($crontab{$crontab})
+                              . force_last_cr($crontab{$crontab})
                               . $end
                               . "\n"
                             ;
@@ -282,7 +282,7 @@ unlike($expected, $re, 'get_markers: start.\n.end.junk.\n');
                     $user_crontab = $my_narada_project."\n".$user_crontab{$_};
                     $expected = $start
                               . "\n"
-                              . force_last_CR($crontab{$crontab})
+                              . force_last_cr($crontab{$crontab})
                               . $end
                               . "\n"
                               . $user_crontab{$_}

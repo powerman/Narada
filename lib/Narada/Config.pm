@@ -45,8 +45,8 @@ sub get_db_config :Export {
     $db{host} = eval { get_config_line('db/host') } || q{};
     $db{port} = eval { get_config_line('db/port') } || q{};
     $db{dsn_nodb}  = 'dbi:mysql:';
-    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic
-    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic
+    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
+    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)
     $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
     return \%db;
 }
@@ -95,7 +95,7 @@ This document describes Narada::Config version v1.4.5
 
 =head1 DESCRIPTION
 
-Project's configuration keept in files under directory 'config/' in
+Project's configuration kept in files under directory 'config/' in
 project root directory. Usually single file contain value for single
 variable (variable name is file name itself).
 

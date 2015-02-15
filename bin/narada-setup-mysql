@@ -59,8 +59,8 @@ sub get_config_db {
     $db{host} = eval { get_config_line('db/host') };
     $db{port} = eval { get_config_line('db/port') };
     $db{dsn_nodb}  = 'dbi:mysql:';
-    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic
-    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic
+    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
+    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)
 #    $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
     return \%db;
 }

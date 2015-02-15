@@ -7,7 +7,7 @@ our $VERSION = 'v1.4.5';
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 
-use List::Util qw( min );
+use List::Util qw( min any );
 
 use constant BAD_INODE => -1;
 use constant TAIL_BLOCK => 8192;
@@ -48,7 +48,7 @@ sub parse_opt {
         $opt{$1} = shift;
     }
     die "Usage: narada-viewlog [-d] [-t] [-m] [-f] [-l] [-i] [-p] [-L LEVEL] [-R REGEX] [logfile ...]\n"
-        if $opt{h} || grep {!defined} values %opt;
+        if $opt{h} || any {!defined} values %opt;
     return (\%opt, @_);
 }
 
@@ -189,10 +189,10 @@ directory).
 Output logs in ease to read format (control output fields and can filter
 log records).
 
-If 'logfile' param(s) used output these files, else work like
+If C<logfile> param(s) used output these files, else work like
 `tail -F var/log/current`.
 
-To select which fields should be included in output (use -tmli by default):
+To select which fields should be included in output (use C<-tmli> by default):
 
   [-d] date
   [-t] time
