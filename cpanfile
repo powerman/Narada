@@ -8,6 +8,7 @@ requires 'Getopt::Long';
 requires 'List::Util';
 requires 'Log::Fast';
 requires 'MIME::Base64';
+requires 'Path::Tiny', '0.053';
 requires 'Perl6::Export::Attrs';
 requires 'Time::HiRes';
 requires 'Time::Local';

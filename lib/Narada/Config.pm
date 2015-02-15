@@ -8,7 +8,7 @@ our $VERSION = 'v1.4.5';
 
 # update DEPENDENCIES in POD & Build.PL & README
 use Perl6::Export::Attrs;
-use File::Temp qw( tempfile );
+use Path::Tiny 0.053;
 
 use constant MAXPERM => 0666; ## no critic (ProhibitLeadingZeros)
 
@@ -19,12 +19,7 @@ sub get_config :Export {
     my ($var) = @_;
     croak 'Usage: get_config(NAME)' if @_ != 1;
     $var =~ /$VAR_NAME/xms              or croak "bad config: $var";
-    -f "config/$var"                    or croak "no such config: $var";
-    open my $cfg, '<', "config/$var"    or die "open(config/$var): $!\n";
-    local $/ = undef;
-    my $val = <$cfg>;
-    close $cfg                          or die "close: $!\n";
-    return $val;
+    return path("config/$var")->slurp_utf8;
 }
 
 sub get_config_line :Export {
@@ -55,13 +50,10 @@ sub set_config :Export {
     my ($var, $val) = @_;
     croak 'Usage: set_config(NAME, VALUE)' if @_ != 2;
     $var =~ /$VAR_NAME/xms              or croak "bad config: $var";
-    my ($fh, $filename) = tempfile();
-    print {$fh} $val;
-    close $fh                           or die "close: $!\n";
-    system("mkdir -p \$(dirname config/$var)") == 0
-                                        or die "mkdir: $!\n";
-    rename $filename, "config/$var"     or die "rename to config/${var}: $!\n";
-    chmod MAXPERM & ~umask, "config/$var"  or die "chmod config/${var}: $!\n";
+    my $cfg = path("config/$var");
+    $cfg->parent->mkpath;
+    $cfg->spew_utf8($val);
+    $cfg->chmod(MAXPERM & ~umask);
     return;
 }
 
@@ -158,18 +150,6 @@ Return: nothing.
 =item C<< bad config: %s >>
 
 Thrown by set_config() and get_config() on wrong VARIABLE_NAME.
-
-=item C<< no such config: %s >>
-
-Thrown by get_config() if file 'config/VARIABLE_NAME' doesn't exist.
-
-=item C<< open(config/%s): %s >>
-
-=item C<< close: %s >>
-
-=item C<< rename to config/%s: %s >>
-
-Internal errors.
 
 =back
 

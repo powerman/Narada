@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use Test::More tests => 23;
 use Test::Exception;
+use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
 use Cwd qw( cwd );
 
 use Narada::Config qw( get_config );
@@ -22,14 +23,14 @@ throws_ok { get_config($_) }        qr/bad config:/,
     "bad variable: $_"
     for @badvar;
 
-throws_ok { get_config($_) }        qr/no such config:/,
-    "no such config: $_"
+throws_ok { get_config($_) }        qr/no such file/i,
+    "no such file: $_"
     for qw( no_file no_dir/no_file backup/no-file );
 
 SKIP: {
     skip 'non-root user required', 1 if $< == 0;
     chmod 0, 'config/version';
-    throws_ok { get_config('version') } qr/open\(config\/version\):/,
+    throws_ok { get_config('version') } qr/permission/i,
         "bad permissions";
     chmod 0644, 'config/version';
 }

@@ -26,7 +26,7 @@ sub main {
     }
     else {
         my $crontab = eval { get_config('crontab') };
-        if ($@ =~ /no\ssuch\sconfig:/xms) {
+        if ($@ =~ /no such file/ims) {
             del_cron();
         }
         elsif ($@) {

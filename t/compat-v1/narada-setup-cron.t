@@ -4,6 +4,7 @@ use strict;
 use Test::More tests=>50;
 use Test::Exception;
 use Test::MockModule;
+use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
 use File::Temp qw{tempdir};
 use FindBin;
 use Cwd qw( cwd );
@@ -42,7 +43,7 @@ throws_ok { main('not_existing_param') }    qr/Usage:/,
 SKIP: {
     skip 'non-root user required', 1 if $< == 0;
     chmod 0, 'config/crontab'                               or die "chmod: $!";
-    throws_ok { main() }                        qr/open\(config\/crontab\):/,
+    throws_ok { main() }                    qr/permission/i,
         'main: not readable';
     chmod 0644, 'config/crontab'                            or die "chmod: $!";
 }

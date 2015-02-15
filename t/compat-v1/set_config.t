@@ -37,11 +37,11 @@ SKIP: {
 
     open my $olderr, '>&', \*STDERR                     or die "open: $!";
     open STDERR, '> /dev/null'                          or die "open: $!";
-    throws_ok { set_config('dir/test', q{}) }   qr/mkdir:/,
+    throws_ok { set_config('dir/test', q{}) }   qr/mkdir/,
         'mkdir bad permissions';
     open STDERR, '>&', $olderr                          or die "open: $!";
 
-    throws_ok { set_config('test', q{}) }       qr/rename to config\/test:/,
+    throws_ok { set_config('test', q{}) }       qr/config\/test/,
         'rename bad permissions';
 
     chmod 0755, 'config' or die "chmod: $!";

@@ -35,6 +35,7 @@ my %module_build_args = (
     "List::Util" => 0,
     "Log::Fast" => 0,
     "MIME::Base64" => 0,
+    "Path::Tiny" => "0.053",
     "Perl6::Export::Attrs" => 0,
     "Time::HiRes" => 0,
     "Time::Local" => 0,

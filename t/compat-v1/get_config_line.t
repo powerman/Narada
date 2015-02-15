@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use Test::More tests => 8;
 use Test::Exception;
+use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
 use Cwd qw( cwd );
 
 use Narada::Config qw( get_config_line );
@@ -14,8 +15,8 @@ chdir tempdir( CLEANUP => 1 )
     or die "Unable to create project: $!";
 
 
-throws_ok { get_config_line('no_file') }        qr/no such config:/,
-    'no such config: no_file';
+throws_ok { get_config_line('no_file') }        qr/no such file/i,
+    'no such file';
 
 Echo('config/empty', "\n");
 is get_config_line('empty'), q{}, 'empty with \n';
