@@ -13,10 +13,13 @@ use Fcntl qw(:DEFAULT :flock F_SETFD FD_CLOEXEC);
 use Errno;
 
 
-use constant LOCKNEW    => 'var/.lock.new';
-use constant LOCKFILE   => 'var/.lock';
+use constant DIR        => -f 'config/version' && -d 'var/patch/' ? 'var/' : q{};
+use constant LOCKNEW    => DIR.'.lock.new';
+use constant LOCKFILE   => DIR.'.lock';
 use constant TICK       => 0.1;
+
 my $f_lock;
+
 
 sub shared_lock :Export {
     my $timeout = shift;
@@ -126,8 +129,8 @@ operations required for these locks can be implemented using any
 programming language, so all applications in project (including non-perl
 applications) are able to manage project locks.
 
-Shared lock is set using flock(2) LOCK_SH on file 'var/.lock'.
-Exclusive lock is set using flock(2) LOCK_EX on file 'var/.lock'.
+Shared lock is set using flock(2) LOCK_SH on file C<.lock>.
+Exclusive lock is set using flock(2) LOCK_EX on file C<.lock>.
 
 =head2 FREEZE NEW TASKS
 
@@ -135,13 +138,13 @@ There exists scenario when it's impossible to set exclusive lock:
 if new tasks will start and set shared lock before old tasks will drop shared
 lock (and so shared lock will be set all of time).
 
-To work around this scenario another file 'var/.lock.new' should be used
+To work around this scenario another file C<.lock.new> should be used
 as semaphore - it should be created before trying to set exclusive lock,
 and new tasks shouldn't try to set shared lock while this file exists.
 
 This file should be removed after finishing critical operations - this
 guarantee project data will not change even if system will be rebooted,
-because after reboot existence of file 'var/.lock.new' will prevent from
+because after reboot existence of file C<.lock.new> will prevent from
 starting new tasks with shared locks but not prevent from placing
 exclusive lock again and continue these critical operations.
 
@@ -167,9 +170,9 @@ Return: true if able to get lock.
 Try to get exclusive lock which is required to guarantee consistent project
 state (needed while backup/update/maintenance operations).
 
-Set two locks: create file 'var/.lock.new' which signal other scripts to
+Set two locks: create file C<.lock.new> which signal other scripts to
 not try to set shared lock while this file exists and get LOCK_EX on file
-'var/.lock' to be sure all current tasks finished and unlocked their
+C<.lock> to be sure all current tasks finished and unlocked their
 shared locks.
 
 Will delay until get lock.
@@ -180,7 +183,7 @@ Return: nothing.
 
 =item B<unlock_new>()
 
-Free first lock set by exclusive_lock() (i.e. remove file 'var/.lock.new').
+Free first lock set by exclusive_lock() (i.e. remove file C<.lock.new>).
 This allow other tasks to get shared_lock() after this process exit or
 call unlock().
 
@@ -226,24 +229,6 @@ Return: nothing.
 =back
 
 
-=head1 DIAGNOSTICS
-
-=over
-
-=item C<< open: %s >>
-
-=item C<< flock: %s >>
-
-=item C<< fcntl: %s >>
-
-=item C<< touch: %s >>
-
-Probably directory 'var/' or files 'var/.lock' and 'var/.lock.new' doesn't
-exists or has wrong permissions.
-
-=back
-
-
 =head1 CONFIGURATION AND ENVIRONMENT
 
 Narada::Lock requires configuration files and directories provided by
@@ -252,6 +237,13 @@ Narada framework.
 If $ENV{NARADA_SKIP_LOCK} is set to any true value then shared_lock(),
 exclusive_lock(), unlock_new(), unlock() and child_inherit_lock() will do
 nothing (shared_lock() will return true).
+
+
+=head1 COMPATIBILITY
+
+Narada 1.x project use C<var/.lock> instead of C<.lock>.
+
+Narada 1.x project use C<var/.lock.new> instead of C<.lock.new>.
 
 
 =head1 SUPPORT

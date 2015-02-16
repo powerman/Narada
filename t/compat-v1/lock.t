@@ -4,13 +4,21 @@ use strict;
 use Test::More;
 use Test::Exception;
 use Cwd qw( cwd );
-
-use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_lock );
-
 use Time::HiRes qw( time sleep );
 use Fcntl qw(:DEFAULT :flock F_SETFD FD_CLOEXEC);
 use Errno;
 use File::Temp qw( tempdir );
+
+BEGIN {
+    $ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
+    $ENV{PERL5LIB} ||= q{};
+    $ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
+    chdir tempdir( CLEANUP => 1 )
+        and system('narada-new-1') == 0
+        or die "Unable to create project: $!";
+}
+
+use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_lock );
 
 use constant LOCKNEW    => Narada::Lock::LOCKNEW;
 use constant LOCKFILE   => Narada::Lock::LOCKFILE;
@@ -20,13 +28,6 @@ if ($ENV{AUTOMATED_TESTING}) {
 } else {
     plan tests => 39;
 }
-
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-$ENV{PERL5LIB} ||= q{};
-$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 sysopen my $F_lock, LOCKFILE, O_RDWR|O_CREAT or die "open: $!";
 
@@ -48,6 +49,7 @@ sub between {
     my $t = time();
     $code->();
     $t = time()-$t;
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
     ok $min <= $t && $t <= $max, "... done in $min .. $max sec ($t sec)";
     return;
 }

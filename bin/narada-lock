@@ -51,7 +51,15 @@ Exit status of narada-lock will be same as exit status of executed command.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Use var/.lock and var/.lock.new files.
+    .lock
+    .lock.new
+
+
+=head1 COMPATIBILITY
+
+Narada 1.x project use C<var/.lock> instead of C<.lock>.
+
+Narada 1.x project use C<var/.lock.new> instead of C<.lock.new>.
 
 
 =head1 SUPPORT

@@ -123,7 +123,7 @@ For example, let's review interfaces related to "Consistent and fast
 project backup" feature.
 
 "Consistent" require using shared/exclusive file locking on file
-C<var/.lock>. All Narada does is create that file when generate new
+C<.lock>. All Narada does is create that file when generate new
 project and acquire exclusive lock on it while executing C<narada-backup>.
 But to really have consistent backups B<you> must acquire shared lock on
 that file when accessing any project files or database in any of your
@@ -273,18 +273,20 @@ Contains "add-on" patches.
 Shell patterns (one per line) for files/dirs which shouldn't be included
 in backup. Must contain at least these lines:
 
-    ./var/.lock.new     to avoid project in locked state after restore
+    ./.backup/*         to avoid recursively including old backups in new
+    ./.lock             to avoid unlocking while restoring from backup
+    ./.lock.new         to avoid project in locked state after restore
                         from backup
-    ./var/backup/*      to avoid recursively including old backups in new
-    ./var/patch/.prev/* harmless, but it always can be restored by
-                        applying all released updates on empty project
+    ./service/.lock     to avoid unlocking while restoring from backup
+                        (this file is from narada-plugin-runit, but same
+                        should apply to similar files from other plugins)
 
 =item C<config/db/dump/incremental>
 
 List of database tables (one per line) which can be dumped incrementally
 (according to their auto_increment primary key field). C<narada-backup>
 will dump only new records in these tables (dumps for older records will
-be available in existing files in C<var/backup/> or C<var/sql/>).
+be available in existing files in C<.backup/> or C<var/sql/>).
 
 =item C<config/db/dump/empty>
 
@@ -300,7 +302,7 @@ backup at all (even scheme).
 
 Contains files with last database dump (usually made while last backup).
 
-=item C<var/backup/>
+=item C<.backup/>
 
 Contains helper files required for incremental backups and backups itself.
 
@@ -430,26 +432,26 @@ TCP port of database server.
 
 =over
 
-=item C<var/.lock>
+=item C<.lock>
 
 This file should be shared-locked using flock(2) or Narada::Lock or
 C<narada-lock> before accessing any project's files or database by usual
 applications, and exclusive-locked while project's backup, update or
 manual maintenance.
 
-=item C<var/.lock.new>
+=item C<.lock.new>
 
-This file created before trying to exclusive-lock C<var/.lock>. All
-applications wanted to shared-lock C<var/.lock> should first check is
-C<var/.lock.new> exists and if yes then delay/avoid locking C<var/.lock>.
+This file created before trying to exclusive-lock C<.lock>. All
+applications wanted to shared-lock C<.lock> should first check is
+C<.lock.new> exists and if yes then delay/avoid locking C<.lock>.
 This is needed to guarantee exclusive lock will be acquired as soon as
 possible.
 
 After exclusive lock will be acquired and critical operations requiring it
-will be completed - C<var/.lock.new> will be removed.
+will be completed - C<.lock.new> will be removed.
 
 If server will be rebooted while waiting for exclusive lock or in the
-middle of critical operations requiring it then file C<var/.lock.new>
+middle of critical operations requiring it then file C<.lock.new>
 won't be removed and project applications won't continue working after
 booting server until this file will be removed manually or another
 operation requiring exclusive lock will be started and successfully
@@ -504,6 +506,17 @@ $NARADA_USER optionally can be set to user's email. If set, it will be
 used by C<narada-new-1> to initialize C<config/patch/send/$USER>; by
 C<narada-patch-send> to avoid sending email to yourself; by
 C<narada-release-1> when adding header lines into C<doc/ChangeLog>.
+
+
+=head1 COMPATIBILITY
+
+Narada 1.x project use C<var/backup/> instead of C<.backup/>.
+
+Narada 1.x project use C<var/.lock> instead of C<.lock>.
+
+Narada 1.x project use C<var/.lock.new> instead of C<.lock.new>.
+
+Narada 1.x project use C<var/.lock.service> instead of C<service/.lock>.
 
 
 =head1 SUPPORT

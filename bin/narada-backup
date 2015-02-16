@@ -6,7 +6,10 @@ DETECT=$(narada-detect narada-deploy narada-1) || exit 1
 [ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
 
 
-if test "$DETECT" = "narada-1"; then
+if test "$DETECT" = "narada-deploy"; then
+	backup_dir='.backup'
+else
+	backup_dir='var/backup'
 	# compatibility with Narada before 0.9
 	[ -d config/backup ] || mkdir config/backup || exit 1
 	[ -f config/backup/exclude ] || cat >config/backup/exclude <<'EOF' || exit 1
@@ -20,9 +23,9 @@ EOF
 fi
 
 
-snap='var/backup/snap'
-full='var/backup/full.tar'
-incr='var/backup/incr.tar'
+snap="${backup_dir}/snap"
+full="${backup_dir}/full.tar"
+incr="${backup_dir}/incr.tar"
 excl=(); while read; do excl+=( --exclude "$REPLY" ); done <config/backup/exclude
 
 
@@ -74,23 +77,23 @@ This document describes narada-backup version v1.4.5
 Should be executed in project deploy directory (or Narada 1.x project root
 directory).
 
-At first run prepare full project backup in 'var/backup/full.tar'.
-On next runs prepare incremental backup in 'var/backup/incr.tar' plus
-append it to full backup in 'var/backup/full.tar' (using tar -A).
+At first run prepare full project backup in C<.backup/full.tar>.
+On next runs prepare incremental backup in C<.backup/incr.tar> plus
+append it to full backup in C<.backup/full.tar> (using C<tar -A>).
 
 Because of used technique of quick full backup update, full backup will
 grow on each run. To keep file with full backup on reasonable size, you
 should force full backup from time to time.
 
-To force full backup you should remove 'var/backup/full.tar' before running
-narada-backup.
+To force full backup you should remove C<.backup/full.tar> before running
+C<narada-backup>.
 
 Both full and incremental backups should be unpacked as incremental tar
-archives, see http://www.gnu.org/software/automake/manual/tar/Incremental-Dumps.html.
+archives, see L<http://www.gnu.org/software/automake/manual/tar/Incremental-Dumps.html>.
 
-Before preparing backup will run narada-mysqldump.
+Before preparing backup will run C<narada-mysqldump>.
 
-Files and directories listed in config/backup/exclude (use syntax suitable
+Files and directories listed in C<config/backup/exclude> (use syntax suitable
 for tar's --exclude option) will not be included in backup.
 
 Will exit with non-zero exit status if backup process failed.
@@ -98,7 +101,13 @@ Will exit with non-zero exit status if backup process failed.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Use files in var/backup/.
+    config/backup/exclude
+    .backup/*
+
+
+=head1 COMPATIBILITY
+
+Narada 1.x project use C<var/backup/> instead of C<.backup/>.
 
 
 =head1 SUPPORT
