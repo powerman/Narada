@@ -11,10 +11,10 @@ repo="https://github.com/powerman/narada-base.git"
 branch="master"
 
 while test "$#" != "0"; do
-        if test "$1" = "-r" -a test "$#" -ge 2; then
+        if test "$1" = "-r" -a "$#" -ge 2; then
                 repo="${2:-$repo}"
                 shift 2
-        elif test "$1" = "-b" -a test "$#" -ge 2; then
+        elif test "$1" = "-b" -a "$#" -ge 2; then
                 branch="${2:-master}"
                 shift 2
         elif test "$#" = "1"; then
