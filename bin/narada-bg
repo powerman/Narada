@@ -8,8 +8,8 @@ narada-detect narada-deploy >/dev/null || exit 1
 
 [ $# -ne 0 ] || die "Usage: narada-bg command [args]"
 
-exec 3>>.bg
-flock -n 3 || die "failed to get shared lock on .bg"
+exec 3>>.lock.bg
+flock -n 3 || die "failed to get shared lock on .lock.bg"
 exec "$@"
 
 
@@ -36,7 +36,7 @@ This document describes narada-bg version v1.4.5
 
 Should be executed in project deploy directory.
 
-Start given command with shared lock on C<.bg>.
+Start given command with shared lock on C<.lock.bg>.
 
 You should use C<narada-bg> to run all project's background commands -
 everything run by cron, qmail or as services. All applications which was
@@ -46,7 +46,7 @@ downgrade or restoring from backup.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-  .bg
+  .lock.bg
 
 
 =head1 SUPPORT

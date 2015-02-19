@@ -18,7 +18,7 @@ files=("${files[@]#/}")
 files=("${files[@]#./}")
 files=("${files[@]/#/./}")
 
-tar xpf "$backup" "${files[@]}"
+tar xpf "$backup" --anchored --exclude ./.lock* "${files[@]}"
 
 
 : <<'=cut'
