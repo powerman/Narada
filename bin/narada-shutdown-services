@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 VERSION="v1.4.5"
 
-perl -MNarada -E 'Narada::detect(@ARGV)' || exit 1
+warn()  { echo "$@" >&2;        }
+die()   { warn "$@"; exit 1;    }
 
-kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
+DETECT=$(perl -MNarada -E 'say Narada::detect(@ARGV)') || exit 1
+
+test "$DETECT" = 'narada-1' && type='runit' || type="$(< config/service/type)"
+if test "$type" = 'runit'; then
+	kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
+else
+	die "unknown type of services: '$type'"
+fi
 
 exit
+
+
 : <<'=cut'
 
 =encoding utf8
@@ -27,7 +37,8 @@ This document describes narada-shutdown-services version v1.4.5
 
 =head1 DESCRIPTION
 
-Should be executed in Narada 1.x project root directory.
+Should be executed in project deploy directory (or Narada 1.x project root
+directory).
 
 Service supervisors usually started by cron, and may continue working
 even after project directory will be removed - with undefined result.
@@ -36,10 +47,13 @@ So, if you want to stop and/or delete project you should run this command
 after C<narada-setup-cron --clean> to make sure all project services are
 not running anymore and won't start again.
 
+Type of services should be in C<config/service/type>.
+Currently supported types are: C<runit>.
+
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-None.
+  config/service/type
 
 
 =head1 SUPPORT
