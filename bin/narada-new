@@ -41,7 +41,7 @@ git tag -a -m empty "$INITIAL_VERSION"
 git remote add narada-base -t "$branch" -m "$branch" -f "$repo"
 git merge narada-base -m 'narada-new: merge narada-base'
 echo "$INITIAL_VERSION" > VERSION
-NARADA_GIT_TAG="-a -m narada-new" narada-release --minor
+NARADA_GIT_TAG="-a -m narada-new" ./release --minor
 ./deploy
 
 
@@ -81,8 +81,8 @@ also contain C<_live/> subdirectory for testing project while development, that
 subdirectory become deploy directory of Narada project. All other C<narada-*>
 commands should be executed in (one of) these directories.
 
-It will merge C<base_repository>'s C<branch>, release version 0.1.0 and deploy
-it to C<_live/>. Default base repository is
+It will merge C<base_repository>'s C<branch>, run C<./release --minor> and
+C<./deploy> to deploy it to C<_live/>. Default base repository is
 L<https://github.com/powerman/narada-base.git>; default branch is "master".
 
 

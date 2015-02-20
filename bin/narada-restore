@@ -52,6 +52,11 @@ without wildcards. Values C<a/b>, C</a/b> and C<./a/b> are all handled in
 same way (as C<./a/b>).
 
 
+=head1 CONFIGURATION AND ENVIRONMENT
+
+None.
+
+
 =head1 SUPPORT
 
 =head2 Bugs / Feature Requests

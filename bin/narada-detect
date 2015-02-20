@@ -7,7 +7,6 @@ die()   { warn "$@"; exit 1;    }
 main() {
 	local detect=
 	test -f config/version  && test -d var/patch/   && detect=narada-1
-	test -f VERSION         && test -f migrate      && detect=narada-source
 	test -f VERSION         && test -d .backup/     && detect=narada-deploy
 	local types=
 	while test $# != "0"; do
@@ -21,7 +20,7 @@ main() {
 	die "current directory is not ${types:4} directory"
 }
 
-test "$#" != 0 && args=("$@") || args=(narada-source narada-deploy narada-1)
+test "$#" != 0 && args=("$@") || args=(narada-deploy narada-1)
 main "${args[@]}"
 
 
@@ -59,10 +58,6 @@ If error was printed to STDERR will exit with error status.
 =head2 DIRECTORY TYPES
 
 =over
-
-=item narada-source
-
-Source directory of Narada project.
 
 =item narada-deploy
 
