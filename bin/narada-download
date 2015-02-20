@@ -4,7 +4,7 @@ VERSION='v1.4.5' # based on remote-2.0.2
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
-narada-detect narada narada-1 >/dev/null || exit 1
+perl -MNarada -E 'Narada::detect(@ARGV)' || exit 1
 
 if ! [ -f config/remote -a -s config/remote ]; then
     die "error: configure config/remote first"

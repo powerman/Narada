@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
-DETECT=$(narada-detect narada narada-1) || exit 1
+DETECT=$(perl -MNarada -E 'say Narada::detect(@ARGV)') || exit 1
 
 [ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
 

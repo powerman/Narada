@@ -5,6 +5,35 @@ use strict;
 
 our $VERSION = 'v1.4.5';
 
+
+# Possible types of current directory:
+# - narada-1
+#       config/patch/
+#       config/version
+#       var/backup/
+#       var/patch/
+# - narada
+#       VERSION
+#       .backup/
+# - narada-source
+#       ./release
+#       ./deploy
+# - narada-1 and narada, but not narada-source
+#       config/backup/
+#       config/log/
+#       var/log/
+sub detect {
+    my %need = map {$_=>1} @_ ? @_ : qw( narada narada-1 );
+    my $type
+      = -f 'VERSION'        && -d '.backup'     ? 'narada'
+      : -f 'config/version' && -d 'var/backup'  ? 'narada-1'
+      :                                           undef
+      ;
+    return $type if $type && $need{$type};
+    die 'this is not '.join(' or ', keys %need)." directory\n";
+}
+
+
 1; # Magic true value required at end of module
 __END__
 
@@ -199,8 +228,8 @@ C<narada-new-1> will create this file with content "PROJECTNAME-0.0.000"
 where PROJECTNAME is name of project root directory.
 
 Last number in this string will be automatically incremented by
-C<narada-release-1> unless this file was manually modified since previous
-C<narada-release-1> run.
+C<narada-release> unless this file was manually modified since previous
+C<narada-release> run.
 
 =item C<config/version.*>
 
@@ -223,7 +252,7 @@ be listed in this file.
 
 =item C<doc/ChangeLog>
 
-Project's change log, in standard format. C<narada-release-1> will ask you
+Project's change log, in standard format. C<narada-release> will ask you
 to enter changes using $EDITOR and then automatically insert/update line
 with date/version.
 
@@ -234,7 +263,7 @@ Change logs of installed add-ons.
 =item C<var/patch/>
 
 Contains all project updates (patches). C<narada-diff> will create new
-update candidate in this directory for manual review; C<narada-release-1>
+update candidate in this directory for manual review; C<narada-release>
 will turn candidate into released update; C<narada-patch> will apply
 updates found this this directory to project; etc.
 
@@ -474,8 +503,6 @@ Read man pages of these tools for details.
     narada-backup
     narada-mysqldump
 
-    narada-release
-
     narada-remote
     narada-upload
     narada-download
@@ -491,7 +518,7 @@ These tools are exists only for compatibility with Narada 1.x:
 
     narada-new-1
     narada-diff
-    narada-release-1
+    narada-release
     narada-patch-remote
     narada-patch-send
     narada-patch-pull
@@ -505,7 +532,7 @@ These tools are exists only for compatibility with Narada 1.x:
 $NARADA_USER optionally can be set to user's email. If set, it will be
 used by C<narada-new-1> to initialize C<config/patch/send/$USER>; by
 C<narada-patch-send> to avoid sending email to yourself; by
-C<narada-release-1> when adding header lines into C<doc/ChangeLog>.
+C<narada-release> when adding header lines into C<doc/ChangeLog>.
 
 
 =head1 COMPATIBILITY

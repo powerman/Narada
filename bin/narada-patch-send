@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
-narada-detect narada-1 >/dev/null || exit 1
+perl -MNarada -E 'Narada::detect(@ARGV)' narada-1 || exit 1
 
 perl -ne 'print if ($rec+=/^\S/) == 1' doc/ChangeLog  >tmp/ChangeLog.$$
 # Mutt options:

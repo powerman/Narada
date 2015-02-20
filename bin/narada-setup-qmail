@@ -7,6 +7,7 @@ our $VERSION = 'v1.4.5';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
+use Narada;
 use Narada::Config qw( get_config set_config );
 use File::Temp qw( tempfile );
 use Cwd qw( cwd );
@@ -18,7 +19,7 @@ sub err {   ## no critic (ProhibitBuiltinHomonyms)
 }
 
 sub main {
-    system('narada-detect narada narada-1 >/dev/null') == 0 or exit 1;
+    Narada::detect();
 
     die "Usage: narada-setup-qmail [--clean]\n"
         if (@_ >  1)

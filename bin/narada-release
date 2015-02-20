@@ -7,6 +7,7 @@ our $VERSION = 'v1.4.5';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
+use Narada;
 use Narada::Config qw(get_config_line set_config);
 use File::Temp qw( tempdir );
 
@@ -19,7 +20,7 @@ main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 sub err { die "narada-release-1: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
 
 sub main {
-    system('narada-detect narada-1 >/dev/null') == 0 or exit 1;
+    Narada::detect('narada-1');
 
     rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
 

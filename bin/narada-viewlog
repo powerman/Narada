@@ -7,7 +7,7 @@ our $VERSION = 'v1.4.5';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
-
+use Narada;
 use List::Util qw( min any );
 
 use constant BAD_INODE => -1;
@@ -24,7 +24,7 @@ main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
 sub err { die "narada-viewlog: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
 
 sub main {
-    system('narada-detect narada narada-1 >/dev/null') == 0 or exit 1;
+    Narada::detect();
     my ($opt, @files) = parse_opt(@_);
     if (@files) {
         for (@files) {

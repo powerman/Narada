@@ -40,7 +40,6 @@ git commit --allow-empty -m 'empty'
 git tag -a -m empty "$INITIAL_VERSION"
 git remote add narada-base -t "$branch" -m "$branch" -f "$repo"
 git merge narada-base -m 'narada-new: merge narada-base'
-echo "$INITIAL_VERSION" > VERSION
 NARADA_GIT_TAG="-a -m narada-new" ./release --minor
 ./deploy
 

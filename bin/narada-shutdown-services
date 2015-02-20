@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 VERSION="v1.4.5"
 
-narada-detect narada narada-1 >/dev/null || exit 1
+perl -MNarada -E 'Narada::detect(@ARGV)' || exit 1
 
 kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
 

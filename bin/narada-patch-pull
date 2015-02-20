@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
-narada-detect narada-1 >/dev/null || exit 1
+perl -MNarada -E 'Narada::detect(@ARGV)' narada-1 || exit 1
 
 { ls -d var/patch/*; ls -d var/patch/*; narada-remote "ls -d var/patch/*"; } |
 	sort | uniq -u | xargs -r narada-download
