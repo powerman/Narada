@@ -8,10 +8,13 @@ our $VERSION = 'v1.4.5';
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada;
-use Narada::Config qw( get_config_line );
+use Narada::Config qw( get_config_line get_db_config );
 use DBI;
 
-use constant SCHEME => 'var/sql/db.scheme.sql';
+use constant IS_NARADA      => Narada::detect() eq 'narada';
+use constant CONFIG_DIR     => IS_NARADA ? 'mysql'      : 'db';
+use constant SQL_DIR        => IS_NARADA ? 'var/mysql'  : 'var/sql';
+use constant SCHEME         => SQL_DIR.'/db.scheme.sql';
 
 main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
 
@@ -20,13 +23,11 @@ sub err {   ## no critic (ProhibitBuiltinHomonyms)
 }
 
 sub main {
-    Narada::detect();
-
     die "Usage: narada-setup-mysql [--clean]\n"
         if (@_ >  1)
         || (@_ == 1 && $_[0] ne '--clean');
 
-    my $db = get_config_db() or return;
+    my $db = get_db_config() or return;
     $::dbh = DBI->connect($db->{dsn_nodb}, $db->{login}, $db->{pass},
         {RaiseError=>1}) or err DBI->errstr;
 
@@ -41,30 +42,13 @@ sub main {
         }
         if (-f SCHEME) {
             import_sql(SCHEME);
-            for (grep {-f && $_ ne SCHEME} glob 'var/sql/*.sql') {
+            for (grep {-f && $_ ne SCHEME} glob SQL_DIR.'/*.sql') {
                 import_sql($_);
             }
         }
     }
 
     return;
-}
-
-sub get_config_db {
-    my %db;
-    $db{db} = eval { get_config_line('db/db') };
-    if (!defined $db{db} || !length $db{db}) {
-        return;
-    }
-    $db{login}= get_config_line('db/login');
-    $db{pass} = get_config_line('db/pass');
-    $db{host} = eval { get_config_line('db/host') };
-    $db{port} = eval { get_config_line('db/port') };
-    $db{dsn_nodb}  = 'dbi:mysql:';
-    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
-    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)
-#    $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
-    return \%db;
 }
 
 sub import_sql {
@@ -102,29 +86,26 @@ directory).
 
 Initialize/drop your Narada project's MySQL database.
 
-If "config/db/db" absent or empty do nothing.
+If "config/mysql/db" absent or empty do nothing.
 
 When executed without params will create database (if needed) and load sql dumps
-into database (if C<var/sql/db.scheme.sql> exist).
+into database (if C<var/mysql/db.scheme.sql> exist).
 
 When executed with --clean option will drop project's database with all tables.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-narada-setup-mysql use these configuration files:
+    config/mysql/db
+    config/mysql/login
+    config/mysql/pass
+    config/mysql/host
+    config/mysql/port
+    var/mysql/db.scheme.sql
+    var/mysql/*.sql
 
-    config/db/db
-    config/db/login
-    config/db/pass
-    config/db/host
-    config/db/port
-
-Database initialized using these files (db.scheme.sql must exist and will
-be loaded first, other files will be loaded in undefined order):
-
-    var/sql/db.scheme.sql
-    var/sql/*.sql
+Narada 1.x project use C<config/db/> instead of C<config/mysql/>,
+and C<var/sql/> instead of C<var/mysql/>.
 
 
 =head1 SUPPORT

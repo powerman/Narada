@@ -9,8 +9,6 @@ use Cwd qw( cwd );
 
 use Narada::Config qw( set_config );
 
-require 'blib/script/narada-mysqldump';
-
 chomp(my ($db, $login, $pass) = `cat t/.answers`);
 
 if ($db eq q{}) {
@@ -25,6 +23,8 @@ $ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
 chdir tempdir( CLEANUP => 1 )
     and system('narada-new-1') == 0
     or die "Unable to create project: $!";
+
+require 'blib/script/narada-mysqldump';
 
 
 # - init_globals()

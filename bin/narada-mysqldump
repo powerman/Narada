@@ -9,14 +9,17 @@ use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada;
 use Narada::Lock qw( exclusive_lock unlock_new unlock );;
-use Narada::Config qw( get_config get_config_line );
+use Narada::Config qw( get_config get_config_line get_db_config );
 use DBI;
 use Time::Local;
 use List::Util qw( max );
 use File::Temp qw( tempfile );
 use Fcntl qw(F_SETFD);
 
-use constant SCHEME => 'var/sql/db.scheme.sql';
+use constant IS_NARADA      => Narada::detect() eq 'narada';
+use constant CONFIG_DIR     => IS_NARADA ? 'mysql'      : 'db';
+use constant SQL_DIR        => IS_NARADA ? 'var/mysql'  : 'var/sql';
+use constant SCHEME         => SQL_DIR.'/db.scheme.sql';
 use constant REQUIRED_TABLE => 0;
 use constant OPTIONAL_TABLE => 1;
 use constant TIMELOCAL_MONTH=> 4;
@@ -37,8 +40,6 @@ sub err {   ## no critic (ProhibitBuiltinHomonyms)
 }
 
 sub main {
-    Narada::detect();
-
     die "Usage: narada-mysqldump\n" if @_;
 
     init_globals() or return;
@@ -65,7 +66,7 @@ sub main {
 }
 
 sub init_globals {
-    my $db = get_config_db() or return;
+    my $db = get_db_config() or return;
     $::dbh = DBI->connect($db->{dsn}, $db->{login}, $db->{pass},
         {RaiseError=>1}) or err DBI->errstr;
     $::mycnf = tempfile(DIR=>'tmp');
@@ -82,27 +83,10 @@ sub init_globals {
     return 1;
 }
 
-sub get_config_db {
-    my %db;
-    $db{db} = eval { get_config_line('db/db') };
-    if (!defined $db{db} || !length $db{db}) {
-        return;
-    }
-    $db{login}= get_config_line('db/login');
-    $db{pass} = get_config_line('db/pass');
-    $db{host} = eval { get_config_line('db/host') } || q{};
-    $db{port} = eval { get_config_line('db/port') } || q{};
-    $db{dsn_nodb}  = 'dbi:mysql:';
-    $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
-    $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)
-    $db{dsn} = $db{dsn_nodb}.';database='.$db{db};
-    return \%db;
-}
-
 sub list_tables {
-    my $incremental = load_conf('db/dump/incremental', REQUIRED_TABLE);
-    my $empty       = load_conf('db/dump/empty', REQUIRED_TABLE);
-    my $ignore      = load_conf('db/dump/ignore', OPTIONAL_TABLE);
+    my $incremental = load_db_conf('dump/incremental', REQUIRED_TABLE);
+    my $empty       = load_db_conf('dump/empty', REQUIRED_TABLE);
+    my $ignore      = load_db_conf('dump/ignore', OPTIONAL_TABLE);
     my %other = map {$_=>1} @{$incremental}, @{$empty}, @{$ignore};
     my @full;
     for my $table (@{ $::dbh->selectcol_arrayref('SHOW TABLES') }) {
@@ -112,9 +96,9 @@ sub list_tables {
     return ([sort @full], $incremental, $ignore);
 }
 
-sub load_conf {
+sub load_db_conf {
     my ($conf, $required) = @_;
-    my @conf = eval { split /\s*\n/xms, get_config($conf) };
+    my @conf = eval { split /\s*\n/xms, get_config(CONFIG_DIR."/$conf") };
     my @tables;
     for my $table (@conf) {
         local ($::dbh->{RaiseError}, $::dbh->{PrintError});
@@ -133,7 +117,7 @@ sub detect_unchanged {
     my ($full) = @_;
     my @unchanged;
     for my $table (@{$full}) {
-        my $file = "var/sql/$table.sql";
+        my $file = SQL_DIR."/$table.sql";
         if (-f $file && mtime($file) == get_table_status($table, 'Update_time')) {
             push @unchanged, $table;
         }
@@ -145,7 +129,7 @@ sub del_dumps_except {
     my ($incremental, $unchanged) = @_;
     my %incremental = map {$_=>1} @{$incremental};
     my %unchanged   = map {$_=>1} @{$unchanged};
-    for my $file (glob 'var/sql/*.sql') {
+    for my $file (glob SQL_DIR.'/*.sql') {
         if ($file =~ m{\Avar/sql/([^.]*)[.]sql\z}xms) {
             my $table = $1;
             next if $unchanged{$table};
@@ -162,7 +146,7 @@ sub del_dumps_except {
 
 sub dump_scheme_except {
     my ($ignore) = @_;
-    my $db = get_config_line('db/db');
+    my $db = get_config_line(CONFIG_DIR.'/db');
     my $tables = join q{ }, map {"--ignore-table=\Q$db\E.\Q$_\E"} @{$ignore};
     mysqldump("--opt -d $tables", SCHEME, time);
     return;
@@ -173,7 +157,7 @@ sub dump_full {
     my %unchanged = map {$_=>1} @{$unchanged};
     for my $table (@{$full}) {
         next if $unchanged{$table};
-        my $file = "var/sql/$table.sql";
+        my $file = SQL_DIR."/$table.sql";
         my $t = get_table_status($table, 'Update_time');
         mysqldump("--opt -t \Q$table\E", $file, $t);
     }
@@ -184,12 +168,12 @@ sub dump_incremental {
     my ($incremental) = @_;
     for my $table (@{$incremental}) {
         my $key  = get_key($table);
-        my $prev = max(0, map {m/-(\d+)[.]sql\z/xms} glob "var/sql/\Q$table\E.*.sql");
+        my $prev = max(0, map {m/-(\d+)[.]sql\z/xms} glob SQL_DIR."/\Q$table\E.*.sql");
         my $next = get_table_status($table, 'Auto_increment');
         if ($prev < $next-1) {
             my $from = $prev+1;
             my $to   = $next-1;
-            my $file = "var/sql/$table.$from-$to.sql";
+            my $file = SQL_DIR."/$table.$from-$to.sql";
             my $where= "$key>=$from AND $key<=$to";
             my $t    = get_table_status($table, 'Update_time');
             mysqldump("--opt -t -w \Q$where\E \Q$table\E", $file, $t);
@@ -270,29 +254,29 @@ directory).
 
 Backup your Narada project's MySQL database.
 
-If "config/db/db" absent or empty do nothing.
+If "config/mysql/db" absent or empty do nothing.
 
-Dump database as quickly as possible to files "var/sql/*.sql":
+Dump database as quickly as possible to files "var/mysql/*.sql":
 
 =over
 
 =item *
 
-Tables listed in "config/db/dump/ignore" doesn't included in dump
+Tables listed in "config/mysql/dump/ignore" doesn't included in dump
 (even in database scheme).
 
 =item *
 
-Database scheme saved in "var/sql/db.scheme.sql".
+Database scheme saved in "var/mysql/db.scheme.sql".
 
 =item *
 
-Content for tables listed in "config/db/dump/empty" doesn't dumped.
+Content for tables listed in "config/mysql/dump/empty" doesn't dumped.
 
 =item *
 
-Content for tables listed in "config/db/dump/incremental" saved in
-"var/sql/TABLE_NAME.FROM-TO.sql".
+Content for tables listed in "config/mysql/dump/incremental" saved in
+"var/mysql/TABLE_NAME.FROM-TO.sql".
 
 =over
 
@@ -304,7 +288,7 @@ Only new rows will be saved, which is absent in already existing files.
 
 =item *
 
-Content for other tables saved in "var/sql/TABLE_NAME.sql".
+Content for other tables saved in "var/mysql/TABLE_NAME.sql".
 
 =over
 
@@ -317,12 +301,12 @@ file with previous dump.
 
 =item *
 
-All other "*.sql" files will be removed from "var/sql/".
+All other "*.sql" files will be removed from "var/mysql/".
 
 =back
 
 To force full dump (including incremental and unchanged tables) run
-"rm var/sql/*.sql" before "narada-mysqldump".
+"rm var/mysql/*.sql" before "narada-mysqldump".
 
 Will set exclusive lock on this project while doing database analyse and
 dumping database scheme and non-incremental tables. Incremental tables
@@ -337,22 +321,25 @@ PRIMARY KEY" (can also use "MEDIUMINT", etc.).
 After ALTER incremental table or doing TRUNCATE existing files with
 incremental dumps will be automatically removed and replaced by new ones.
 
-Tables listed in "config/db/dump/empty" and "config/db/dump/incremental"
-must exists; listed in "config/db/dump/ignore" may not exists.
+Tables listed in "config/mysql/dump/empty" and "config/mysql/dump/incremental"
+must exists; listed in "config/mysql/dump/ignore" may not exists.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-narada-mysqldump use these configuration files:
+    config/mysql/db
+    config/mysql/login
+    config/mysql/pass
+    config/mysql/host
+    config/mysql/port
+    config/mysql/dump/incremental
+    config/mysql/dump/empty
+    config/mysql/dump/ignore
+    var/mysql/db.scheme.sql
+    var/mysql/*.sql
 
-    config/db/db
-    config/db/login
-    config/db/pass
-    config/db/host
-    config/db/port
-    config/db/dump/incremental
-    config/db/dump/empty
-    config/db/dump/ignore
+Narada 1.x project use C<config/db/> instead of C<config/mysql/>,
+and C<var/sql/> instead of C<var/mysql/>.
 
 
 =head1 SUPPORT

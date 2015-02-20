@@ -9,8 +9,6 @@ use Cwd qw( cwd );
 
 use Narada::Config qw( set_config );
 
-require 'blib/script/narada-setup-mysql';
-
 chomp(my ($db, $login, $pass) = `cat t/.answers`);
 
 if ($db eq q{}) {
@@ -47,6 +45,8 @@ $ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
 chdir tempdir( CLEANUP => 1 )
     and system('narada-new-1') == 0
     or die "Unable to create project: $!";
+
+require 'blib/script/narada-setup-mysql';
 
 $::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});
 BAIL_OUT 'Database already exists' if db_exists();
