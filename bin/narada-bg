@@ -4,7 +4,7 @@ VERSION='v1.4.5'
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
-narada-detect narada-deploy >/dev/null || exit 1
+narada-detect narada >/dev/null || exit 1
 
 [ $# -ne 0 ] || die "Usage: narada-bg command [args]"
 

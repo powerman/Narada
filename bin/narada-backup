@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
-DETECT=$(narada-detect narada-deploy narada-1) || exit 1
+DETECT=$(narada-detect narada narada-1) || exit 1
 
 [ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
 
 
-if test "$DETECT" = "narada-deploy"; then
+if test "$DETECT" = "narada"; then
 	backup_dir='.backup'
 else
 	backup_dir='var/backup'

@@ -9,7 +9,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada::Lock qw( shared_lock child_inherit_lock );
 
-system('narada-detect narada-deploy narada-1 >/dev/null') == 0 or exit 1;
+system('narada-detect narada narada-1 >/dev/null') == 0 or exit 1;
 
 local @ARGV = @ARGV ? @ARGV : ('env', 'PS1=[SHARED] \u@\h \w \$ ', 'bash', '--norc');
 

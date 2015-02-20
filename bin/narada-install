@@ -64,7 +64,7 @@ sub main {
 
                 $prev_version = INITIAL_VERSION;
                 if (path('.')->children(qr/\A(?!\.release|\.backup)\z/ms)) {
-                        system('narada-detect narada-deploy >/dev/null') == 0 or exit 1;
+                        system('narada-detect narada >/dev/null') == 0 or exit 1;
                         ($prev_version) = path('VERSION')->lines({ chomp => 1 });
                 }
 

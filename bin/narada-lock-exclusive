@@ -9,7 +9,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada::Lock qw( exclusive_lock unlock_new );
 
-system('narada-detect narada-deploy narada-1 >/dev/null') == 0 or exit 1;
+system('narada-detect narada narada-1 >/dev/null') == 0 or exit 1;
 
 local @ARGV = @ARGV ? @ARGV : ('env', 'PS1=[LOCKED] \u@\h \w \$ ', 'bash', '--norc');
 
