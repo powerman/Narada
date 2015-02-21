@@ -3,6 +3,7 @@ VERSION='v1.4.5'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
+usage() { die "Usage: narada-new [-r base_repository] [-b branch] [directory]"; }
 
 
 INITIAL_VERSION="0.0.0"
@@ -10,18 +11,20 @@ dir="."
 repo="https://github.com/powerman/narada-base.git"
 branch="master"
 
-while test "$#" != "0"; do
-        if test "$1" = "-r" -a "$#" -ge 2; then
+while test $# -ne 0; do
+        if test "$1" = '-r' -a $# -ge 2; then
                 repo="${2:-$repo}"
                 shift 2
-        elif test "$1" = "-b" -a "$#" -ge 2; then
+        elif test "$1" = "-b" -a $# -ge 2; then
                 branch="${2:-master}"
                 shift 2
-        elif test "$#" = "1"; then
+        elif test "$1" = '-h' -o "$1" = '--help'; then
+                usage
+        elif test $# -eq 1; then
                 dir="${1:-.}"
                 shift
         else
-                die "Usage: narada-new [-r base_repository] [-b branch] [directory]"
+                usage
         fi
 done
 
@@ -40,8 +43,6 @@ git commit --allow-empty -m 'empty'
 git tag -a -m empty "$INITIAL_VERSION"
 git remote add narada-base -t "$branch" -m "$branch" -f "$repo"
 git merge narada-base -m 'narada-new: merge narada-base'
-NARADA_GIT_TAG="-a -m narada-new" ./release --minor
-./deploy
 
 
 : <<'=cut'
@@ -80,9 +81,11 @@ also contain C<_live/> subdirectory for testing project while development, that
 subdirectory become deploy directory of Narada project. All other C<narada-*>
 commands should be executed in (one of) these directories.
 
-It will merge C<base_repository>'s C<branch>, run C<./release --minor> and
-C<./deploy> to deploy it to C<_live/>. Default base repository is
+It will merge C<base_repository>'s C<branch>. Default base repository is
 L<https://github.com/powerman/narada-base.git>; default branch is "master".
+
+After that you usually should run C<./release --minor> and C<./deploy> to
+deploy it to C<_live/>.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

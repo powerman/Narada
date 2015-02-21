@@ -15,10 +15,7 @@ our $VERSION = 'v1.4.5';
 # - narada
 #       VERSION
 #       .backup/
-# - narada-source
-#       ./release
-#       ./deploy
-# - narada-1 and narada, but not narada-source
+# - narada-1 and narada
 #       config/backup/
 #       config/log/
 #       var/log/
