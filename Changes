@@ -1,6 +1,42 @@
 Revision history for Narada
 
 {{$NEXT}}
+	[Files & Directories]
+	- config/crontab    -> config/crontab/*
+	- config/db/        -> config/mysql/
+	- config/patch/     ->
+	-                   -> config/service/type
+	- config/version    -> VERSION
+	- var/backup/       -> .backup/
+	- var/.lock         -> .lock
+	- var/.lock.new     -> .lock.new
+	-                   -> .lock.bg
+	- var/.lock.service -> service/.lock
+	- var/patch/        -> .release/
+	- var/sql/          -> var/mysql/
+
+	[new tools to work with Git]
+	- add narada-install
+	- add narada-new
+
+	[new tools]
+	- add narada-bg
+	- add narada-restore
+
+	[improve detection of Narada dirs]
+	- add Narada::detect()
+	- update all scripts to use Narada::detect()
+
+	[compatibility with Narada 1.x]
+	- add narada-new-1
+
+	[re-group tests]
+	- add t/compat-v1/
+	- add xt/release/
+	- add xt/author/
+
+	[tests]
+	- consistently use cwd()
 
 v1.4.5  2015-02-07 07:44:20 EET
 	- fix mysql detection for tests
