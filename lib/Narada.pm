@@ -23,7 +23,7 @@ sub detect {
     my %need = map {$_=>1} @_ ? @_ : qw( narada narada-1 );
     my $type
       = -d 'config/backup'  && -d '.backup'     ? 'narada'
-      : -f 'config/backup'  && -d 'var/backup'  ? 'narada-1'
+      : -d 'config/backup'  && -d 'var/backup'  ? 'narada-1'
       :                                           undef
       ;
     return $type if $type && $need{$type};

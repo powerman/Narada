@@ -19,7 +19,7 @@ This document describes Narada version v1.4.5
 # DESCRIPTION
 
 Narada designed for ease development, deploy and support for medium and
-big projects. It's main goal is to restrict you with __one way to manage__
+big projects. It's main goal is to restrict you with **one way to manage**
 your project (which doesn't really depend on your project's nature), and
 doesn't restrict your project's implementation in any way. With Narada you
 can create any projects using any programming languages - while your
@@ -97,7 +97,7 @@ have common runtime environment, logs, etc.) with different entry points
 # INTERFACE
 
 Narada, as a framework, provide you with some interface (mostly it's just
-conventions about some files and directories), and you __MUST__ conform to
+conventions about some files and directories), and you **MUST** conform to
 that interface of things will break.
 
 > For example, let's review interfaces related to "Consistent and fast
@@ -106,7 +106,7 @@ that interface of things will break.
 > "Consistent" require using shared/exclusive file locking on file
 > `.lock`. All Narada does is create that file when generate new
 > project and acquire exclusive lock on it while executing `narada-backup`.
-> But to really have consistent backups __you__ must acquire shared lock on
+> But to really have consistent backups **you** must acquire shared lock on
 > that file when accessing any project files or database in any of your
 > scripts! In perl scripts you can use helper module [Narada::Lock](https://metacpan.org/pod/Narada::Lock), and
 > it's not a big deal to manually use flock(2) in any other language. If you
@@ -158,7 +158,7 @@ These directories will be created in project root:
 
 ## Team development and versioning Narada 1.x project
 
-__WARNING!__
+**WARNING!**
 Everything in this section is related only to Narada 1.x projects.
 These files/directories doesn't exists in current Narada projects.
 
