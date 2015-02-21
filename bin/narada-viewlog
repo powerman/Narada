@@ -21,7 +21,7 @@ my %Level = (err=>0,warn=>1,notice=>2,info=>3,debug=>4);
 main(@ARGV) if !caller;
 
 
-sub err { die "narada-viewlog: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+sub err { die "narada-viewlog: @_\n" };
 
 sub main {
     Narada::detect();

@@ -14,7 +14,7 @@ use Cwd qw( cwd );
 
 main(@ARGV) if !caller;
 
-sub err {   ## no critic (ProhibitBuiltinHomonyms)
+sub err {
     die "narada-setup-qmail: @_\n";
 }
 

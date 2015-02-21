@@ -31,7 +31,7 @@ local $SIG{QUIT}= sub { exit };  # cleanup temp files
 main(@ARGV) if !caller;
 
 
-sub err { die "narada-patch: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+sub err { die "narada-patch: @_\n" };
 sub color_die {
     my ($msg) = @_;
     $msg =~ s/\A/$BOLD$RED/xms;

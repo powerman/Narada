@@ -21,7 +21,7 @@ my $Last_backup;        # OPTIMIZATION delay copying last backup to drop exclusi
 main(@ARGV) if !caller;
 
 
-sub err { die "narada-install: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+sub err { die "narada-install: @_\n" };
 
 sub usage {
         print <<'EOUSAGE';

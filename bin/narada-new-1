@@ -13,7 +13,7 @@ use MIME::Base64;
 main(@ARGV) if !caller;
 
 
-sub err { die "narada-new-1: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+sub err { die "narada-new-1: @_\n" };
 
 sub main {
     die "Usage: narada-new-1 [/path/to/project]\n" if @_ > 1;

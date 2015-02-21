@@ -18,7 +18,7 @@ use constant SCHEME         => SQL_DIR.'/db.scheme.sql';
 
 main(@ARGV) if !caller;
 
-sub err {   ## no critic (ProhibitBuiltinHomonyms)
+sub err {
     die "narada-setup-mysql: @_\n";
 }
 

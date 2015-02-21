@@ -17,7 +17,7 @@ use constant WAIT2EXIT => 8;
 main(@ARGV) if !caller;
 
 
-sub err { die "narada-release-1: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
+sub err { die "narada-release-1: @_\n" };
 
 sub main {
     Narada::detect('narada-1');

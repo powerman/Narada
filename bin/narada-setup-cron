@@ -13,7 +13,7 @@ use Path::Tiny;
 
 main(@ARGV) if !caller;
 
-sub err {   ## no critic (ProhibitBuiltinHomonyms)
+sub err {
     die "narada-setup-cron: @_\n";
 }
 

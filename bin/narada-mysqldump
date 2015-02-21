@@ -35,7 +35,7 @@ use constant DESC_EXTRA     => 5;
 
 main(@ARGV) if !caller;
 
-sub err {   ## no critic (ProhibitBuiltinHomonyms)
+sub err {
     die "narada-mysqldump: @_\n";
 }
 
