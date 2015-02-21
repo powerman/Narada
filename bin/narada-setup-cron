@@ -9,6 +9,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use Narada;
 use Narada::Config qw( get_config set_config );
+use Path::Tiny;
 
 main(@ARGV) if !caller;
 
@@ -27,14 +28,14 @@ sub main {
         del_cron();
     }
     else {
-        my $crontab = eval { get_config('crontab') };
-        if ($@ =~ /no such file/ims) {
+        my $c = path('config/crontab');
+        my @configs = map {s{\Aconfig/}{}msr} grep {$_->is_file}
+                 $c->is_dir ? $c->children : $c;
+        if (!@configs) {
             del_cron();
         }
-        elsif ($@) {
-            err $@;
-        }
         else {
+            my $crontab = join "\n", map { get_config($_) } @configs;
             $crontab = process($crontab);
             set_cron($crontab);
         }
@@ -71,7 +72,7 @@ sub get_user_crontab {
     # WORKAROUND    If user has no crontab then `crontab -l` output string
     #               "no crontab for USERNAME". So we've to use `crontab -e`
     #               instead, to get empty output in this case.
-    open my $cron, q{-|}, 'EDITOR=cat crontab -e'    or err "crontab -e: $!";
+    open my $cron, q{-|}, 'EDITOR=cat crontab -e'   or err "crontab -e: $!";
     my $crontab = <$cron>;
     close $cron                                     or err "crontab -e: $!";
     return $crontab;
@@ -79,7 +80,7 @@ sub get_user_crontab {
 
 sub set_user_crontab {
     my ($crontab) = @_;
-    open my $cron, q{|-}, 'crontab -'                or err "crontab -e: $!";
+    open my $cron, q{|-}, 'crontab -'               or err "crontab -e: $!";
     print {$cron} $crontab;
     close $cron                                     or err "crontab -e: $!";
     return;
