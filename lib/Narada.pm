@@ -13,7 +13,7 @@ our $VERSION = 'v1.4.5';
 #       var/backup/
 #       var/patch/
 # - narada
-#       VERSION
+#       VERSION (except when migrating from 0.0.0)
 #       .backup/
 # - narada-1 and narada
 #       config/backup/
@@ -22,8 +22,8 @@ our $VERSION = 'v1.4.5';
 sub detect {
     my %need = map {$_=>1} @_ ? @_ : qw( narada narada-1 );
     my $type
-      = -f 'VERSION'        && -d '.backup'     ? 'narada'
-      : -f 'config/version' && -d 'var/backup'  ? 'narada-1'
+      = -d 'config/backup'  && -d '.backup'     ? 'narada'
+      : -f 'config/backup'  && -d 'var/backup'  ? 'narada-1'
       :                                           undef
       ;
     return $type if $type && $need{$type};

@@ -65,10 +65,12 @@ sub main {
         for my $step ($migrate->get_steps($args{path})) {
                 my $t = $step->{type};
                 my $is_down = $t eq 'downgrade' || $t eq 'after_downgrade';
-                err 'downgrade required, use --allow-downgrade to continue'
-                        if $is_down && !$args{allow_downgrade};
-                err 'RESTORE required, use --allow-restore to continue'
-                        if $t eq 'RESTORE' && !$args{allow_restore};
+                if ($mode ne 'path') {
+                        err 'downgrade required, use --allow-downgrade to continue'
+                                if $is_down && !$args{allow_downgrade};
+                        err 'RESTORE required, use --allow-restore to continue'
+                                if $t eq 'RESTORE' && !$args{allow_restore};
+                }
                 if ($t eq 'RESTORE' || ($is_down && $step->{cmd} =~ /narada-restore/ms)) {
                         my $f = path(".backup/full-$step->{next_version}.tar");
                         err "required backup not found: $f" if !$f->is_file;
@@ -108,6 +110,7 @@ sub parse_args {
                 $args{next_version} = $args{path}[-1];
         }
         else {
+                $mode = q{};
                 while (my $param = shift) {
                         if ($param eq '--allow-downgrade' || $param eq '-D') {
                                 $args{allow_downgrade} = 1;
@@ -136,7 +139,9 @@ sub parse_args {
 sub ask {
         my ($msg, $match) = @_;
         print $msg;
-        while (<>) {
+        # TODO try IO::Prompter
+        ## no critic (ProhibitExplicitStdin)
+        while (<STDIN>) {
                 chomp;
                 return $_ if /$match/ms;
                 print $msg;
@@ -186,7 +191,7 @@ sub _version {
                 path('VERSION')->remove;
         }
         else {
-                path('VERSION')->spew($step->{version});
+                path('VERSION')->spew_utf8("$step->{version}\n");
         }
         return;
 }
