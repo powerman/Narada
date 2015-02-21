@@ -10,7 +10,7 @@ use lib "$FindBin::Bin/../lib/perl5";
 use Narada;
 use Narada::Config qw( get_config set_config );
 
-main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 sub err {   ## no critic (ProhibitBuiltinHomonyms)
     die "narada-setup-cron: @_\n";

@@ -18,16 +18,16 @@ use constant LOCKNEW    => DIR.'.lock.new';
 use constant LOCKFILE   => DIR.'.lock';
 use constant TICK       => 0.1;
 
-my $f_lock;
+my $F_lock;
 
 
 sub shared_lock :Export {
     my $timeout = shift;
     return 1 if $ENV{NARADA_SKIP_LOCK};
-    sysopen $f_lock, LOCKFILE, O_RDONLY|O_CREAT         or croak "open: $!";
+    sysopen $F_lock, LOCKFILE, O_RDONLY|O_CREAT         or croak "open: $!";
     while (1) {
         next            if -e LOCKNEW;
-        last            if flock $f_lock, LOCK_SH|LOCK_NB;
+        last            if flock $F_lock, LOCK_SH|LOCK_NB;
         $!{EWOULDBLOCK}                                 or croak "flock: $!";
     } continue {
         return          if defined $timeout and (($timeout-=TICK) < TICK);
@@ -38,9 +38,9 @@ sub shared_lock :Export {
 
 sub exclusive_lock :Export {
     return if $ENV{NARADA_SKIP_LOCK};
-    sysopen $f_lock, LOCKFILE, O_WRONLY|O_CREAT         or croak "open: $!";
+    sysopen $F_lock, LOCKFILE, O_WRONLY|O_CREAT         or croak "open: $!";
     while (1) {
-        last if flock $f_lock, LOCK_EX|LOCK_NB;
+        last if flock $F_lock, LOCK_EX|LOCK_NB;
         $!{EWOULDBLOCK}                                 or croak "flock: $!";
         system('touch', LOCKNEW) == 0                   or croak "touch: $!/$?";
         sleep TICK;
@@ -57,8 +57,8 @@ sub unlock_new :Export {
 
 sub unlock :Export {
     return if $ENV{NARADA_SKIP_LOCK};
-    if ($f_lock) {
-        flock $f_lock, LOCK_UN                          or croak "flock: $!";
+    if ($F_lock) {
+        flock $F_lock, LOCK_UN                          or croak "flock: $!";
     }
     return;
 }
@@ -66,8 +66,8 @@ sub unlock :Export {
 sub child_inherit_lock :Export {
     my ($is_inherit) = @_;
     return if $ENV{NARADA_SKIP_LOCK};
-    if ($f_lock) {
-        fcntl $f_lock, F_SETFD, $is_inherit ? 0 : FD_CLOEXEC or croak "fcntl: $!";
+    if ($F_lock) {
+        fcntl $F_lock, F_SETFD, $is_inherit ? 0 : FD_CLOEXEC or croak "fcntl: $!";
     }
     return;
 }

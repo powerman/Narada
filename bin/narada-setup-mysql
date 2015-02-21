@@ -16,7 +16,7 @@ use constant CONFIG_DIR     => IS_NARADA ? 'mysql'      : 'db';
 use constant SQL_DIR        => IS_NARADA ? 'var/mysql'  : 'var/sql';
 use constant SCHEME         => SQL_DIR.'/db.scheme.sql';
 
-main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 sub err {   ## no critic (ProhibitBuiltinHomonyms)
     die "narada-setup-mysql: @_\n";

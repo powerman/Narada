@@ -28,7 +28,7 @@ our $WHITE  = "\033[37m";
 
 local $SIG{INT} = sub { exit };  # cleanup temp files
 local $SIG{QUIT}= sub { exit };  # cleanup temp files
-main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 
 sub err { die "narada-patch: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)

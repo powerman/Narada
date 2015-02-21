@@ -14,11 +14,11 @@ use constant BAD_INODE => -1;
 use constant TAIL_BLOCK => 8192;
 use constant TAIL_LINES => 20;
 
-my ($prev_date, $multiline) = (q{}, 1);
-my %level = (err=>0,warn=>1,notice=>2,info=>3,debug=>4);
+my ($Prev_date, $Multiline) = (q{}, 1);
+my %Level = (err=>0,warn=>1,notice=>2,info=>3,debug=>4);
 
 
-main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 
 sub err { die "narada-viewlog: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)
@@ -109,7 +109,7 @@ sub print_line { ## no critic (ProhibitExcessComplexity)
     my $r_faclvl = qr/(\w+)[.](\w+)/xms;
     my $r_idpid  = qr/([^\[]+)\[(\d+)\]/xms;
     if ($line !~ m{\A$r_time\s$r_faclvl:\s\S+\s+\S+\s\S+\s+$r_idpid:\s(.*)\z}xms) {
-        if ($multiline) {
+        if ($Multiline) {
             $line =~ s/\A$r_time\s//xms;
             print $line;
         }
@@ -117,17 +117,17 @@ sub print_line { ## no critic (ProhibitExcessComplexity)
     else {
         my ($date, $time, $msec, $facility, $level, $ident, $pid, $msg)
             = ($1,$2,$3,$4,$5,$6,$7,$8);
-        $multiline = 0;
-        return if $opt->{L} && $level{lc $level} > $level{lc $opt->{L}};
+        $Multiline = 0;
+        return if $opt->{L} && $Level{lc $level} > $Level{lc $opt->{L}};
         return if $opt->{R} && $msg !~ /$opt->{R}/xms;
-        $multiline = 1;
+        $Multiline = 1;
         my (@p);
         if ($opt->{d}) {
             push @p, sprintf '%s', $date;
         }
-        elsif ($opt->{t} && $prev_date ne $date) {
+        elsif ($opt->{t} && $Prev_date ne $date) {
             printf "=== %s\n", $date;
-            $prev_date = $date;
+            $Prev_date = $date;
         }
         ## no critic (ProhibitPostfixControls)
         if ($opt->{t} && $opt->{m}) {

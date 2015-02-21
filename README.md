@@ -172,8 +172,8 @@ These files/directories doesn't exists in current Narada projects.
     where PROJECTNAME is name of project root directory.
 
     Last number in this string will be automatically incremented by
-    `narada-release-1` unless this file was manually modified since previous
-    `narada-release-1` run.
+    `narada-release` unless this file was manually modified since previous
+    `narada-release` run.
 
 - `config/version.*`
 
@@ -196,7 +196,7 @@ These files/directories doesn't exists in current Narada projects.
 
 - `doc/ChangeLog`
 
-    Project's change log, in standard format. `narada-release-1` will ask you
+    Project's change log, in standard format. `narada-release` will ask you
     to enter changes using $EDITOR and then automatically insert/update line
     with date/version.
 
@@ -207,7 +207,7 @@ These files/directories doesn't exists in current Narada projects.
 - `var/patch/`
 
     Contains all project updates (patches). `narada-diff` will create new
-    update candidate in this directory for manual review; `narada-release-1`
+    update candidate in this directory for manual review; `narada-release`
     will turn candidate into released update; `narada-patch` will apply
     updates found this this directory to project; etc.
 
@@ -415,8 +415,6 @@ Read man pages of these tools for details.
     narada-backup
     narada-mysqldump
 
-    narada-release
-
     narada-remote
     narada-upload
     narada-download
@@ -432,7 +430,7 @@ These tools are exists only for compatibility with Narada 1.x:
 
     narada-new-1
     narada-diff
-    narada-release-1
+    narada-release
     narada-patch-remote
     narada-patch-send
     narada-patch-pull
@@ -445,7 +443,7 @@ These tools are exists only for compatibility with Narada 1.x:
 $NARADA\_USER optionally can be set to user's email. If set, it will be
 used by `narada-new-1` to initialize `config/patch/send/$USER`; by
 `narada-patch-send` to avoid sending email to yourself; by
-`narada-release-1` when adding header lines into `doc/ChangeLog`.
+`narada-release` when adding header lines into `doc/ChangeLog`.
 
 # COMPATIBILITY
 

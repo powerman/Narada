@@ -12,7 +12,7 @@ use Narada::Config qw( get_config set_config );
 use File::Temp qw( tempfile );
 use Cwd qw( cwd );
 
-main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 sub err {   ## no critic (ProhibitBuiltinHomonyms)
     die "narada-setup-qmail: @_\n";

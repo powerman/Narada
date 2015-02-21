@@ -14,7 +14,7 @@ use File::Temp qw( tempdir );
 use constant WAIT2EXIT => 8;
 
 
-main(@ARGV) unless caller;    ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 
 sub err { die "narada-release-1: @_\n" }; ## no critic (ProhibitBuiltinHomonyms)

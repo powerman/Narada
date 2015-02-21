@@ -33,7 +33,7 @@ use constant DESC_EXTRA     => 5;
 
 # GLOBALS:  $::dbh, $::mycnf, $::MYSQLDUMP
 
-main(@ARGV) unless caller;  ## no critic (ProhibitPostfixControls)
+main(@ARGV) if !caller;
 
 sub err {   ## no critic (ProhibitBuiltinHomonyms)
     die "narada-mysqldump: @_\n";
@@ -205,7 +205,7 @@ sub get_key {
     my ($table) = @_;
     my $desc = $::dbh->selectall_arrayref('DESC '.$table);
     err "First field in table $table must be: INT AUTO_INCREMENT PRIMARY KEY\n"
-        if !(@{ $desc }                         ## no critic (ProhibitPostfixControls)
+        if !(@{ $desc }
         && $desc->[0][DESC_TYPE]=~/\A\w*int\b/xms
         && $desc->[0][DESC_KEY] eq 'PRI'
         && $desc->[0][DESC_EXTRA] eq 'auto_increment'
