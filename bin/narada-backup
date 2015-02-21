@@ -39,16 +39,16 @@ _tar(){
     return $status
 }
 
-narada-mysqldump                                    &&
+narada-mysqldump                                                &&
 if [ -f $snap -a -f $full ]; then
-    mv $full $full.tmp                              &&
-    _tar -c -g $snap "${excl[@]}" -f $incr.tmp ./   &&
-    mv $incr.tmp $incr                              &&
+    mv $full $full.tmp                                          &&
+    _tar -c -g $snap --anchored "${excl[@]}" -f $incr.tmp ./    &&
+    mv $incr.tmp $incr                                          &&
     _tar -g /dev/null -A $incr -f $full.tmp
 else
-    rm -f $snap $full $full.tmp $incr $incr.tmp     &&
-    _tar -c -g $snap "${excl[@]}" -f $full.tmp ./
-fi                                                  &&
+    rm -f $snap $full $full.tmp $incr $incr.tmp                 &&
+    _tar -c -g $snap --anchored "${excl[@]}" -f $full.tmp ./
+fi                                                              &&
 mv $full.tmp $full
 
 
