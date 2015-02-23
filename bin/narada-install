@@ -10,7 +10,7 @@ use lib "$FindBin::Bin/../lib/perl5";
 use Path::Tiny;
 use Narada;
 use Narada::Lock qw( exclusive_lock unlock_new shared_lock unlock );
-use App::Migrate;
+use App::migrate;
 
 use constant INITIAL_VERSION    => '0.0.0';
 use constant FULL_BACKUP        => path('.backup/full.tar');
@@ -37,14 +37,14 @@ sub main {
         my ($mode, %args) = parse_args(@_);
 
         if ($mode eq 'check') {
-                App::Migrate->new->load($args{file});
+                App::migrate->new->load($args{file});
                 return;
         }
         elsif ($args{next_version} eq $args{prev_version}) {
                 return;
         }
 
-        my $migrate = App::Migrate->new->load(".release/$args{next_version}.migrate");
+        my $migrate = App::migrate->new->load(".release/$args{next_version}.migrate");
         if (-f ".release/$args{prev_version}.migrate") {
                 $migrate->load(".release/$args{prev_version}.migrate");
         }
