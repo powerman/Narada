@@ -49,7 +49,7 @@ sub main {
                 $migrate->load(".release/$args{prev_version}.migrate");
         }
 
-        my @paths = $migrate->find_paths($args{next_version}, $args{prev_version});
+        my @paths = $migrate->find_paths($args{prev_version}, $args{next_version});
         if (0 == @paths) {
                 err "unable to find migration path from $args{prev_version} to $args{next_version}";
         }
@@ -71,7 +71,7 @@ sub main {
                         err 'RESTORE required, use --allow-restore to continue'
                                 if $t eq 'RESTORE' && !$args{allow_restore};
                 }
-                if ($t eq 'RESTORE' || ($is_down && $step->{cmd} =~ /narada-restore/ms)) {
+                if ($t eq 'RESTORE') {
                         my $f = path(".backup/full-$step->{next_version}.tar");
                         err "required backup not found: $f" if !$f->is_file;
                 }
@@ -128,7 +128,7 @@ sub parse_args {
                 usage() if !$args{next_version};
 
                 $args{prev_version} = INITIAL_VERSION;
-                if (path(q{.})->children(qr/\A(?![.]release|[.]backup)\z/ms)) {
+                if (path(q{.})->children(qr/\A(?![.]release|[.]backup).*\z/ms)) {
                         Narada::detect('narada');
                         ($args{prev_version}) = path('VERSION')->lines({ chomp => 1 });
                 }

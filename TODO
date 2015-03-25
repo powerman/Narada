@@ -4,3 +4,5 @@ POWER::GPG (release it to CPAN first).
 FIXME Test/add Innodb support (mysqldump tests which pass on MyISAM are
 fails on Innodb).
 
+Add non-interactive mode for narada-install to use in CI/CD.
+
