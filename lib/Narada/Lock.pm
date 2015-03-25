@@ -7,13 +7,15 @@ use Carp;
 our $VERSION = 'v1.4.5';
 
 # update DEPENDENCIES in POD & Build.PL & README
-use Time::HiRes qw( sleep );
 use Perl6::Export::Attrs;
+use Narada;
 use Fcntl qw(:DEFAULT :flock F_SETFD FD_CLOEXEC);
 use Errno;
+use Time::HiRes qw( sleep );
 
 
-use constant DIR        => -f 'config/version' && -d 'var/patch/' ? 'var/' : q{};
+use constant IS_NARADA  => Narada::detect() eq 'narada';
+use constant DIR        => IS_NARADA ? q{} : 'var/';
 use constant LOCKNEW    => DIR.'.lock.new';
 use constant LOCKFILE   => DIR.'.lock';
 use constant TICK       => 0.1;

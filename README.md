@@ -246,7 +246,7 @@ These files/directories doesn't exists in current Narada projects.
         ./.lock             to avoid unlocking while restoring from backup
         ./.lock.new         to avoid project in locked state after restore
                             from backup
-        ./service/.lock     to avoid unlocking while restoring from backup
+        ./.lock.service     to avoid unlocking while restoring from backup
                             (this file is from narada-plugin-runit, but same
                             should apply to similar files from other plugins)
 
@@ -453,7 +453,7 @@ Narada 1.x project use `var/.lock` instead of `.lock`.
 
 Narada 1.x project use `var/.lock.new` instead of `.lock.new`.
 
-Narada 1.x project use `var/.lock.service` instead of `service/.lock`.
+Narada 1.x project use `var/.lock.service` instead of `.lock.service`.
 
 # SUPPORT
 

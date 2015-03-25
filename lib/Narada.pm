@@ -303,7 +303,7 @@ in backup. Must contain at least these lines:
     ./.lock             to avoid unlocking while restoring from backup
     ./.lock.new         to avoid project in locked state after restore
                         from backup
-    ./service/.lock     to avoid unlocking while restoring from backup
+    ./.lock.service     to avoid unlocking while restoring from backup
                         (this file is from narada-plugin-runit, but same
                         should apply to similar files from other plugins)
 
@@ -540,7 +540,7 @@ Narada 1.x project use C<var/.lock> instead of C<.lock>.
 
 Narada 1.x project use C<var/.lock.new> instead of C<.lock.new>.
 
-Narada 1.x project use C<var/.lock.service> instead of C<service/.lock>.
+Narada 1.x project use C<var/.lock.service> instead of C<.lock.service>.
 
 
 =head1 SUPPORT

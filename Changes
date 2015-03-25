@@ -1,7 +1,7 @@
 Revision history for Narada
 
 {{$NEXT}}
-	[Files & Directories]
+	[Changes in project structure]
 	- config/crontab    -> config/crontab/*
 	- config/db/        -> config/mysql/
 	- config/patch/     ->
@@ -11,32 +11,41 @@ Revision history for Narada
 	- var/.lock         -> .lock
 	- var/.lock.new     -> .lock.new
 	-                   -> .lock.bg
-	- var/.lock.service -> service/.lock
+	- var/.lock.service -> .lock.service
 	- var/patch/        -> .release/
 	- var/sql/          -> var/mysql/
 
-	[new tools to work with Git]
-	- add narada-install
+	[New tools]
 	- add narada-new
-
-	[new tools]
-	- add narada-bg
+	- add narada-install
 	- add narada-restore
+	- add narada-bg
 
-	[improve detection of Narada dirs]
+	[Compatibility with Narada 1.x]
+	- add narada-new-1
+	- all old Narada 1.x tools still compatible with Narada 1.x
+	- keep narada-diff
+	- keep narada-release
+	- keep narada-patch-remote
+	- keep narada-patch-send
+	- keep narada-patch-pull
+	- keep narada-patch
+
+	[Improve detection of Narada dirs]
 	- add Narada::detect()
 	- update all scripts to use Narada::detect()
 
-	[compatibility with Narada 1.x]
-	- add narada-new-1
-
-	[re-group tests]
+	[Regroup tests]
 	- add t/compat-v1/
 	- add xt/release/
 	- add xt/author/
 
-	[tests]
+	[Tests]
 	- consistently use cwd()
+
+	[Internal]
+	- powerdiff moved to App::powerdiff
+	- reformat Changes to match CPAN::Changes::Spec
 
 v1.4.5  2015-02-07 07:44:20 EET
 	- fix mysql detection for tests

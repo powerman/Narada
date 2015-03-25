@@ -17,7 +17,7 @@ use constant WAIT2EXIT => 8;
 main(@ARGV) if !caller;
 
 
-sub err { die "narada-release-1: @_\n" };
+sub err { die "narada-release: @_\n" };
 
 sub main {
     Narada::detect('narada-1');
@@ -132,17 +132,17 @@ sub update_changelog {
 
 =head1 NAME
 
-narada-release-1 - release current changes in Narada project
+narada-release - release current changes in Narada project
 
 
 =head1 VERSION
 
-This document describes narada-release-1 version v1.4.5
+This document describes narada-release version v1.4.5
 
 
 =head1 USAGE
 
-    narada-release-1
+    narada-release
 
 
 =head1 DESCRIPTION
