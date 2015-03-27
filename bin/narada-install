@@ -128,7 +128,7 @@ sub parse_args {
                 usage() if !$args{next_version};
 
                 $args{prev_version} = INITIAL_VERSION;
-                if (path(q{.})->children(qr/\A(?![.]release|[.]backup).*\z/ms)) {
+                if (path(q{.})->children(qr/\A(?![.]release\z|[.]backup\z)/ms)) {
                         Narada::detect('narada');
                         ($args{prev_version}) = path('VERSION')->lines({ chomp => 1 });
                 }
