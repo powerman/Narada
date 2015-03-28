@@ -5,10 +5,10 @@ use Test::More;
 use Narada;
 
 my @exports
-#    = qw( func1 func2 )
+   = qw( )
     ;
 my @not_exports
-#    = qw( func3 func4 )
+   = qw( detect )
     ;
 
 plan +(@exports + @not_exports)

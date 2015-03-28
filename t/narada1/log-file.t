@@ -1,22 +1,12 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 6;
-use Test::Exception;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 BEGIN {
-    use File::Temp qw( tempdir );
-    $ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-    chdir tempdir( CLEANUP => 1 )
-        and system('narada-new-1') == 0
-        or die "Unable to create project: $!";
-
     system('echo file > config/log/type');
     system('echo var/log/file > config/log/output');
     ok !-e 'var/log/file', 'log file not exists';
 }
 use Narada::Log qw( $LOGFILE );
+
 
 ok -e 'var/log/file', 'log file exists';
 ok ref $LOGFILE, 'log object imported';
@@ -31,4 +21,5 @@ $LOGFILE->INFO('info');
 system('true'); # force FH flush in perl
 ok -s 'var/log/file', 'log file not empty after INFO()';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

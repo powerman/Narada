@@ -1,20 +1,9 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More;
-use Test::Exception;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 
 plan skip_all => 'runit not installed'      if !grep {-x "$_/runsv"} split /:/, $ENV{PATH};
 plan skip_all => 'socklog not installed'    if !grep {-x "$_/socklog"} split /:/, $ENV{PATH};
-plan tests => 5;
 
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 ok !-e 'var/log/current', 'log file not exists';
 system('runsv ./service/log/ >/dev/null 2>&1 & sleep 1');
@@ -32,4 +21,5 @@ ok 0   == system('grep info  var/log/current >/dev/null 2>&1'), 'log file contai
 
 system('sv x ./service/log/');
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

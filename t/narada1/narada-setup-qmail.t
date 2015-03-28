@@ -1,23 +1,14 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 26;
-use Test::Exception;
+use t::narada1::share; guard my $guard;
 use Test::MockModule;
-use File::Temp qw{tempdir tempfile};
-use Cwd qw( cwd );
 
-require 'blib/script/narada-setup-qmail';
+require (wd().'/blib/script/narada-setup-qmail');
 
 
-use POSIX qw(locale_h);
 setlocale(LC_ALL, 'C');
 
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-
 sub sandbox {
-    $ENV{HOME} = tempdir(CLEANUP => 1);
-    chdir tempdir(CLEANUP => 1)                 or die "chdir(tempdir()): $!";
+    $ENV{HOME} = File::Temp::tempdir(CLEANUP => 1);
+    chdir File::Temp::tempdir(CLEANUP => 1)                 or die "chdir(File::Temp::tempdir()): $!";
     system('narada-new-1') == 0                 or die "system(narada-new-1): $!";
     return;
 }
@@ -38,7 +29,7 @@ sub qmail_flood {   # WARNING call ONLY after sandbox()
     symlink cwd().'/var/qmail/1', "$ENV{HOME}/.qmail-1" or die "symlink: $!";
     symlink cwd().'/var/qmail/2', "$ENV{HOME}/.qmail-2" or die "symlink: $!";
     touch("$ENV{HOME}/.qmail-file");
-    my $other = tempdir(CLEANUP => 1);
+    my $other = File::Temp::tempdir(CLEANUP => 1);
     system('narada-new-1', $other) == 0         or die "system(narada-new-1): $!";
     touch("$other/var/qmail/3");
     symlink $other.'/var/qmail/3', "$ENV{HOME}/.qmail-3" or die "symlink: $!";
@@ -54,7 +45,7 @@ my $umask = umask;
 #   * throw on non-links
 #   * return link content
 
-$d = tempdir(CLEANUP => 1);
+$d = File::Temp::tempdir(CLEANUP => 1);
 touch("$d/file");
 symlink 'file', "$d/link"                       or die "symlink: $!";
 symlink 'nofile', "$d/badlink"                  or die "symlink: $!";
@@ -74,7 +65,7 @@ is(_readlink("$d/abslink"), "$d/file",
 #   * throw on non-readable dir
 #   * return relative file names for files of all types
 
-$d = tempdir(CLEANUP => 1);
+$d = File::Temp::tempdir(CLEANUP => 1);
 touch("$d/file");
 mkdir "$d/dir", 0                               or die "mkdir($d/dir): $!";
 symlink 'file', "$d/link"                       or die "symlink: $!";
@@ -103,7 +94,7 @@ chmod 0700, "$d/dir";   # allow File::Temp to do CLEANUP
 #     . multiline with \n on last line
 #     . binary data 0x00-0xFF
 
-$d = tempdir(CLEANUP => 1);
+$d = File::Temp::tempdir(CLEANUP => 1);
 mkdir "$d/dir", 0                               or die "mkdir($d/dir): $!";
 touch("$d/file");
 chmod 0, "$d/file"                              or die "chmod($d/file): $!";
@@ -152,7 +143,7 @@ chmod 0700, "$d/dir";   # allow File::Temp to do CLEANUP
 #       some broken links) while other files are: usual files, broken links
 #       to other project, correct links to other project
 
-$ENV{HOME} = tempdir(CLEANUP => 1);
+$ENV{HOME} = File::Temp::tempdir(CLEANUP => 1);
 
 is_deeply [ls_qmail()], [],
     'ls_qmail(no ~/.qmail-* files)';
@@ -243,7 +234,8 @@ is $content,
   . "|cd \Q$cwd\E || exit(100); othercmd",
     'main() var/qmail/cmd processed';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();
 
 __END__
 
@@ -255,7 +247,7 @@ __END__
 # ~/.qmail-no-file-symlink      -> /PROJECT/var/qmail/no_file
 # ~/user-file
 sub prepare_qmail_home_sandbox {
-    my $home_dir    = tempdir(CLEANUP => 1);
+    my $home_dir    = File::Temp::tempdir(CLEANUP => 1);
     my $project_dir = get_project_dir();
 
     for (qw{test1 test2 test3}) {

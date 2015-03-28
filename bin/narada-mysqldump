@@ -107,7 +107,7 @@ sub load_db_conf {
             push @tables, $table;
         }
         elsif ($required == REQUIRED_TABLE) {
-            err "Table $table listed in $conf does not exists\n";
+            err "Table $table listed in ".CONFIG_DIR."/$conf does not exists\n";
         }
     }
     return [sort @tables];

@@ -1,18 +1,7 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 23;
-use Test::Exception;
-use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 use Narada::Config qw( get_config );
 
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 my @badvar = ('a b', qw( a:b $a a+b a\b ./ a/./b ../ a/../b dir/ version/ ));
 
@@ -50,7 +39,8 @@ mkdir 'config/testdir' or die "mkdir: $!";
 Echo('config/testdir/test', "testdir\n");
 is get_config('testdir/test'), "testdir\n", 'variable in directory';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();
 
 
 sub Echo {

@@ -6,14 +6,11 @@ use Carp;
 
 our $VERSION = 'v1.4.5';
 
-# update DEPENDENCIES in POD & Build.PL & README
 use Narada::Config qw( get_config_line );
 use Log::Fast;
 
 
-if (-f 'config/log/output') {
-    _init_log();
-}
+_init_log();
 
 
 sub import {

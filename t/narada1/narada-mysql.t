@@ -1,27 +1,14 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More;
-use Test::Exception;
+use t::narada1::share; guard my $guard;
 use DBI;
-use Cwd qw( cwd );
 
 use Narada::Config qw( set_config );
 
-chomp(my ($db, $login, $pass) = `cat t/.answers`);
+my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
 
 if ($db eq q{}) {
     plan skip_all => 'No database provided for testing';
-} else {
-    plan tests => 8;
 }
 
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 $::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});
 my $db_exists = $::dbh->prepare('SHOW DATABASES LIKE ?')->execute($db);
@@ -50,5 +37,5 @@ is   scalar `narada-mysql       </dev/null 2>&1`, q{}, 'good host:port';
 ###
 
 $::dbh->prepare('DROP DATABASE '.$db)->execute();
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+done_testing();
 

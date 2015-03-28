@@ -1,9 +1,11 @@
-use t::share; guard my $guard;
+use warnings;
+use strict;
+use Test::More;
 
-use Narada::Config qw( set_config get_config get_config_line get_db_config );
+use Narada::Lock qw( :ALL );
 
 my @exports
-    = qw( set_config get_config get_config_line get_db_config )
+    = qw( shared_lock exclusive_lock unlock_new unlock child_inherit_lock )
     ;
 my @not_exports
     = qw( )

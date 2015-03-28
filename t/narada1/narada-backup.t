@@ -1,15 +1,5 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 13;
-use Test::Exception;
+use t::narada1::share; guard my $guard;
 use Test::Differences;
-use Cwd qw( cwd );
-
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-$ENV{PERL5LIB} ||= q{};
-$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
 
 my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
 
@@ -18,7 +8,7 @@ my $dir1 = narada_new();
 my $dir2 = narada_new();
 
 sub narada_new {
-    my $dir = tempdir( CLEANUP => 1 );
+    my $dir = tempdir('narada1.project.XXXXXX');
     chdir $dir
         and system('narada-new-1') == 0
         or die "Unable to create project: $!";
@@ -44,7 +34,8 @@ sub filldir {
 
 sub check_backup {
     my (@files) = @_;
-    chdir tempdir( CLEANUP => 1 ) or die "chdir: $!";
+    my $dir = tempdir('narada1.project.XXXXXX');
+    chdir $dir or die "chdir: $!";
     for my $file (@files) {
         system("$TAR -x -p -g /dev/null -f \Q$file\E &>/dev/null");
     }
@@ -62,6 +53,7 @@ sub check_backup {
             `;
         eq_or_diff $list, $wait, 'backup contents ok';
     }
+    chdir q{/};
     return;
 }
 
@@ -117,4 +109,5 @@ is system("cd \Q$dir1\E; narada-backup"), 0, 'force full backup';
 ok -e "$dir1/var/backup/full.tar", 'full.tar created';
 ok ! -e "$dir1/var/backup/incr.tar", 'incr.tar not created';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

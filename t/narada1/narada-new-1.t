@@ -1,15 +1,7 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 13;
-use Test::Exception;
-use File::Temp qw( tempdir );
-use FindBin;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 umask 0022;
-$ENV{PATH}=cwd()."/blib/script:$ENV{PATH}";
-require 'blib/script/narada-new-1';
+require (wd().'/blib/script/narada-new-1');
 
 my $data_pos = tell DATA;
 sub _main {
@@ -17,7 +9,7 @@ sub _main {
     goto &main;
 }
 
-my $dst = tempdir( CLEANUP => 1 );
+my $dst = tempdir('narada1.project.XXXXXX');
 
 # Usage
 throws_ok { _main(1, 2, 3) }             qr/Usage:/,  'too many params';
@@ -52,12 +44,12 @@ $dst =~ m{([^/]+)\z};
 is($version, "$1-0.0.000", 'version');
 
 # OK - dir not exists
-my $dst3 = tempdir( CLEANUP => 1 );
+my $dst3 = tempdir('narada1.project.XXXXXX');
 rmdir $dst3                                         or die "rmdir: $!";
 lives_ok  { _main($dst3) }              'all ok - dir not exists';
 
 # OK - current dir
-my $dst4 = tempdir( CLEANUP => 1 );
+my $dst4 = tempdir('narada1.project.XXXXXX');
 chdir $dst4                                         or die "chdir: $!";
 lives_ok  { _main() }                   'all ok - current dir';
 
@@ -66,5 +58,6 @@ ok(-s "var/patch/$1-0.0.000.tar",       'initial backup created');
 
 is((stat 'config/version')[2] & 07777, 0644, 'config/version permissions');
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handlers
 
+chdir q{/};
+done_testing();

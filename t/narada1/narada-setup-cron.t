@@ -1,16 +1,7 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests=>50;
-use Test::Exception;
+use t::narada1::share; guard my $guard;
 use Test::MockModule;
-use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
-use File::Temp qw{tempdir};
-use FindBin;
-use Cwd qw( cwd );
 
-$ENV{PATH}=cwd()."/blib/script:$ENV{PATH}";
-require 'blib/script/narada-setup-cron';
+require (wd().'/blib/script/narada-setup-cron');
 
 sub Echo {
     my ($filename, $content) = @_;
@@ -20,11 +11,6 @@ sub Echo {
     return;
 }
 
-# prepare sandbox
-my $dst = tempdir(CLEANUP => 1);
-system('blib/script/narada-new-1', $dst) == 0             
-                                or die "system: can't create tmp proj: $?";
-chdir $dst                      or die "chdir: $!"; 
 
 # - main()
 #   * too many params
@@ -319,4 +305,5 @@ unlike($expected, $re, 'get_markers: start.\n.end.junk.\n');
     is($got, $expected, 'del_cron: block with data');
 }
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

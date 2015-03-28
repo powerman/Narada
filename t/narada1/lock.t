@@ -1,22 +1,7 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More;
-use Test::Exception;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 use Time::HiRes qw( time sleep );
 use Fcntl qw(:DEFAULT :flock F_SETFD FD_CLOEXEC);
 use Errno;
-use File::Temp qw( tempdir );
-
-BEGIN {
-    $ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-    $ENV{PERL5LIB} ||= q{};
-    $ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
-    chdir tempdir( CLEANUP => 1 )
-        and system('narada-new-1') == 0
-        or die "Unable to create project: $!";
-}
 
 use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_lock );
 
@@ -25,8 +10,6 @@ use constant LOCKFILE   => Narada::Lock::LOCKFILE;
 
 if ($ENV{AUTOMATED_TESTING}) {
     plan skip_all => 'Too many broken cpan tester setups.';
-} else {
-    plan tests => 39;
 }
 
 sysopen my $F_lock, LOCKFILE, O_RDWR|O_CREAT or die "open: $!";
@@ -152,6 +135,5 @@ ok has_sh(),  'has shared lock with child_inherit_lock(1)';
 sleep 1.5;
 ok !has_sh(), 'no  shared lock after first child exit';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
 
-
+done_testing();

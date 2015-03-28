@@ -1,18 +1,6 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 8;
-use Test::Exception;
-use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 use Narada::Config qw( get_config_line );
-
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 
 throws_ok { get_config_line('no_file') }        qr/no such file/i,
@@ -34,7 +22,8 @@ Echo('config/test_multi', "test\ntest2");
 throws_ok { get_config_line('test_multi') }         qr/more than one line/,
     'multi line';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();
 
 
 sub Echo {

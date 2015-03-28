@@ -73,6 +73,7 @@ my %module_build_args = (
     "bin/narada-viewlog"
   ],
   "test_requires" => {
+    "File::Copy::Recursive" => 0,
     "Pod::Coverage" => "0.18",
     "Test::CheckManifest" => "0.9",
     "Test::Differences" => 0,
@@ -87,6 +88,7 @@ my %module_build_args = (
 
 
 my %fallback_build_requires = (
+  "File::Copy::Recursive" => 0,
   "Module::Build" => "0.28",
   "Pod::Coverage" => "0.18",
   "Test::CheckManifest" => "0.9",

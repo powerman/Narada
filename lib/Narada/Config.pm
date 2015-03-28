@@ -6,12 +6,13 @@ use Carp;
 
 our $VERSION = 'v1.4.5';
 
-# update DEPENDENCIES in POD & Build.PL & README
 use Perl6::Export::Attrs;
 use Narada;
 use Path::Tiny 0.053;
 
-use constant MAXPERM => 0666; ## no critic (ProhibitLeadingZeros)
+use constant IS_NARADA      => Narada::detect() eq 'narada';
+use constant CONFIG_DIR     => IS_NARADA ? 'mysql' : 'db';
+use constant MAXPERM        => 0666; ## no critic (ProhibitLeadingZeros)
 
 my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*[\w.-]+\z}xms;
 
@@ -32,15 +33,14 @@ sub get_config_line :Export {
 
 sub get_db_config :Export {
     my %db;
-    my $dir = Narada::detect() eq 'narada-1' ? 'db' : 'mysql';
-    $db{db} = eval { get_config_line("$dir/db") };
+    $db{db} = eval { get_config_line(CONFIG_DIR.'/db') };
     if (!defined $db{db} || !length $db{db}) {
         return;
     }
-    $db{login}= get_config_line("$dir/login");
-    $db{pass} = get_config_line("$dir/pass");
-    $db{host} = eval { get_config_line("$dir/host") } || q{};
-    $db{port} = eval { get_config_line("$dir/port") } || q{};
+    $db{login}= get_config_line(CONFIG_DIR.'/login');
+    $db{pass} = get_config_line(CONFIG_DIR.'/pass');
+    $db{host} = eval { get_config_line(CONFIG_DIR.'/host') } || q{};
+    $db{port} = eval { get_config_line(CONFIG_DIR.'/port') } || q{};
     $db{dsn_nodb}  = 'dbi:mysql:';
     $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
     $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)

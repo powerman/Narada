@@ -1,21 +1,8 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More;
-use Test::Exception;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 plan skip_all => 'OS Inferno not installed'  if !grep {-x "$_/emu-g" && /inferno/} split /:/, $ENV{PATH};
 plan skip_all => 'OS Inferno not configured' if `emu-g echo ok 2>/dev/null` !~ /ok/ms;
-plan tests => 6;
 
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-$ENV{PERL5LIB} ||= q{};
-$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 # get rid of nasty "Killed" message from bash
 $ENV{PATH} = "./tmp:$ENV{PATH}";
@@ -35,4 +22,5 @@ is scalar `narada-emu "os -d . pwd"         2>&1`, scalar `pwd`;
 is scalar `narada-emu -c0 "cat /dev/jit"    2>&1`, '0';
 is scalar `narada-emu -c1 "cat /dev/jit"    2>&1`, '1';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

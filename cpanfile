@@ -22,6 +22,7 @@ on configure => sub {
 };
 
 on test => sub {
+    requires 'File::Copy::Recursive';
     requires 'Pod::Coverage', '0.18';
     requires 'Test::CheckManifest', '0.9';
     requires 'Test::Differences';

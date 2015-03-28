@@ -1,17 +1,7 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 25;
-use Test::Exception;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
 use Narada::Config qw( set_config get_config );
 
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 my @badvar = ('a b', qw( a:b $a a+b a\b ./ a/./b ../ a/../b dir/ version/ ));
 
@@ -55,4 +45,5 @@ ok(-d 'config/dir/dir2',        'dir2 created');
 ok(-s 'config/dir/dir2/test',   'file created');
 is(get_config('dir/dir2/test'), $value, 'value ok');
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

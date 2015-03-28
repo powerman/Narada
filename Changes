@@ -36,12 +36,14 @@ Revision history for Narada
 	- update all scripts to use Narada::detect()
 
 	[Regroup tests]
-	- add t/compat-v1/
+	- add t/narada1/
 	- add xt/release/
 	- add xt/author/
 
 	[Tests]
 	- consistently use cwd()
+	- add share.pm
+	- add more tests
 
 	[Internal]
 	- powerdiff moved to App::powerdiff

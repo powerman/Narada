@@ -7,7 +7,6 @@ our $VERSION = 'v1.4.5';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
-use Narada::Config qw(set_config);
 use MIME::Base64;
 
 main(@ARGV) if !caller;
@@ -42,6 +41,9 @@ sub main {
 
     # Enter project.
     chdir $dst                          or err "chdir: $!";
+
+    require Narada::Config;
+    Narada::Config->import(qw( set_config ));
 
     # Setup project version.
     my ($project) = `pwd` =~ m{([^/]+?)\n\z}xms

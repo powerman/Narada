@@ -1,17 +1,5 @@
-#!/usr/bin/perl
-use warnings;
-use strict;
-use Test::More tests => 10;
-use Test::Exception;
-use Cwd qw( cwd );
+use t::narada1::share; guard my $guard;
 
-use File::Temp qw( tempdir );
-$ENV{PATH} = cwd()."/blib/script:$ENV{PATH}";
-$ENV{PERL5LIB} ||= q{};
-$ENV{PERL5LIB} = cwd()."/blib:$ENV{PERL5LIB}";
-chdir tempdir( CLEANUP => 1 )
-    and system('narada-new-1') == 0
-    or die "Unable to create project: $!";
 
 system('narada-lock bash -c "exit 2"');
 is $? >> 8, 2, 'narada-lock keep exit status 2';
@@ -40,4 +28,5 @@ SKIP: {
 ok `narada-lock-exclusive narada-lock-exclusive narada-lock echo ok` =~ /ok/,
     '$NARADA_SKIP_LOCK';
 
-chdir '/';  # work around warnings in File::Temp CLEANUP handler
+
+done_testing();

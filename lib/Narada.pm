@@ -2,6 +2,7 @@ package Narada;
 
 use warnings;
 use strict;
+use Carp;
 
 our $VERSION = 'v1.4.5';
 

@@ -65,6 +65,7 @@
       },
       "test" : {
          "requires" : {
+            "File::Copy::Recursive" : "0",
             "Pod::Coverage" : "0.18",
             "Test::CheckManifest" : "0.9",
             "Test::Differences" : "0",
