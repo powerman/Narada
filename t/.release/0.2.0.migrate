@@ -233,3 +233,27 @@ INSTALL 0.1.0
 VERSION 0.1.0
 
 
+### narada-plugin-runit
+
+# restart service_to_restart
+DEFINE2 restart
+upgrade
+  sv t ./service/"$1" || :
+after_downgrade
+  sv t ./service/"$1" || :
+
+add_config service/type runit
+# add_config crontab/service -
+#   */1  * * * *    exec chpst -L .lock.service runsvdir service/ &>/dev/null &
+
+
+### narada-plugin-socklog
+
+set_config log/type     syslog
+set_config log/output   var/log.sock
+
+# restart log
+
+
+INSTALL 0.2.0
+VERSION 0.2.0

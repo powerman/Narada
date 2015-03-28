@@ -20,7 +20,7 @@ INIT        { chdir $proj   }
 sub DESTROY { chdir q{/}    }
 sub guard   { ($_[0], $guard) = ($guard, undef) }
 
-our $work       = cwd();
+my $work        = cwd();
 $ENV{PATH}      = "$work/blib/script:$work/bin:$ENV{PATH}";
 $ENV{PERL5LIB}  = "$work/blib:$work/lib".($ENV{PERL5LIB} ? ":$ENV{PERL5LIB}" : q{});
 

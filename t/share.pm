@@ -10,6 +10,7 @@ use Test::Exception;
 use Path::Tiny qw( cwd path tempdir tempfile );
 use File::Copy::Recursive qw( dircopy );
 use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!
+use FindBin;
 
 
 my $proj    = tempdir('narada.project.XXXXXX');
@@ -26,6 +27,9 @@ $ENV{PERL5LIB}  = "$work/blib:$work/lib".($ENV{PERL5LIB} ? ":$ENV{PERL5LIB}" : q
 dircopy("$work/t/.release", "$proj/.release")       or die "dircopy: $!";
 chdir $proj                                         or die "chdir($proj): $!";
 system('narada-install 0.1.0 >/dev/null 2>&1') == 0 or die "narada-install 0.1.0 failed";
+
+
+sub wd { return $work }
 
 
 1;

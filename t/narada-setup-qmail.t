@@ -1,4 +1,4 @@
-use t::narada1::share; guard my $guard;
+use t::share; guard my $guard;
 use Test::MockModule;
 
 require (wd().'/blib/script/narada-setup-qmail');
@@ -8,8 +8,10 @@ setlocale(LC_ALL, 'C');
 
 sub sandbox {
     $ENV{HOME} = File::Temp::tempdir(CLEANUP => 1);
-    chdir File::Temp::tempdir(CLEANUP => 1)     or die "chdir(tempdir()): $!";
-    system('narada-new-1') == 0                 or die "system(narada-new-1): $!";
+    my $dir = File::Temp::tempdir(CLEANUP => 1);
+    chdir $dir                                          or die "chdir($dir): $!";
+    dircopy(wd()."/t/.release", "$dir/.release")        or die "dircopy: $!";
+    system('narada-install 0.1.0 >/dev/null 2>&1') == 0 or die "narada-install 0.1.0 failed";
     return;
 }
 
