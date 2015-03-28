@@ -1,4 +1,5 @@
 use t::share; guard my $guard;
+use Test::Output qw( :all );
 use Test::MockModule;
 use DBI;
 
@@ -94,7 +95,7 @@ is db_exists(), 1,
 Echo('var/mysql/db.scheme.sql',"CREATE TABLE a (i int);\nCREATE TABLE b (j int);\n");
 is_deeply list_tables(), {},
     'main: no tables';
-main();
+output_from { main() };
 is_deeply list_tables(), {a => 0, b => 0},
     'main: scheme loaded';
 main('--clean');
@@ -103,7 +104,7 @@ Echo('var/mysql/a.sql',"INSERT INTO a VALUES (10), (20);\n");
 Echo('var/mysql/b.sql',"INSERT INTO b VALUES (10), (20), (30);\n");
 is_deeply list_tables(), {},
     'main: no tables';
-main();
+output_from { main() };
 is_deeply list_tables(), {a => 2, b => 3},
     'main: scheme and table dumps loaded';
 main('--clean');
@@ -115,12 +116,12 @@ main('--clean');
 $::dbh->do('CREATE DATABASE IF NOT EXISTS '.$db);
 
 chmod 0, 'var/mysql/a.sql' or die "chmod: $!";
-throws_ok { import_sql('var/mysql/a.sql') }   qr/failed to import/,
+throws_ok { output_from { import_sql('var/mysql/a.sql') } }   qr/failed to import/,
     'import_sql: file unreadable';
 chmod 0644, 'var/mysql/a.sql' or die "chmod: $!";
 
 Echo('var/mysql/c.sql', 'some junk here');
-throws_ok { import_sql('var/mysql/c.sql') }   qr/failed to import/,
+throws_ok { output_from { import_sql('var/mysql/c.sql') } }   qr/failed to import/,
     'import_sql: file contain wrong SQL';
 
 

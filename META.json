@@ -72,6 +72,7 @@
             "Test::Exception" : "0",
             "Test::MockModule" : "0",
             "Test::More" : "0.96",
+            "Test::Output" : "0",
             "Test::Perl::Critic" : "0",
             "Test::Pod" : "1.22",
             "Test::Pod::Coverage" : "1.08"

@@ -29,6 +29,7 @@ on test => sub {
     requires 'Test::Exception';
     requires 'Test::MockModule';
     requires 'Test::More', '0.96';
+    requires 'Test::Output';
     requires 'Test::Perl::Critic';
     requires 'Test::Pod', '1.22';
     requires 'Test::Pod::Coverage', '1.08';
