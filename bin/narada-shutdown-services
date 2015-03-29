@@ -6,10 +6,19 @@ die()   { warn "$@"; exit 1;    }
 
 DETECT=$(perl -MNarada -E 'say Narada::detect(@ARGV)') || exit 1
 
-test "$DETECT" = 'narada-1' && type='runit' || type="$(< config/service/type)"
-if test "$type" = 'runit'; then
-	kill -HUP $(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')
+if test "$DETECT" = 'narada-1'; then
+	type='runit'
+elif test -f config/service/type; then
+	type="$(< config/service/type)"
 else
+	type=''
+fi
+if test "$type" = 'runit'; then
+	pid="$(fuser -v . 2>&1 | grep runsvdir | awk '{print$2}')"
+	if test -n "$pid"; then
+		kill -HUP "$pid"
+	fi
+elif test -n "$type"; then
 	die "unknown type of services: '$type'"
 fi
 
