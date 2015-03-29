@@ -8,9 +8,9 @@ use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_
 use constant LOCKNEW    => Narada::Lock::LOCKNEW;
 use constant LOCKFILE   => Narada::Lock::LOCKFILE;
 
-if ($ENV{AUTOMATED_TESTING}) {
-    plan skip_all => 'Too many broken cpan tester setups.';
-}
+
+plan skip_all => 'Too many broken cpan tester setups.' if $ENV{AUTOMATED_TESTING};
+
 
 sysopen my $F_lock, LOCKFILE, O_RDWR|O_CREAT or die "open: $!";
 
