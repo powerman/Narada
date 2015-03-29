@@ -119,13 +119,13 @@ upgrade
   test ! -e config/"$1"
   mkdir -p $(dirname config/"$1")
   { test $# = 3 && cat "$3" || echo -n "$2"; } > config/"$1"
-  echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-  echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+  # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+  # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 downgrade
   rm -f config/"$1"
   rmdir -p --ignore-fail-on-non-empty $(dirname config/"$1")
-  echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-  echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+  # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+  # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 
 # set_config some/config "new value"
 # set_config some/config -
@@ -136,14 +136,14 @@ DEFINE2 set_config
 upgrade
   mkdir -p $(dirname config/"$1")
   { test $# = 3 && cat "$3" || echo -n "$2"; } > config/"$1"
-  echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-  echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+  # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+  # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 after_downgrade
   test $# = 3 && value=$(cat "$3") || value="$2"
   if test "$(cat config/"$1")" = "$value"; then
     narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar config/"$1"
-    echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-    echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+    # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+    # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
   fi
 
 # mod_config some/config "pcre regex" "new value"
@@ -157,15 +157,15 @@ upgrade
   test -e config/"$1"
   if grep -q -P -- "$2" config/"$1"; then
     { test $# = 4 && cat "$4" || echo -n "$3"; } > config/"$1"
-    echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-    echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+    # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+    # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
   fi
 after_downgrade
   test $# = 4 && value=$(cat "$4") || value="$3"
   if test "$(cat config/"$1")" = "$value"; then
     narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar config/"$1"
-    echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-    echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+    # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+    # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
   fi
 
 # del_config some/config
@@ -173,12 +173,12 @@ DEFINE2 del_config
 upgrade
   rm -f config/"$1"
   rmdir -p --ignore-fail-on-non-empty $(dirname config/"$1")
-  echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-  echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+  # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+  # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 after_downgrade
   narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar config/"$1"
-  echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
-  echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
+  # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
+  # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 
 # kill process_name ...
 # - make sure processes started before upgrade/downgrade but blocked on

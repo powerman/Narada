@@ -1,5 +1,6 @@
 use t::share; guard my $guard;
 use Test::MockModule;
+use Narada::Config qw( set_config );
 
 require (wd().'/blib/script/narada-setup-cron');
 
@@ -19,6 +20,7 @@ sub Echo {
 #   * --clean: make sure del_cron() called
 #   * no --clean and no config/crontab/backup: make sure del_cron() called
 #   * no --clean and exists config/crontab/backup: make sure set_cron called
+#   * many files in config/crontab/: make sure set_cron called for them all
 
 throws_ok { main('param-1', 'param-2') }    qr/Usage:/,
     'main: too many params';
@@ -35,11 +37,11 @@ SKIP: {
 }
 
 { 
-    my @log;
+    my (@log, $lines);
     my $is_log = sub { is("@log", "@{$_[0]}", $_[1]); @log=(); };
     my $m = new Test::MockModule('main');
-    $m->mock('del_cron', sub { push @log, 'del_cron' });
-    $m->mock('set_cron', sub { push @log, 'set_cron' });
+    $m->mock('del_cron', sub { push @log, 'del_cron'; $lines = 0 });
+    $m->mock('set_cron', sub { push @log, 'set_cron'; $lines = shift=~tr/\n// });
 
     main('--clean');
     $is_log->(['del_cron'],
@@ -54,6 +56,16 @@ SKIP: {
     main();
     $is_log->(['set_cron'],
         'main: call set_cron() on config/crontab/backup without --clean');
+
+    my $wait = path('config/crontab/backup')->lines;
+    is $lines, $wait, 'one config';
+
+    set_config('crontab/service', "# line1\n# line2\n");
+    main();
+    $is_log->(['set_cron'],
+        'main: call set_cron() on config/crontab/*');
+    $wait += 1 + path('config/crontab/service')->lines;
+    is $lines, $wait, 'many configs';
 }
 
 # - get_project_dir()
