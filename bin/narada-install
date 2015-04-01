@@ -26,8 +26,8 @@ sub err { die "narada-install: @_\n" };
 sub usage {
         print <<'EOUSAGE';
 Usage:
-    narada-install [--allow-downgrade|-D] [--allow-restore|-R] <version>
-    narada-install --path <version1> <version2> ...
+    narada-install [--allow-downgrade|-D] [--allow-restore|-R] [-f <file>] <ver>
+    narada-install [-f <file>] --path <ver1> <ver2> ...
     narada-install --check|-c <file>
 EOUSAGE
         exit 1;
@@ -44,7 +44,13 @@ sub main {
                 return;
         }
 
-        my $migrate = App::migrate->new->load(".release/$args{next_version}.migrate");
+        my $migrate = App::migrate->new;
+        if (defined $args{file}) {
+                $migrate->load($args{file});
+        }
+        if (-f ".release/$args{next_version}.migrate") {
+                $migrate->load(".release/$args{next_version}.migrate");
+        }
         if (-f ".release/$args{prev_version}.migrate") {
                 $migrate->load(".release/$args{prev_version}.migrate");
         }
@@ -103,7 +109,11 @@ sub parse_args {
                 $mode = 'check';
                 $args{file} = $_[1];
         }
-        elsif (@_ > 2 && $_[0] eq '--path') {
+        elsif ((@_ > 2 && $_[0] eq '--path') || (@_ > 4 && $_[0] eq '-f' && $_[2] eq '--path')) {
+                if ($_[0] eq '-f') {
+                        $args{file} = $_[1];
+                        splice @_, 0, 2;
+                }
                 $mode = 'path';
                 $args{path} = [ splice @_, 1 ];
                 $args{prev_version} = $args{path}[0];
@@ -117,6 +127,9 @@ sub parse_args {
                         }
                         elsif ($param eq '--allow-restore' || $param eq '-R') {
                                 $args{allow_restore} = 1;
+                        }
+                        elsif ($param eq '-f' && @_) {
+                                $args{file} = shift;
                         }
                         elsif (!@_) {
                                 $args{next_version} = $param;
@@ -178,7 +191,7 @@ sub _restore {
         }
         system 'narada-shutdown-services';
         system('narada-restore', ".backup/full-$step->{version}.tar") == 0 or die "RESTORE failed on narada-restore .backup/full-$step->{version}.tar\n";
-        system 'fuser -k .lock.bg 2>/dev/null';
+        system 'narada-bg-killall';
         system('narada-setup-mysql') == 0 or die "RESTORE failed on narada-setup-mysql\n";
         system('narada-setup-cron')  == 0 or die "RESTORE failed on narada-setup-cron\n";
         system('narada-setup-qmail') == 0 or die "RESTORE failed on narada-setup-qmail\n";
@@ -235,14 +248,69 @@ This document describes narada-install version v1.4.5
 
 =head1 USAGE
 
-    narada-install [--allow-downgrade|-D] [--allow-restore|-R] <version>
-    narada-install --path <version1> <version2> ...
+    narada-install [--allow-downgrade|-D] [--allow-restore|-R] [-f <file>] <ver>
+    narada-install [-f <file>] --path <ver1> <ver2> ...
     narada-install --check|-c <file>
 
 
 =head1 DESCRIPTION
 
 Should be executed in project deploy directory.
+
+Upgrade/downgrade your project in safe way:
+
+=over
+
+=item *
+
+It use Narada's exclusive lock to make sure no other code will run while
+migrating project's files or databases (to make this works as expected you
+must use Narada's shared lock around all your code which read or write any
+project's files or databases).
+
+=item *
+
+Before every migration it will automatically create new backup
+C<< .backup/full-<current_version>.tar >>.
+
+=item *
+
+If migration fail it will automatically restore previous version from backup.
+
+=item *
+
+Use L<App::migrate> file format to describe project migrations, which let you
+downgrade fast and without losing any data whenever possible.
+
+=back
+
+When called with option C<--check|-c> will check syntax of given migrate
+file and exit.
+
+It will try to load several migrate files, in this order:
+
+=over
+
+=item *
+
+file given using C<-f> option (if any)
+
+=item *
+
+C<< .release/<next_ver>.migrate >> where C<< <next_ver> >> is last
+parameter (if this file exists)
+
+=item *
+
+C<< .release/<prev_ver>.migrate >> where C<< <prev_ver> >> is current
+project version if called without C<--path> option and file C<VERSION>
+exists or first parameter after C<--path> option (if this file exists)
+
+=back
+
+Then it will try to find migration path from current version to given and
+execute it (or just execute given migration path if called with C<--path>
+option).
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
