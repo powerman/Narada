@@ -4,6 +4,7 @@ VERSION='v1.4.5'
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
+test -f .lock.bg || exit 0
 perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 
 [ $# -eq 0 ] || die "Usage: narada-bg-killall"
