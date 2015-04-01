@@ -1,5 +1,4 @@
 use t::share; guard my $guard;
-use Test::Output;
 
 
 plan skip_all => 'git not installed'        if !grep {-x "$_/git"} split /:/, $ENV{PATH};

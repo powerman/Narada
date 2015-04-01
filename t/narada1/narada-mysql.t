@@ -3,11 +3,9 @@ use DBI;
 
 use Narada::Config qw( set_config );
 
-my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
 
-if ($db eq q{}) {
-    plan skip_all => 'No database provided for testing';
-}
+my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
+plan skip_all => 'No database provided for testing' if $db eq q{};
 
 
 $::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});
@@ -15,7 +13,6 @@ my $db_exists = $::dbh->prepare('SHOW DATABASES LIKE ?')->execute($db);
 BAIL_OUT 'Database already exists' if 0 < $db_exists;
 $::dbh->prepare('CREATE DATABASE '.$db)->execute();
 
-#
 
 is   scalar `narada-mysql param </dev/null 2>&1`, "Usage: narada-mysql\n", 'usage';
 is   scalar `narada-mysql       </dev/null 2>&1`, "ERROR: config/db/db absent or empty!\n", 'no db';
@@ -34,8 +31,6 @@ like scalar `narada-mysql       </dev/null 2>&1`, qr/Can't connect/i, 'bad port'
 set_config('db/port', '3306');
 is   scalar `narada-mysql       </dev/null 2>&1`, q{}, 'good host:port';
 
-###
 
 $::dbh->prepare('DROP DATABASE '.$db)->execute();
 done_testing();
-

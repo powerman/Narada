@@ -4,7 +4,6 @@ use Fcntl qw(:DEFAULT :flock F_SETFD FD_CLOEXEC);
 use Errno;
 
 use Narada::Lock qw( shared_lock exclusive_lock unlock_new unlock child_inherit_lock );
-
 use constant LOCKNEW    => Narada::Lock::LOCKNEW;
 use constant LOCKFILE   => Narada::Lock::LOCKFILE;
 
@@ -12,30 +11,9 @@ use constant LOCKFILE   => Narada::Lock::LOCKFILE;
 plan skip_all => 'Too many broken cpan tester setups.' if $ENV{AUTOMATED_TESTING};
 
 
+sub between;
+
 sysopen my $F_lock, LOCKFILE, O_RDWR|O_CREAT or die "open: $!";
-
-
-sub has_sh {
-    my $has_sh = !flock $F_lock, LOCK_EX|LOCK_NB;
-    flock $F_lock, LOCK_UN;
-    return $has_sh;
-}
-
-sub has_ex {
-    my $has_ex = !flock $F_lock, LOCK_SH|LOCK_NB;
-    flock $F_lock, LOCK_UN;
-    return $has_ex;
-}
-
-sub between {
-    my ($min, $max, $code) = @_;
-    my $t = time();
-    $code->();
-    $t = time()-$t;
-    local $Test::Builder::Level = $Test::Builder::Level + 1;
-    ok $min <= $t && $t <= $max, "... done in $min .. $max sec ($t sec)";
-    return;
-}
 
 
 # unlock() - no error if no lock
@@ -137,3 +115,26 @@ ok !has_sh(), 'no  shared lock after first child exit';
 
 
 done_testing();
+
+
+sub has_sh {
+    my $has_sh = !flock $F_lock, LOCK_EX|LOCK_NB;
+    flock $F_lock, LOCK_UN;
+    return $has_sh;
+}
+
+sub has_ex {
+    my $has_ex = !flock $F_lock, LOCK_SH|LOCK_NB;
+    flock $F_lock, LOCK_UN;
+    return $has_ex;
+}
+
+sub between {
+    my ($min, $max, $code) = @_;
+    my $t = time();
+    $code->();
+    $t = time()-$t;
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    ok $min <= $t && $t <= $max, "... done in $min .. $max sec ($t sec)";
+    return;
+}

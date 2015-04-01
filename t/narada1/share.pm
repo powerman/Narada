@@ -7,6 +7,8 @@ strict->import;
 feature->import(':5.10');
 use Test::More;
 use Test::Exception;
+use Test::Output qw( :all );
+use Test::MockModule;
 use Path::Tiny qw( cwd path tempdir tempfile );
 use File::Copy::Recursive qw( dircopy );
 use POSIX qw(locale_h); BEGIN { setlocale(LC_MESSAGES,'en_US.UTF-8') } # avoid UTF-8 in $!

@@ -1,16 +1,12 @@
 use t::share; guard my $guard;
-use Test::MockModule;
 use DBI;
-
 use Narada::Config qw( set_config );
 
-my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
-
-if ($db eq q{}) {
-    plan skip_all => 'No database provided for testing';
-}
-
 require (wd().'/blib/script/narada-mysqldump');
+
+
+my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
+plan skip_all => 'No database provided for testing' if $db eq q{};
 
 
 # - init_globals()
@@ -408,8 +404,7 @@ isnt $new_mtime{'var/mysql/db.scheme.sql'}, mtime('var/mysql/db.scheme.sql'),
     'main: recreate SCHEME with mysql/db';
 
 }
-###
+
 
 system('narada-setup-mysql --clean');
 done_testing();
-

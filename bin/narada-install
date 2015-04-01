@@ -103,13 +103,13 @@ sub main {
         return;
 }
 
-sub parse_args {
+sub parse_args { ## no critic (ProhibitExcessComplexity)
         my ($mode, %args);
         if (@_ == 2 && ($_[0] eq '--check' || $_[0] eq '-c')) {
                 $mode = 'check';
                 $args{file} = $_[1];
         }
-        elsif ((@_ > 2 && $_[0] eq '--path') || (@_ > 4 && $_[0] eq '-f' && $_[2] eq '--path')) {
+        elsif ((@_ > 2 && $_[0] eq '--path') || (@_ > 2+2 && $_[0] eq '-f' && $_[2] eq '--path')) {
                 if ($_[0] eq '-f') {
                         $args{file} = $_[1];
                         splice @_, 0, 2;

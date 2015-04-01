@@ -1,8 +1,9 @@
 use t::narada1::share; guard my $guard;
 
-umask 0022;
 require (wd().'/blib/script/narada-new-1');
 
+
+umask 0022;
 my $data_pos = tell DATA;
 sub _main {
     seek DATA, $data_pos, 0;
@@ -10,6 +11,7 @@ sub _main {
 }
 
 my $dst = tempdir('narada1.project.XXXXXX');
+
 
 # Usage
 throws_ok { _main(1, 2, 3) }             qr/Usage:/,  'too many params';

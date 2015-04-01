@@ -1,47 +1,12 @@
 use t::share; guard my $guard;
-use Test::MockModule;
 
 require (wd().'/blib/script/narada-setup-qmail');
 
 
-setlocale(LC_ALL, 'C');
-
-sub sandbox {
-    $ENV{HOME} = File::Temp::tempdir(CLEANUP => 1);
-    my $dir = File::Temp::tempdir(CLEANUP => 1);
-    chdir $dir                                          or die "chdir($dir): $!";
-    dircopy(wd()."/t/.release", "$dir/.release")        or die "dircopy: $!";
-    system('narada-install 0.1.0 >/dev/null 2>&1') == 0 or die "narada-install 0.1.0 failed";
-    return;
-}
-
-sub touch {
-    my ($file) = @_;
-    open my $f, '>', $file                      or die "open($file): $!";
-    return;
-}
-
-sub qmail_flood {   # WARNING call ONLY after sandbox()
-    # ~/.qmail-file
-    # ~/.qmail-1        -> /this/project/var/qmail/1
-    # ~/.qmail-2        -> /this/project/var/qmail/2 (broken)
-    # ~/.qmail-3        -> /other/project/var/qmail/3
-    # ~/.qmail-4        -> /other/project/var/qmail/4 (broken)
-    touch('var/qmail/1');
-    symlink cwd().'/var/qmail/1', "$ENV{HOME}/.qmail-1" or die "symlink: $!";
-    symlink cwd().'/var/qmail/2', "$ENV{HOME}/.qmail-2" or die "symlink: $!";
-    touch("$ENV{HOME}/.qmail-file");
-    my $other = File::Temp::tempdir(CLEANUP => 1);
-    system('narada-new-1', $other) == 0         or die "system(narada-new-1): $!";
-    touch("$other/var/qmail/3");
-    symlink $other.'/var/qmail/3', "$ENV{HOME}/.qmail-3" or die "symlink: $!";
-    symlink $other.'/var/qmail/4', "$ENV{HOME}/.qmail-4" or die "symlink: $!";
-    return;
-}
-
-
 my ($d, $mode);
 my $umask = umask;
+setlocale(LC_ALL, 'C');
+
 
 # - _readlink($link)
 #   * throw on non-links
@@ -239,6 +204,39 @@ is $content,
 
 done_testing();
 
+
+sub sandbox {
+    $ENV{HOME} = File::Temp::tempdir(CLEANUP => 1);
+    my $dir = File::Temp::tempdir(CLEANUP => 1);
+    chdir $dir                                          or die "chdir($dir): $!";
+    dircopy(wd()."/t/.release", "$dir/.release")        or die "dircopy: $!";
+    system('narada-install 0.1.0 >/dev/null 2>&1') == 0 or die "narada-install 0.1.0 failed";
+    return;
+}
+
+sub touch {
+    my ($file) = @_;
+    open my $f, '>', $file                      or die "open($file): $!";
+    return;
+}
+
+sub qmail_flood {   # WARNING call ONLY after sandbox()
+    # ~/.qmail-file
+    # ~/.qmail-1        -> /this/project/var/qmail/1
+    # ~/.qmail-2        -> /this/project/var/qmail/2 (broken)
+    # ~/.qmail-3        -> /other/project/var/qmail/3
+    # ~/.qmail-4        -> /other/project/var/qmail/4 (broken)
+    touch('var/qmail/1');
+    symlink cwd().'/var/qmail/1', "$ENV{HOME}/.qmail-1" or die "symlink: $!";
+    symlink cwd().'/var/qmail/2', "$ENV{HOME}/.qmail-2" or die "symlink: $!";
+    touch("$ENV{HOME}/.qmail-file");
+    my $other = File::Temp::tempdir(CLEANUP => 1);
+    system('narada-new-1', $other) == 0         or die "system(narada-new-1): $!";
+    touch("$other/var/qmail/3");
+    symlink $other.'/var/qmail/3', "$ENV{HOME}/.qmail-3" or die "symlink: $!";
+    symlink $other.'/var/qmail/4', "$ENV{HOME}/.qmail-4" or die "symlink: $!";
+    return;
+}
 __END__
 
 # ~/.qmail-test1                -> /PROJECT/var/qmail/test1

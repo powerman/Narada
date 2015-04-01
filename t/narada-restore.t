@@ -1,5 +1,4 @@
 use t::share; guard my $guard;
-use Test::Output;
 
 
 my $full = path('.backup/full.tar');
@@ -18,6 +17,7 @@ path('dir/file')->spew('modified2');
 path('dir/some')->remove;
 is system('narada-backup'), 0, 'narada-backup (2)';
 $full->copy('.backup/full-2.tar');
+
 
 # - errors:
 #   * no params
@@ -121,8 +121,8 @@ system('rm -rf tmp/* tmp/.[^.]*');
 
 done_testing();
 
+
 sub r {
     my ($n, @files) = map {quotemeta} @_;
     return system(join q{ }, "cd tmp && narada-restore ../.backup/full-$n.tar", @files);
 }
-

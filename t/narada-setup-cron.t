@@ -1,16 +1,7 @@
 use t::share; guard my $guard;
-use Test::MockModule;
 use Narada::Config qw( set_config );
 
 require (wd().'/blib/script/narada-setup-cron');
-
-sub Echo {
-    my ($filename, $content) = @_;
-    open my $fh, '>', $filename                         or die "open: $!";
-    print {$fh} $content;
-    close $fh                                           or die "close: $!";
-    return;
-}
 
 
 # - main()
@@ -319,3 +310,12 @@ unlike($expected, $re, 'get_markers: start.\n.end.junk.\n');
 
 
 done_testing();
+
+
+sub Echo {
+    my ($filename, $content) = @_;
+    open my $fh, '>', $filename                         or die "open: $!";
+    print {$fh} $content;
+    close $fh                                           or die "close: $!";
+    return;
+}

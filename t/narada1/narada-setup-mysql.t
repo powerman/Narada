@@ -1,42 +1,17 @@
 use t::narada1::share; guard my $guard;
-use Test::Output qw( :all );
-use Test::MockModule;
 use DBI;
-
 use Narada::Config qw( set_config );
-
-my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
-
-if ($db eq q{}) {
-    plan skip_all => 'No database provided for testing';
-}
-
-sub Echo {
-    my ($filename, $content) = @_;
-    open my $fh, '>', $filename                         or die "open: $!";
-    print {$fh} $content;
-    close $fh                                           or die "close: $!";
-    return;
-}
-
-sub db_exists {
-    return 0+$::dbh->prepare('SHOW DATABASES LIKE ?')->execute($db);
-}
-
-sub list_tables {
-    return {} if !db_exists();
-    my %tables;
-    for my $t (@{ $::dbh->selectcol_arrayref('SHOW TABLES') }) {
-        $tables{$t} = $::dbh->selectcol_arrayref('SELECT COUNT(*) FROM '.$t)->[0];
-    }
-    return \%tables;
-}
-
 
 require (wd().'/blib/script/narada-setup-mysql');
 
+
+my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
+plan skip_all => 'No database provided for testing' if $db eq q{};
+
+
 $::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});
 BAIL_OUT 'Database already exists' if db_exists();
+
 
 # - main()
 #   * too many params
@@ -128,3 +103,24 @@ throws_ok { output_from { import_sql('var/mysql/c.sql') } }   qr/failed to impor
 $::dbh->do('DROP DATABASE IF EXISTS '.$db);
 done_testing();
 
+
+sub Echo {
+    my ($filename, $content) = @_;
+    open my $fh, '>', $filename                         or die "open: $!";
+    print {$fh} $content;
+    close $fh                                           or die "close: $!";
+    return;
+}
+
+sub db_exists {
+    return 0+$::dbh->prepare('SHOW DATABASES LIKE ?')->execute($db);
+}
+
+sub list_tables {
+    return {} if !db_exists();
+    my %tables;
+    for my $t (@{ $::dbh->selectcol_arrayref('SHOW TABLES') }) {
+        $tables{$t} = $::dbh->selectcol_arrayref('SELECT COUNT(*) FROM '.$t)->[0];
+    }
+    return \%tables;
+}

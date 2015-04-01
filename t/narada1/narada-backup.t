@@ -1,11 +1,68 @@
 use t::narada1::share; guard my $guard;
 use Test::Differences;
 
+
 my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
 
 umask 0022;
 my $dir1 = narada_new();
 my $dir2 = narada_new();
+
+# $dir1 is test directory
+# $dir2 is etalon directory
+for my $dir ($dir1, $dir2) {
+    filldir($dir);
+    system("
+        cd \Q$dir\E
+        echo val > config/var   &&
+        touch var/data          &&
+        echo test >> var/log/current
+    ") == 0 or die "system: $?";
+}
+filldir("$dir1/tmp/");
+filldir("$dir1/var/backup/");
+
+
+is system("cd \Q$dir1\E; narada-backup"), 0, 'first backup';
+ok -e "$dir1/var/backup/full.tar", 'full.tar created';
+ok ! -e "$dir1/var/backup/incr.tar", 'incr.tar not created';
+check_backup("$dir1/var/backup/full.tar");
+system("cd \Q$dir1\E; cp var/backup/full.tar tmp/full1.tar") == 0 or die "system: $?";
+
+my $old_size = -s "$dir1/var/backup/full.tar";
+is system("cd \Q$dir1\E; narada-backup"), 0, 'second backup';
+ok $old_size < -s "$dir1/var/backup/full.tar", 'full.tar grow up';
+ok -e "$dir1/var/backup/incr.tar", 'incr.tar created';
+system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr1.tar") == 0 or die "system: $?";
+
+sleep 1;    # tar will detect changes based on mtime
+for my $dir ($dir1, $dir2) {
+    filldir("$dir/t/");
+    system("
+        cd \Q$dir\E         &&
+        rm config/var       &&
+        rmdir .hiddendir    &&
+        chmod 0712 var/data
+    ");
+}
+filldir("$dir1/var/patch/.prev/");
+system("cd \Q$dir1\E && rm tmp/file && rmdir tmp/.hiddendir");
+
+is system("cd \Q$dir1\E; narada-backup"), 0, 'third backup';
+system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr2.tar") == 0 or die "system: $?";
+SKIP: {
+    skip 'Too many broken cpan tester setups.', 2 if $ENV{AUTOMATED_TESTING};
+    check_backup("$dir1/var/backup/full.tar");
+    check_backup("$dir1/tmp/full1.tar", "$dir1/tmp/incr1.tar", "$dir1/tmp/incr2.tar");
+}
+unlink "$dir1/var/backup/full.tar";
+is system("cd \Q$dir1\E; narada-backup"), 0, 'force full backup';
+ok -e "$dir1/var/backup/full.tar", 'full.tar created';
+ok ! -e "$dir1/var/backup/incr.tar", 'incr.tar not created';
+
+
+done_testing();
+
 
 sub narada_new {
     my $dir = tempdir('narada1.project.XXXXXX');
@@ -56,58 +113,3 @@ sub check_backup {
     chdir q{/};
     return;
 }
-
-
-# $dir1 is test directory
-# $dir2 is etalon directory
-for my $dir ($dir1, $dir2) {
-    filldir($dir);
-    system("
-        cd \Q$dir\E
-        echo val > config/var   &&
-        touch var/data          &&
-        echo test >> var/log/current
-    ") == 0 or die "system: $?";
-}
-filldir("$dir1/tmp/");
-filldir("$dir1/var/backup/");
-
-is system("cd \Q$dir1\E; narada-backup"), 0, 'first backup';
-ok -e "$dir1/var/backup/full.tar", 'full.tar created';
-ok ! -e "$dir1/var/backup/incr.tar", 'incr.tar not created';
-check_backup("$dir1/var/backup/full.tar");
-system("cd \Q$dir1\E; cp var/backup/full.tar tmp/full1.tar") == 0 or die "system: $?";
-
-my $old_size = -s "$dir1/var/backup/full.tar";
-is system("cd \Q$dir1\E; narada-backup"), 0, 'second backup';
-ok $old_size < -s "$dir1/var/backup/full.tar", 'full.tar grow up';
-ok -e "$dir1/var/backup/incr.tar", 'incr.tar created';
-system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr1.tar") == 0 or die "system: $?";
-
-sleep 1;    # tar will detect changes based on mtime
-for my $dir ($dir1, $dir2) {
-    filldir("$dir/t/");
-    system("
-        cd \Q$dir\E         &&
-        rm config/var       &&
-        rmdir .hiddendir    &&
-        chmod 0712 var/data
-    ");
-}
-filldir("$dir1/var/patch/.prev/");
-system("cd \Q$dir1\E && rm tmp/file && rmdir tmp/.hiddendir");
-
-is system("cd \Q$dir1\E; narada-backup"), 0, 'third backup';
-system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr2.tar") == 0 or die "system: $?";
-SKIP: {
-    skip 'Too many broken cpan tester setups.', 2 if $ENV{AUTOMATED_TESTING};
-    check_backup("$dir1/var/backup/full.tar");
-    check_backup("$dir1/tmp/full1.tar", "$dir1/tmp/incr1.tar", "$dir1/tmp/incr2.tar");
-}
-unlink "$dir1/var/backup/full.tar";
-is system("cd \Q$dir1\E; narada-backup"), 0, 'force full backup';
-ok -e "$dir1/var/backup/full.tar", 'full.tar created';
-ok ! -e "$dir1/var/backup/incr.tar", 'incr.tar not created';
-
-
-done_testing();
