@@ -11,11 +11,11 @@ use Narada;
 use Narada::Config qw( get_config set_config );
 use Path::Tiny;
 
+
 main(@ARGV) if !caller;
 
-sub err {
-    die "narada-setup-cron: @_\n";
-}
+
+sub err { die "narada-setup-cron: @_\n" }
 
 sub main {
     Narada::detect();
@@ -117,6 +117,7 @@ sub del_cron {
     set_user_crontab($user_crontab);
     return;
 }
+
 
 1; # Magic true value required at end of module
 __END__
@@ -240,7 +241,7 @@ L<http://cpants.cpanauthors.org/dist/Narada>
 
 Alex Efros E<lt>powerman@cpan.orgE<gt>
 
-Nick Levchenko C<< <nick-lev@ya.ru> >>
+Nick Levchenko E<lt>nick-lev@ya.ruE<gt>
 
 
 =head1 COPYRIGHT AND LICENSE

@@ -9,6 +9,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
 use MIME::Base64;
 
+
 main(@ARGV) if !caller;
 
 
@@ -65,8 +66,8 @@ sub main {
     return;
 }
 
-1; # Magic true value required at end of module
 
+1; # Magic true value required at end of module
 ## no critic (RequirePodAtEnd)
 
 =encoding utf8

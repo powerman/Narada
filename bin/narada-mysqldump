@@ -33,11 +33,11 @@ use constant DESC_EXTRA     => 5;
 
 # GLOBALS:  $::dbh, $::mycnf, $::MYSQLDUMP
 
+
 main(@ARGV) if !caller;
 
-sub err {
-    die "narada-mysqldump: @_\n";
-}
+
+sub err { die "narada-mysqldump: @_\n" }
 
 sub main {
     die "Usage: narada-mysqldump\n" if @_;

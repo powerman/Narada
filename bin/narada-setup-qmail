@@ -12,11 +12,11 @@ use Narada::Config qw( get_config set_config );
 use File::Temp qw( tempfile );
 use Cwd qw( cwd );
 
+
 main(@ARGV) if !caller;
 
-sub err {
-    die "narada-setup-qmail: @_\n";
-}
+
+sub err { die "narada-setup-qmail: @_\n" }
 
 sub main {
     Narada::detect();

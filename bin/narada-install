@@ -232,6 +232,7 @@ sub _error {
 }
 
 
+1; # Magic true value required at end of module
 __END__
 
 =encoding utf8

@@ -125,8 +125,7 @@ sub update_changelog {
 
 
 1; # Magic true value required at end of module
-
-## no critic (RequirePodAtEnd)
+__END__
 
 =encoding utf8
 
