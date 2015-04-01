@@ -20,6 +20,7 @@ Revision history for Narada
 	- add narada-install
 	- add narada-restore
 	- add narada-bg
+	- add narada-bg-killall
 
 	[Compatibility with Narada 1.x]
 	- add narada-new-1

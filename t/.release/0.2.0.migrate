@@ -34,7 +34,7 @@ before_upgrade
   if test -f .release/$1.tgz; then
     tar xzvpf .release/$1.tgz
   fi
-  fuser -k .lock.bg 2>/dev/null || :
+  narada-bg-killall
 after_downgrade
   if test -f .release/$1.patch; then
     GIT_DIR=. git apply -R .release/$1.patch
@@ -46,7 +46,7 @@ after_downgrade
     tar tzf .release/$1.tgz |       perl -ne "$files" | xargs -0 narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar
     tar tzf .release/$1.tgz | tac | perl -ne "$dirs"  | xargs -0 rmdir --ignore-fail-on-non-empty
   fi
-  fuser -k .lock.bg 2>/dev/null || :
+  narada-bg-killall
 
 DEFINE2 only_before_upgrade
 upgrade

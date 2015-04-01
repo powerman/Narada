@@ -6,11 +6,9 @@ die()   { warn "$@"; exit 1;    }
 
 perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 
-[ $# -ne 0 ] || die "Usage: narada-bg command [args]"
+[ $# -eq 0 ] || die "Usage: narada-bg-killall"
 
-exec 3>>.lock.bg
-flock -s -n 3 || die "failed to get shared lock on .lock.bg"
-exec "$@"
+fuser -k .lock.bg >/dev/null 2>&1 || :
 
 
 : <<'=cut'
@@ -19,29 +17,29 @@ exec "$@"
 
 =head1 NAME
 
-narada-bg - run background command for this project
+narada-bg-killall - kill all background commands of this project
 
 
 =head1 VERSION
 
-This document describes narada-bg version v1.4.5
+This document describes narada-bg-killall version v1.4.5
 
 
 =head1 USAGE
 
-    narada-bg command [args]
+    narada-bg-killall
 
 
 =head1 DESCRIPTION
 
 Should be executed in project deploy directory.
 
-Start given command with shared lock on C<.lock.bg>.
+Kill all project's background commands started using C<narada-bg>
+(processes with shared lock on C<.lock.bg>).
 
-You should use C<narada-bg> to start all project's background commands -
-everything run by cron, qmail or as services. All commands which was run
-using C<narada-bg> should be automatically killed on project upgrade or
-downgrade or restoring from backup (use C<narada-bg-killall>).
+Use C<narada-bg-killall> while project upgrade or downgrade or restoring
+from backup (after updating all project's files) to make sure there are no
+running commands started by previous project's version.
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
