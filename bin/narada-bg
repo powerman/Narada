@@ -1,3 +1,4 @@
+#!/bin/bash
 #!/usr/bin/env bash
 VERSION='v1.4.5'
 
@@ -9,7 +10,7 @@ perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 [ $# -ne 0 ] || die "Usage: narada-bg command [args]"
 
 exec 3>>.lock.bg
-flock -n 3 || die "failed to get shared lock on .lock.bg"
+flock -s -n 3 || die "failed to get shared lock on .lock.bg"
 exec "$@"
 
 
