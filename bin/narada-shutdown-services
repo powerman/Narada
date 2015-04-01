@@ -22,8 +22,6 @@ elif test -n "$type"; then
 	die "unknown type of services: '$type'"
 fi
 
-exit
-
 
 : <<'=cut'
 

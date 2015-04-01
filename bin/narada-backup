@@ -50,9 +50,9 @@ else
     _tar -c -g $snap --anchored "${excl[@]}" -f $full.tmp ./
 fi                                                              &&
 mv $full.tmp $full
-
-
 exit $?
+
+
 : <<'=cut'
 
 =encoding utf8

@@ -28,7 +28,7 @@ for src in "$@"; do
     scp $dir "$src" "$host:$path$dst"
 done
 
-exit
+
 : <<'=cut'
 
 =encoding utf8

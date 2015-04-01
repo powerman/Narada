@@ -9,7 +9,7 @@ perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 
 [ $# -eq 0 ] || die "Usage: narada-bg-killall"
 
-fuser -k .lock.bg >/dev/null 2>&1 || :
+fuser -k .lock.bg >/dev/null 2>&1
 
 
 : <<'=cut'

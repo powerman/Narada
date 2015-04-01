@@ -24,7 +24,7 @@ mv tmp/CURRENT.patch    var/patch/CURRENT.20.patch     2>/dev/null
 mv tmp/CURRENT.tgz      var/patch/CURRENT.30.tgz       2>/dev/null
 mv tmp/CURRENT.post.sh  var/patch/CURRENT.40.sh        2>/dev/null
 
-exit
+
 : <<'=cut'
 
 =encoding utf8

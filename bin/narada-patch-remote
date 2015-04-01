@@ -7,7 +7,7 @@ narada-remote "rm var/patch/$(cat config/version).$USER.* 2>/dev/null"
 narada-upload var/patch/$(cat config/version).$USER.*        &&
 narada-remote -t "narada-lock-exclusive narada-patch --no-prev" # --no-prev for compatibility with <0.9.3
 
-exit
+
 : <<'=cut'
 
 =encoding utf8
