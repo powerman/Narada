@@ -9,7 +9,7 @@ throws_ok { set_config() }              qr/Usage:/,     'no params';
 throws_ok { set_config(1) }             qr/Usage:/,     'not enough params';
 throws_ok { set_config(1, 2, 3) }       qr/Usage:/,     'too many params';
 
-throws_ok { set_config($_, q{}) }       qr/bad config:/,
+throws_ok { set_config($_, q{}) }       qr/bad config:/i,
     "bad variable: $_"
     for @badvar;
 

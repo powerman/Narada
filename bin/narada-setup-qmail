@@ -54,7 +54,7 @@ sub setup_qmail {
             symlink $path, $qmail               or err "symlink($path,$qmail): $!";
         }
         elsif (! (-l $qmail && _readlink($qmail) eq $path)) {
-            err "conflict detected on $qmail";
+            err "Conflict detected on $qmail";
         }
     }
 

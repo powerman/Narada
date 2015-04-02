@@ -19,7 +19,7 @@ if test "$type" = 'runit'; then
 		kill -HUP "$pid"
 	fi
 elif test -n "$type"; then
-	die "unknown type of services: '$type'"
+	die "Unknown type of services: '$type'"
 fi
 
 

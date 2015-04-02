@@ -30,7 +30,7 @@ done
 
 if test -d "$dir"; then
         if test "$(ls -a "$dir" | wc -l)" != "2"; then
-                die "target directory '$dir' is not empty"
+                die "Target directory '$dir' is not empty"
         fi
 else
         mkdir "$dir" || exit 1

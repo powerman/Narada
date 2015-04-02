@@ -28,7 +28,7 @@ sub detect {
       :                                           undef
       ;
     return $type if $type && $need{$type};
-    die 'this is not '.join(' or ', keys %need)." directory\n";
+    die 'This is not '.join(' or ', keys %need)." directory\n";
 }
 
 
@@ -39,7 +39,7 @@ __END__
 
 =head1 NAME
 
-Narada - framework for ease development/deploy/support for medium/big projects
+Narada - framework for ease deploy and support microservice projects
 
 
 =head1 VERSION

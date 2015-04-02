@@ -18,11 +18,11 @@ throws_ok { _main(1, 2, 3) }             qr/Usage:/,  'too many params';
 
 # Wrong destination
 mkdir("$dst/somedir")                               or die "mkdir: $!";
-throws_ok { _main($dst) }                qr/directory not empty/;
+throws_ok { _main($dst) }                qr/directory not empty/i;
 rmdir "$dst/somedir"                                or die "rmdir: $!";
 system("touch \Q$dst\E/somefile") == 0              or die "system: touch: $?";
-throws_ok { _main($dst) }                qr/directory not empty/;
-throws_ok { _main("$dst/somefile") }     qr/not a directory/;
+throws_ok { _main($dst) }                qr/directory not empty/i;
+throws_ok { _main("$dst/somefile") }     qr/not a directory/i;
 unlink "$dst/somefile"                              or die "unlink: $!";
 
 # Wrong destination permissions
@@ -34,7 +34,7 @@ SKIP: {
     chmod 0500, $dst                                    or die "chmod: $!";
     open my $olderr, '>&', \*STDERR                     or die "open: $!";
     open STDERR, '> /dev/null'                          or die "open: $!";
-    throws_ok { _main($dst) }              qr/unpack failed/;
+    throws_ok { _main($dst) }              qr/unpack failed/i;
     open STDERR, '>&', $olderr                          or die "open: $!";
     chmod 0700, $dst                                    or die "chmod: $!";
 }

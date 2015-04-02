@@ -7,12 +7,12 @@ die()   { warn "$@"; exit 1;    }
 perl -MNarada -E 'Narada::detect(@ARGV)' || exit 1
 
 if ! [ -f config/remote -a -s config/remote ]; then
-    die "error: configure config/remote first"
+    die "Configure config/remote first"
 fi
 host=$(sed 's,:.*,,'     < config/remote);
 path=$(sed 's,^[^:]*:,,' < config/remote);
 if [ "$host" == "" ]; then
-    die "error: config/remote should contain: [user@]host:[path/to/dir/]"
+    die "File config/remote should contain: [user@]host:[path/to/dir/]"
 fi
 if [ $# -lt 1 ]; then
     die "Usage: $(basename $0) file_or_dir_for_upload_here ..."

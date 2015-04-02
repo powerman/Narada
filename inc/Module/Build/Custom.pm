@@ -6,7 +6,7 @@ use parent 'Module::Build';
 my $TAR = (grep {-x "$_/gtar"} split /:/, $ENV{PATH}) ? 'gtar' : 'tar';
 for my $cmd (qw( bash find chmod ), $TAR) {
     if (!grep {-x "$_/$cmd"} split /:/, $ENV{PATH}) {
-        die "command not found: $cmd\n"
+        die "Command not found: $cmd\n"
     }
 }
 die "GNU tar required\n" if `$TAR --version` !~ /GNU/ms;

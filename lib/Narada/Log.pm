@@ -46,7 +46,7 @@ sub _init_log {
         });
     }
     else {
-        croak "unsupported value '$type' in config/log/type";
+        croak "Unsupported value '$type' in config/log/type";
     }
     return;
 }

@@ -8,7 +8,7 @@ my @badvar = ('a b', qw( a:b $a a+b a\b ./ a/./b ../ a/../b dir/ version/ ));
 throws_ok { get_config() }          qr/Usage:/,     'no params';
 throws_ok { get_config(1, 2) }      qr/Usage:/,     'too many params';
 
-throws_ok { get_config($_) }        qr/bad config:/,
+throws_ok { get_config($_) }        qr/bad config:/i,
     "bad variable: $_"
     for @badvar;
 

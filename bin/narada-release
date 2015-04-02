@@ -25,7 +25,7 @@ sub main {
     rename 'var/patch/prev', 'var/patch/.prev'; # compatibility with Narada <1.2.0
 
     update_version();
-    system($ENV{EDITOR}, 'doc/ChangeLog') == 0  or err "system(EDITOR): $!";
+    system($ENV{EDITOR}, 'doc/ChangeLog') == 0  or err "system(\$EDITOR): $!";
     update_changelog();
 
     my ($v_old, $v_new) = get_versions();
@@ -67,9 +67,9 @@ sub get_versions {
     my $v_old = get_config_line('version');
     chdir '../../..'                        or err "chdir(../../..): $!";
     my $v_new = get_config_line('version');
-    $v_new =~ /\S/xms           or err 'UNABLE TO DETECT VERSION';
-    $v_new !~ m{/}xms           or err 'VERSION MUST NOT CONTAIN /';
-    $v_new !~ m{\s}xms          or err 'VERSION MUST NOT CONTAIN WHITESPACES';
+    $v_new =~ /\S/xms           or err 'Unable to detect version';
+    $v_new !~ m{/}xms           or err 'Version must not contain /';
+    $v_new !~ m{\s}xms          or err 'Version must not contain whitespaces';
     return ($v_old, $v_new);
 }
 
@@ -93,7 +93,7 @@ sub update_version {
     my ($v_old, $v_new) = get_versions();
     if ($v_old eq $v_new) {
         $v_new =~ s/^(.*\D)?(\d+)/(my $v=$2)++; ($1||q{}) . $v/xmse
-            or err 'VERSION MUST CONTAIN NUMBER';
+            or err 'Version must contain number';
         set_config('version', $v_new."\n");
     }
     return;
@@ -102,7 +102,7 @@ sub update_version {
 # Ensure ChangeLog has record for this version (if not - create empty) and
 # correct it header.
 sub update_changelog {
-    -f 'doc/ChangeLog'                          or err 'CHANGELOG NOT FOUND';
+    -f 'doc/ChangeLog'                          or err 'ChangeLog not found';
     my $changelog_old   = read_file('var/patch/.prev/doc/ChangeLog');
     my $changelog       = read_file('doc/ChangeLog');
     my $modified        = $changelog_old ne $changelog;

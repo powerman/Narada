@@ -53,8 +53,8 @@ sub main {
 
 sub import_sql {
     my ($file) = @_;
-    warn "importing $file...\n";
-    system("narada-mysql <\Q$file\E") == 0 or err 'failed to import '.$file;
+    warn "Importing $file...\n";
+    system("narada-mysql <\Q$file\E") == 0 or err 'Failed to import '.$file;
     return;
 }
 

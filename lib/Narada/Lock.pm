@@ -96,9 +96,9 @@ This document describes Narada::Lock version v1.4.5
 
     shared_lock();
     unlock();
-    shared_lock(0) or die "can't get lock right now";
+    shared_lock(0) or die "Can't get lock right now";
     unlock();
-    shared_lock(5) or die "can't get lock in 5 seconds";
+    shared_lock(5) or die "Can't get lock in 5 seconds";
     unlock();
 
     shared_lock();

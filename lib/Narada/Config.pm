@@ -20,14 +20,14 @@ my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*[\w.-]+\z}xms;
 sub get_config :Export {
     my ($var) = @_;
     croak 'Usage: get_config(NAME)' if @_ != 1;
-    $var =~ /$VAR_NAME/xms              or croak "bad config: $var";
+    $var =~ /$VAR_NAME/xms              or croak "Bad config: $var";
     return path("config/$var")->slurp_utf8;
 }
 
 sub get_config_line :Export {
     my ($val) = get_config(@_);
     $val =~ s/\n\s*\z//xms;
-    croak 'config contain more than one line' if $val =~ /\n/xms;
+    croak 'Config contain more than one line' if $val =~ /\n/xms;
     return $val;
 }
 
@@ -51,7 +51,7 @@ sub get_db_config :Export {
 sub set_config :Export {
     my ($var, $val) = @_;
     croak 'Usage: set_config(NAME, VALUE)' if @_ != 2;
-    $var =~ /$VAR_NAME/xms              or croak "bad config: $var";
+    $var =~ /$VAR_NAME/xms              or croak "Bad config: $var";
     my $cfg = path("config/$var");
     $cfg->parent->mkpath;
     $cfg->spew_utf8($val);

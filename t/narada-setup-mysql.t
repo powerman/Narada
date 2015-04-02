@@ -91,12 +91,12 @@ main('--clean');
 $::dbh->do('CREATE DATABASE IF NOT EXISTS '.$db);
 
 chmod 0, 'var/mysql/a.sql' or die "chmod: $!";
-throws_ok { output_from { import_sql('var/mysql/a.sql') } }   qr/failed to import/,
+throws_ok { output_from { import_sql('var/mysql/a.sql') } }   qr/failed to import/i,
     'import_sql: file unreadable';
 chmod 0644, 'var/mysql/a.sql' or die "chmod: $!";
 
 Echo('var/mysql/c.sql', 'some junk here');
-throws_ok { output_from { import_sql('var/mysql/c.sql') } }   qr/failed to import/,
+throws_ok { output_from { import_sql('var/mysql/c.sql') } }   qr/failed to import/i,
     'import_sql: file contain wrong SQL';
 
 

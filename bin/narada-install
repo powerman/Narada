@@ -101,11 +101,11 @@ sub get_path {
         my ($migrate, $prev_version, $next_version) = @_;
         my @paths = $migrate->find_paths($prev_version, $next_version);
         if (0 == @paths) {
-                err "unable to find migration path from $prev_version to $next_version";
+                err "Unable to find migration path from $prev_version to $next_version";
         }
         elsif (1 != @paths) {
                 err join "\n",
-                        'found more than one upgrade path, run one of these commands to choose a path:',
+                        'Found more than one upgrade path, run one of these commands to choose a path:',
                         map {"\tnarada-install --path @{$_}"} @paths;
         }
         return $paths[0];
@@ -116,13 +116,13 @@ sub check_path {
         for my $step ($migrate->get_steps($path)) {
                 my $t = $step->{type};
                 my $is_down = $t eq 'downgrade' || $t eq 'after_downgrade';
-                err 'downgrade required, use --allow-downgrade to continue'
+                err 'Downgrade required, use --allow-downgrade to continue'
                         if $is_down && !$allow_downgrade;
-                err 'RESTORE required, use --allow-restore to continue'
+                err 'Restore from backup required, use --allow-restore to continue'
                         if $t eq 'RESTORE' && !$allow_restore;
                 if ($t eq 'RESTORE') {
                         my $f = path(".backup/full-$step->{next_version}.tar");
-                        err "required backup not found: $f" if !$f->is_file;
+                        err "Required backup not found: $f" if !$f->is_file;
                 }
         }
         return;
@@ -221,7 +221,7 @@ sub _error {
         while (1) {
                 my $ans = lc ask($prompt, qr/\A(?:shell|continue|restore|\s*)\z/msi);
                 if ($ans eq 'restore') {
-                        die "migration failed\n";
+                        die "Migration failed\n";
                 }
                 elsif ($ans eq 'continue') {
                         last;

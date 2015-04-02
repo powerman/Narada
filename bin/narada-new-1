@@ -24,9 +24,9 @@ sub main {
         mkdir $dst                      or err "mkdir: $!";
     }
     else {
-        -d $dst                         or err "not a directory: $dst";
+        -d $dst                         or err "Not a directory: $dst";
         opendir my $d, $dst             or err "opendir: $!";
-        (my @tmp = readdir $d) == 2     or err "directory not empty: $dst";
+        (my @tmp = readdir $d) == 2     or err "Directory not empty: $dst";
         closedir $d                     or err "closedir: $!";
     }
 
@@ -36,9 +36,9 @@ sub main {
     local $SIG{PIPE} = 'IGNORE';
     my $TAR = (grep {-x "$_/gtar"} split /:/ms, $ENV{PATH}) ? 'gtar' : 'tar';
     open my $unpack, q{|-}, "$TAR xpf - -C \Q$dst\E"
-                                        or err 'unpack failed';
+                                        or err 'Unpack failed';
     print {$unpack} decode_base64($skel);
-    close $unpack                       or err 'unpack failed';
+    close $unpack                       or err 'Unpack failed';
 
     # Enter project.
     chdir $dst                          or err "chdir: $!";
@@ -48,7 +48,7 @@ sub main {
 
     # Setup project version.
     my ($project) = `pwd` =~ m{([^/]+?)\n\z}xms
-                                        or err 'unable to detect project name';
+                                        or err 'Unable to detect project name';
     my $version = "$project-0.0.000";
     set_config('version', "$version\n");
 

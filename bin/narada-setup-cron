@@ -46,7 +46,7 @@ sub main {
 
 sub get_project_dir {
     chomp (my $project_dir = `pwd`);
-    $project_dir !~ /\n/xms or err 'project directory must not contain \\n';
+    $project_dir !~ /\n/xms or err 'Project directory must not contain \\n';
     return $project_dir;
 }
 
