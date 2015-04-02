@@ -15,7 +15,7 @@ is system('narada-shutdown-services'), 0, 'no services';
 is system('narada-install 0.2.0 >/dev/null 2>&1'), 0, 'narada-install 0.2.0';
 ok !$logfile->exists, 'service not running';
 
-system('runsvdir ./service/ >/dev/null 2>&1 &');
+system('narada-start-services &');
 sleep 2;
 ok $logfile->exists, 'service running';
 eval 'use Narada::Log qw( $LOGSOCK )';
