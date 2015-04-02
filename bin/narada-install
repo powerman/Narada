@@ -33,7 +33,7 @@ sub err { die "narada-install: @_\n" };
 
 sub main {
         ## no critic (RequireCarping)
-        my ($allow_downgrade, $allow_restore, @files);
+        my ($allow_downgrade, $allow_restore, @files) = (0, 0);
         my ($is_path, $check, $is_help);
         my ($prev_version, $next_version, $path);
         GetOptionsFromArray(\@_,
@@ -88,9 +88,7 @@ sub load {
         for (@files) {
                 $migrate->load($_);
         }
-        if (-f ".release/$next_version.migrate") {
-                $migrate->load(".release/$next_version.migrate");
-        }
+        $migrate->load(".release/$next_version.migrate");
         if (-f ".release/$prev_version.migrate") {
                 $migrate->load(".release/$prev_version.migrate");
         }
@@ -197,6 +195,7 @@ sub _restore {
         system('narada-setup-mysql') == 0 or die "RESTORE failed on narada-setup-mysql\n";
         system('narada-setup-cron')  == 0 or die "RESTORE failed on narada-setup-cron\n";
         system('narada-setup-qmail') == 0 or die "RESTORE failed on narada-setup-qmail\n";
+        system 'narada-start-services';
         return;
 }
 

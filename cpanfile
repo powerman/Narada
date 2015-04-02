@@ -1,6 +1,6 @@
 requires 'perl', '5.010001';
 
-requires 'App::migrate';
+requires 'App::migrate', 'v0.1.5';
 requires 'App::powerdiff';
 requires 'DBD::mysql';
 requires 'DBI';
