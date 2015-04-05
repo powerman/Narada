@@ -36,7 +36,9 @@ system('rm -rf tmp/* tmp/.[^.]*');
 #   * empty dir with only .release/ and .backup/
 path('tmp/.backup')->mkpath;
 path('tmp/.release')->mkpath;
-is r(0), 0, 'full restore (0) in empty dir with .release & .backup';
+path('tmp/.lock')->touch;
+path('tmp/.lock.bg')->touch;
+is r(0), 0, 'full restore (0) in empty dir with .release & .backup & .lock*';
 lives_ok {
     ok path('tmp/config')->is_dir;
     ok !path('tmp/dir/some')->exists;
@@ -59,7 +61,7 @@ lives_ok {
 } 'restored 2';
 system('rm -rf tmp/* tmp/.[^.]*');
 #   * fail in non-empty dir
-path('tmp/.lock')->touch;
+path('tmp/.gitignore')->touch;
 stderr_like { isnt r(0), 0, 'fail in non-empty dir' } qr/not narada/msi, 'got error';
 system('rm -rf tmp/* tmp/.[^.]*');
 # - restore only given files
