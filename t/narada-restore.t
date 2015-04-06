@@ -36,6 +36,7 @@ lives_ok {
 system('echo rm -rf tmp/* tmp/.[^.]* >&2');
 system('rm -rf tmp/* tmp/.[^.]*');
 system('ls -al tmp/ >&2');
+system('ps ax | grep $$ >&2; set >&2');
 #   * empty dir with only .release/ and .backup/
 path('tmp/.backup')->mkpath;
 path('tmp/.release')->mkpath;
