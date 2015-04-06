@@ -10,9 +10,9 @@ use Perl6::Export::Attrs;
 use Narada;
 use Path::Tiny 0.053;
 
-use constant IS_NARADA      => Narada::detect() eq 'narada';
-use constant CONFIG_DIR     => IS_NARADA ? 'mysql' : 'db';
-use constant MAXPERM        => 0666; ## no critic (ProhibitLeadingZeros)
+use constant IS_NARADA1 => eval { local $SIG{__DIE__}; Narada::detect('narada-1') } || undef;
+use constant CONFIG_DIR => IS_NARADA1 ? 'db' : 'mysql';
+use constant MAXPERM    => 0666; ## no critic (ProhibitLeadingZeros)
 
 my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*[\w.-]+\z}xms;
 

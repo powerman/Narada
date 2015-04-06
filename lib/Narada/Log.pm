@@ -27,7 +27,7 @@ sub import {
 
 sub _init_log {
     my $type = eval { get_config_line('log/type') } || 'syslog';
-    my $path = get_config_line('log/output');
+    my $path = eval { get_config_line('log/output') } || return;
     if ($type eq 'syslog') {
         Log::Fast->global()->config({
             level   => get_config_line('log/level'),
