@@ -3,10 +3,11 @@ use Test::More;
 eval 'require Test::Distribution';
 plan( skip_all => 'Test::Distribution not installed' ) if $@;
 Test::Distribution->import(
-#    podcoveropts => {
-#        also_private    => [
+   podcoveropts => {
+       also_private    => [
+            'detect',
 #            qr/^(?:IMPORT)$/,
-#        ],
+       ],
 #        pod_from        => 'MAIN PM FILE HERE',
-#    }
+   }
 );
