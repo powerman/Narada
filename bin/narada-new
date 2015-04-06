@@ -29,7 +29,7 @@ while test $# -ne 0; do
 done
 
 if test -d "$dir"; then
-        if test "$(ls -a "$dir" | wc -l)" != "2"; then
+        if test "$(ls -a "$dir" | wc -l)" -ne "2"; then
                 die "Target directory '$dir' is not empty"
         fi
 else

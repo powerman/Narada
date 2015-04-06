@@ -13,6 +13,7 @@ path('dir/some')->spew('data');
 path('dir/dir/file')->spew('old3');
 is system('narada-backup'), 0, 'narada-backup (1)';
 $full->copy('.backup/full-1.tar');
+sleep 1;
 path('dir/file')->spew('modified2');
 path('dir/some')->remove;
 is system('narada-backup'), 0, 'narada-backup (2)';

@@ -32,7 +32,7 @@ excl=(); while read; do excl+=( --exclude "$REPLY" ); done <config/backup/exclud
 _tar(){
     tmp=/tmp/narada-backup.$$
     TAR=`which gtar tar 2>/dev/null | head -n 1`
-    LANG= $TAR "$@" &>$tmp
+    LANG= $TAR "$@" >$tmp 2>&1
     status=$?
     grep -v 'socket ignored' $tmp
     rm $tmp
@@ -49,7 +49,8 @@ else
     rm -f $snap $full $full.tmp $incr $incr.tmp                 &&
     _tar -c -g $snap --anchored "${excl[@]}" -f $full.tmp ./
 fi                                                              &&
-mv $full.tmp $full
+mv $full.tmp $full &&
+sleep 1 # make sure files modified after backup won't have same mtime on *BSD
 exit $?
 
 

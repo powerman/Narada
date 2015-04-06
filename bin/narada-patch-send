@@ -18,7 +18,7 @@ mutt									\
     $(ls var/patch/$version.$USER.* | sed 's,^,-a ,')			\
     -s "patch: $version"						\
     -i "tmp/ChangeLog.$$"						\
-    -e 'set editor=/bin/true'						\
+    -e 'set editor=true'						\
     -e 'set autoedit=yes'						\
     -e 'set edit_headers=yes'						\
     -e 'send-hook . set crypt_autoencrypt=yes crypt_autosign=yes'	\

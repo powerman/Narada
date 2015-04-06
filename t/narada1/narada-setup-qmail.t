@@ -174,7 +174,7 @@ touch('config/qmail/empty');
 open my $cmd, '>', 'config/qmail/cmd'           or die "open(config/qmail/cmd): $!";
 print {$cmd}
     "# comment\n",
-    "|cd /tmp; mycmd &>/dev/null\n",
+    "|cd /tmp; mycmd >/dev/null 2>&1\n",
     "&my\@email.com\n",
     "|othercmd",
     ;
@@ -196,7 +196,7 @@ close $cmd                                      or die "close(var/qmail/cmd): $!
 my $cwd = cwd();
 is $content,
     "# comment\n"
-  . "|cd \Q$cwd\E || exit(100); cd /tmp; mycmd &>/dev/null\n"
+  . "|cd \Q$cwd\E || exit(100); cd /tmp; mycmd >/dev/null 2>&1\n"
   . "&my\@email.com\n"
   . "|cd \Q$cwd\E || exit(100); othercmd",
     'main() var/qmail/cmd processed';

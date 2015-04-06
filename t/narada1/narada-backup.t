@@ -94,7 +94,7 @@ sub check_backup {
     my $dir = tempdir('narada1.project.XXXXXX');
     chdir $dir or die "chdir: $!";
     for my $file (@files) {
-        system("$TAR -x -p -g /dev/null -f \Q$file\E &>/dev/null");
+        system("$TAR -x -p -g /dev/null -f \Q$file\E >/dev/null 2>&1");
     }
     # looks like dir size on raiserfs differ and break this test (ext3 works ok)
     SKIP: {

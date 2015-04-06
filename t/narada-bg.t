@@ -2,6 +2,9 @@ use t::share; guard my $guard;
 use Time::HiRes qw( sleep );
 
 
+plan skip_all => 'flock not installed'      if !grep {-x "$_/flock"} split /:/, $ENV{PATH};
+
+
 my $pfx = sprintf 'some_script_%d_%d_', time, $$;
 my $fpfx = cwd().'/'.$pfx;
 for (1 .. 3) {

@@ -29,7 +29,7 @@
 DEFINE2 INSTALL
 before_upgrade
   if test -f .release/$1.patch; then
-    GIT_DIR=. git apply .release/$1.patch
+    GIT_DIR=.git git apply .release/$1.patch
   fi
   if test -f .release/$1.tgz; then
     tar xzvpf .release/$1.tgz
@@ -37,7 +37,7 @@ before_upgrade
   narada-bg-killall
 after_downgrade
   if test -f .release/$1.patch; then
-    GIT_DIR=. git apply -R .release/$1.patch
+    GIT_DIR=.git git apply -R .release/$1.patch
   fi
   if test -f .release/$1.tgz; then
     files='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}||print'
@@ -50,18 +50,18 @@ after_downgrade
 
 DEFINE2 only_before_upgrade
 upgrade
-downgrade /bin/true
+downgrade true
 
 DEFINE2 only_upgrade
 upgrade
-downgrade /bin/true
+downgrade true
 
 DEFINE2 only_downgrade
-upgrade /bin/true
+upgrade true
 downgrade
 
 DEFINE2 only_after_downgrade
-upgrade /bin/true
+upgrade true
 after_downgrade
 
 # mysql path/to/alter.sql
@@ -123,7 +123,7 @@ upgrade
   # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 downgrade
   rm -f config/"$1"
-  rmdir -p --ignore-fail-on-non-empty $(dirname config/"$1")
+  rmdir -p $(dirname config/"$1") 2>/dev/null || :
   # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
   # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 
@@ -172,7 +172,7 @@ after_downgrade
 DEFINE2 del_config
 upgrade
   rm -f config/"$1"
-  rmdir -p --ignore-fail-on-non-empty $(dirname config/"$1")
+  rmdir -p $(dirname config/"$1") 2>/dev/null || :
   # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
   # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 after_downgrade
@@ -208,7 +208,7 @@ add_config backup/exclude -
   ./tmp/*
 add_config crontab/backup -
   1 3 * * *   ( narada-backup && echo Reminder: encrypt .backup/full.tar with config/backup/pass and upload it somewhere >&2) >/dev/null
-  1 2 * * 1   rm .backup/full.tar &>/dev/null
+  1 2 * * 1   rm .backup/full.tar >/dev/null 2>&1
 
 add_config log/level    DEBUG
 add_config log/type     file
