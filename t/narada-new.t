@@ -11,7 +11,7 @@ system('{
     narada-install 0.2.0 &&
     git add . && git commit -m 2 &&
     git checkout master
-    } >/dev/null 2>&1') == 0 or die "system: $?";
+    }') == 0 or die "system: $?";
 my $new = 'narada-new -r '.quotemeta(cwd());
 
 my $wd      = tempdir('narada.XXXXXX');

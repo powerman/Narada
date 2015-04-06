@@ -33,7 +33,9 @@ lives_ok {
     is path('tmp/dir/file')->slurp, 'modified2';
     ok !path('tmp/dir/some')->exists;
 } 'restored 2';
+system('echo rm -rf tmp/* tmp/.[^.]* >&2');
 system('rm -rf tmp/* tmp/.[^.]*');
+system('ls -al tmp/ >&2');
 #   * empty dir with only .release/ and .backup/
 path('tmp/.backup')->mkpath;
 path('tmp/.release')->mkpath;
