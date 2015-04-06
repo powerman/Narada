@@ -1,4 +1,5 @@
 use t::share; guard my $guard;
+use Time::HiRes qw( sleep );
 
 
 my $pfx = sprintf 'some_script_%d_%d_', time, $$;
@@ -15,10 +16,12 @@ stderr_like { isnt system('narada-bg'), 0, 'no params' } qr/usage/msi, 'got usag
 is   system("./\Q${pfx}\E1 &"),                             0, '1 started';
 is   system("narada-bg ./\Q${pfx}\E2 &"),                   0, '2 started';
 is   system("narada-bg ./\Q${pfx}\E3 &"),                   0, '3 started';
+sleep 0.5;
 is   system("pgrep -x -f '/bin/sh ./${pfx}1' >/dev/null"),  0, '1 is running';
 is   system("pgrep -x -f '/bin/sh ${fpfx}2' >/dev/null"),   0, '2 is running';
 is   system("pgrep -x -f '/bin/sh ${fpfx}3' >/dev/null"),   0, '3 is running';
 is   system('narada-bg-killall'),                           0, 'narada-bg-killall';
+sleep 0.5;
 is   system("pgrep -x -f '/bin/sh ./${pfx}1' >/dev/null"),  0, '1 is running';
 isnt system("pgrep -x -f '/bin/sh ${fpfx}2' >/dev/null"),   0, '2 is not running';
 isnt system("pgrep -x -f '/bin/sh ${fpfx}3' >/dev/null"),   0, '3 is not running';

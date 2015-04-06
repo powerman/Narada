@@ -230,7 +230,14 @@ add_config mysql/dump/ignore
 add_config mysql/dump/incremental
 
 
-INSTALL 0.1.0
-VERSION 0.1.0
+INSTALL 2.1.0
+VERSION 2.1.0
+
+upgrade
+    test ! -e .release/fail-upgrade-2.2.0
+downgrade true
+
+VERSION 2.2.0
 
 
+VERSION 2.3.0

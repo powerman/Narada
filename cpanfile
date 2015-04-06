@@ -1,6 +1,6 @@
 requires 'perl', '5.010001';
 
-requires 'App::migrate', 'v0.1.5';
+requires 'App::migrate', 'v0.2.0';
 requires 'App::powerdiff';
 requires 'DBD::mysql';
 requires 'DBI';
@@ -10,7 +10,7 @@ requires 'Getopt::Long';
 requires 'List::Util';
 requires 'Log::Fast';
 requires 'MIME::Base64';
-requires 'Path::Tiny', '0.053';
+requires 'Path::Tiny', '0.065';
 requires 'Perl6::Export::Attrs';
 requires 'Time::HiRes';
 requires 'Time::Local';

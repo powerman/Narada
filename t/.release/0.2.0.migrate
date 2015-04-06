@@ -195,7 +195,8 @@ VERSION 0.0.0
 
 
 # REQUIRED Narada files & directories:
-mkdir .backup
+only_upgrade
+    mkdir -p .backup
 mkdir config
 mkdir tmp
 mkdir var

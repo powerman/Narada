@@ -18,7 +18,13 @@ files=("${files[@]#/}")
 files=("${files[@]#./}")
 files=("${files[@]/#/./}")
 
-exec tar xpf "$backup" -g /dev/null "${files[@]}"
+excl=()
+test -d '.release' && excl+=( --exclude './.release' )
+test -d '.backup'  && excl+=( --exclude './.backup'  )
+excl+=( --exclude './.lock*' )
+
+TAR=`which gtar tar 2>/dev/null | head -n 1`
+LANG= exec $TAR -x -p -f "$backup" -g /dev/null --anchored "${excl[@]}" "${files[@]}"
 
 
 : <<'=cut'

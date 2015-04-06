@@ -3,166 +3,65 @@ use t::share; guard my $guard;
 require (wd().'/blib/script/narada-install');
 
 
-my %mock = my %init_mock = (
-    prev_version    => undef,
-    next_version    => undef,
-    files           => [],
-    path            => undef,
-    allow_downgrade => 0,
-    allow_restore   => 0,
-    get_path        => 0,
-    migrate         => 0,
-);
+sub is_version;
+sub is_backups;
+my ($narada_bin) = grep {-x "$_/narada-new"} split /:/, $ENV{PATH};
+my $tmp_bin = tempdir('narada.bin.XXXXXX');
+$ENV{PATH} = "$tmp_bin:$ENV{PATH}";
+my @answers;
 my $module = Test::MockModule->new('main');
-$module->mock(load      => sub {
-    $mock{prev_version}     = shift;
-    $mock{next_version}     = shift;
-    $mock{files}            = \@_;
-    return 'mocked migrate';
-});
-$module->mock(get_path  => sub {
-    $mock{get_path}++;
-    return ['mocked path'];
-});
-$module->mock(check_path=> sub {
-    shift;
-    $mock{path}             = shift;
-    $mock{allow_downgrade}  = shift;
-    $mock{allow_restore}    = shift;
-});
-$module->mock(migrate   => sub {
-    $mock{migrate}++;
+$module->mock(ask => sub {
+    if (@answers) {
+        return shift @answers;
+    }
+    else {
+        local *STDOUT = *STDERR;
+        $module->original('ask')->(@_);
+    }
 });
 
-
-# - main (parsing args)
-%mock = %init_mock;
-#   * --nosuch
-throws_ok { main(qw( --nosuch )) } qr/Usage/msi, '--nosuch: died with Usage';
-#   * --help
-#     ** only param
-lives_ok { output_like { main(qw( -h                        )) }
-    qr/Usage/msi, qr/\A\z/msi, 'Usage on STDOUT' } '-h: normal exit';
-lives_ok { output_like { main(qw( --help                    )) }
-    qr/Usage/msi, qr/\A\z/msi, 'Usage on STDOUT' } '--help: normal exit';
-#     ** with other params
-lives_ok { output_like { main(qw( -c file -h --path         )) }
-    qr/Usage/msi, qr/\A\z/msi, 'Usage on STDOUT' } '... -h ...: normal exit';
-lives_ok { output_like { main(qw( -c file --help --path     )) }
-    qr/Usage/msi, qr/\A\z/msi, 'Usage on STDOUT' } '... --help ...:normal exit';
-#   * --check
-#     ** with incompatible params
-throws_ok { main(qw( -c file extra      )) } qr/Usage/msi, '-c file extra: died with Usage';
-throws_ok { main(qw( -p -c file         )) } qr/Usage/msi, '-p -c file: died with Usage';
-throws_ok { main(qw( -D -c file         )) } qr/Usage/msi, '-D -c file: died with Usage';
-throws_ok { main(qw( -R -c file         )) } qr/Usage/msi, '-R -c file: died with Usage';
-throws_ok { main(qw( -f file -c file    )) } qr/Usage/msi, '-f file -c file: died with Usage';
-#     ** bad file
-throws_ok { main(qw( -c file            )) } qr/No such file/msi, '-c file: No such file';
-throws_ok { main(qw( -c config          )) } qr/plain file/msi, '-c config: not a plain file';
-throws_ok { main(qw( -c /dev/null       )) } qr/plain file/msi, '-c /dev/null: not a plain file';
-#     ** bad file syntax
-throws_ok { main(qw( -c VERSION         )) } qr/parse error/msi, '-c VERSION: parse error';
-throws_ok { main(qw( --check VERSION    )) } qr/parse error/msi, '--check VERSION: parse error';
-#     ** good file syntax
-lives_ok  { main(qw( -c .release/0.1.0.migrate      )) } '-c .release/0.1.0.migrate: ok';
-lives_ok  { main(qw( --check .release/0.1.0.migrate )) } '--check .release/0.1.0.migrate: ok';
-#   * --path
-#     ** too short path
-throws_ok { main(qw( -p                 )) } qr/Usage/msi, '-p: died with Usage';
-throws_ok { main(qw( -p 1               )) } qr/Usage/msi, '-p 1: died with Usage';
-throws_ok { main(qw( -p 1 2             )) } qr/Usage/msi, '-p 1 2: died with Usage';
-throws_ok { main(qw( --path 1 2         )) } qr/Usage/msi, '--path 1 2: died with Usage';
-#     ** same start and end versions
-lives_ok  { main(qw( -p 1 2 1           )) } '-p 1 2 1: normal exit';
-lives_ok  { main(qw( --path 1 2 3 1     )) } '--path 1 2 3 1: normal exit';
-is_deeply \%mock, \%init_mock, 'no migration run';
-#     ** good path
-lives_ok  { main(qw( -p 1 2 3           )) } '-p 1 2 3: normal exit';
-is_deeply \%mock, {
-    prev_version    => '1',
-    next_version    => '3',
-    files           => [],
-    path            => ['1','2','3'],
-    allow_downgrade => 1,
-    allow_restore   => 1,
-    get_path        => 0,
-    migrate         => 1,
-}, 'migration was run';
-#   * default
-#     ** no version
-throws_ok { main(qw(                    )) } qr/Usage/msi, '(no params): died with Usage';
-throws_ok { main(qw( -D -R -f file      )) } qr/Usage/msi, '-D -R -f file: died with Usage';
-#     ** too many params
-throws_ok { main(qw( 1 2                )) } qr/Usage/msi, '1 2: died with Usage';
-throws_ok { main(qw( -D -R -f file 1 2  )) } qr/Usage/msi, '-D -R -f file 1 2: died with Usage';
-#     ** prev_version autodetect
-%mock = %init_mock;
-main(qw( 1.0.0 ));
-is_deeply \%mock, {
-    prev_version    => '0.1.0',
-    next_version    => '1.0.0',
-    files           => [],
-    path            => ['mocked path'],
-    allow_downgrade => 0,
-    allow_restore   => 0,
-    get_path        => 1,
-    migrate         => 1,
-}, 'prev_version detected';
-chdir 'tmp' or die "chdir(tmp): $!";
-%mock = %init_mock;
-main(qw( 1.0.0 ));
-is_deeply \%mock, {
-    prev_version    => '0.0.0',
-    next_version    => '1.0.0',
-    files           => [],
-    path            => ['mocked path'],
-    allow_downgrade => 0,
-    allow_restore   => 0,
-    get_path        => 1,
-    migrate         => 1,
-}, 'prev_version INITIAL';
-#     ** same start and end versions
-%mock = %init_mock;
-main(qw( 0.0.0 ));
-is_deeply \%mock, \%init_mock, '0.0.0 -> 0.0.0: no migration run';
-chdir '..' or die "chdir(..): $!";
-%mock = %init_mock;
-main(qw( 0.1.0 ));
-is_deeply \%mock, \%init_mock, '0.1.0 -> 0.1.0: no migration run';
-
-# - load
-#   * no next_version file
-#   * only next_version file
-#   * next_version and prev_version files, in order
-#   * extra files and next_version file, in order
-#   * extra files, next_version and prev_version file, in order
-
-# - get_path
-#   * no paths
-#   * two paths
-#   * one path
-
-# - check_path
-#   * wrong path (from --path)
-#   * path require --allow-downgrade, with/without it
-#   * path require --allow-restore, with/without it
-#   * path require both --allow-downgrade and --allow-restore, with/without them
-#   * path require restoring from backup, with/without it
 
 # - simple functional test:
-#       0.0.0 upgrade to   1.1.0
+#       0.0.0 upgrade to   0.1.0
 #   * check is VERSION file created and correct
 #   * check there are no backups
+is_version '0.1.0';
+is_backups [], 'no backups';
+#       0.1.0 downgrade to 0.0.0
+#   * check is VERSION file removed
+#   * check backup for 0.1.0 created
+lives_ok { output_from { main(qw( --allow-downgrade 0.0.0 )) } } '0.0.0';
+is_version '0.0.0';
+is_backups [qw( full-0.1.0 )];
+unlink '.backup/full-0.1.0.tar' or die "unlink: $!";
+#       0.0.0 upgrade to   1.1.0
+#   * check is VERSION file created and correct
+#   * check backup for 0.1.0 created
+output_from { main(qw( -f .release/0.1.0.migrate 1.1.0 )) };
+is_version '1.1.0';
+is_backups [qw( full-0.1.0 )];
 #       1.1.0 upgrade to   1.2.0
 #   * check is VERSION file modified and correct
 #   * check backup for 1.1.0 created
+output_from { main(qw( 1.2.0 )) };
+is_version '1.2.0';
+is_backups [qw( full-0.1.0 full-1.1.0 )];
 #       1.2.0 downgrade to 0.0.0
 #   * check is VERSION file removed
 #   * check backup for 1.2.0 created
 #   * check backup for 1.1.0 updated
+my $old_size = -s '.backup/full-1.1.0.tar';
+output_from { main(qw( -D -f .release/0.1.0.migrate 0.0.0 )) };
+is_version '0.0.0';
+is_backups [qw( full-0.1.0 full-1.1.0 full-1.2.0 )];
+ok -s '.backup/full-1.1.0.tar' > $old_size, 'full-1.1.0 updated';
 
 # - complex functional test:
+before($tmp_bin, 'narada-backup',  'test -f .release/fail-backup-$(cat VERSION) && exit 1');
+before($tmp_bin, 'narada-restore', 'test -f .release/fail-$(basename "$1" .tar) && exit 1');
+setup('1.5.0');
+is_version '1.5.0';
+is_backups [qw( full-1.1.0 full-1.2.0 full-1.3.0 full-1.4.0 )];
 #       1.5.0 downgrade to 1.4.0,
 #       1.4.0 downgrade to 1.3.0,
 #       1.3.0 restore to   1.2.0,
@@ -172,13 +71,107 @@ is_deeply \%mock, \%init_mock, '0.1.0 -> 0.1.0: no migration run';
 #       2.1.0 upgrade to   2.2.0,
 #       2.2.0 upgrade to   2.3.0.
 #   * check is all backups was created
+path('.backup/full-1.2.0.tar')->move('tmp/full-1.2.0.tar');
+$_->remove for path('.backup')->children;
+throws_ok { output_from { main(qw( -R 2.3.0 )) } } qr/backup not found/;
+path('tmp/full-1.2.0.tar')->move('.backup/full-1.2.0.tar');
+output_from { main(qw( -R 2.3.0 )) };
+is_version '2.3.0';
+is_backups [qw( full-1.1.0 full-1.2.0 full-1.3.0 full-1.4.0 full-1.5.0 full-2.1.0 full-2.2.0 )];
 #   * test error while first backup
+$_->remove for path('.backup')->children;
+@answers = qw( restore continue );
+path('.release/fail-backup-2.3.0')->touch;
+throws_ok { output_from { main(qw( -D 0.0.0 )) } } qr/Migration failed/i, 'error while first backup: restore';
+is_backups [];
+is_version '2.3.0';
+lives_ok  { output_from { main(qw( -D 0.0.0 )) } } 'error while first backup: continue';
+is_backups [qw( full-2.1.0 full-2.2.0 )];
+is_version '0.0.0';
+path('.release/fail-backup-2.3.0')->remove;
 #   * test error while middle backup
+setup('2.3.0');
+@answers = qw( restore continue );
+path('.release/fail-backup-1.3.0')->touch;
+throws_ok { output_from { main(qw( -D 1.5.0 )) } } qr/Migration failed/i, 'error while middle backup: restore';
+is_backups [qw( full-1.1.0 full-1.2.0 full-2.1.0 full-2.2.0 full-2.3.0 )];
+is_version '1.2.0';
+$_->remove for path('.backup')->children;
+lives_ok  { output_from { main(qw( 1.5.0    )) } } 'error while middle backup: continue';
+is_backups [qw( full-1.2.0 full-1.4.0 )];
+is_version '1.5.0';
+path('.release/fail-backup-1.3.0')->remove;
 #   * test error while middle downgrade
+@answers = qw( restore continue );
+path('.release/fail-downgrade-1.2.0')->touch;
+throws_ok { output_from { main(qw( -R 0.0.0 )) } } qr/Migration failed/i, 'error while middle downgrade: restore';
+is_version '1.2.0';
+lives_ok  { output_from { main(qw( -f .release/1.5.0.migrate -D 0.0.0 )) } } 'error while middle downgrade: continue';
+is_version '0.0.0';
+path('.release/fail-downgrade-1.2.0')->remove;
 #   * test error while middle upgrade
-#   * test canceling restore
+@answers = qw( restore continue );
+path('.release/fail-upgrade-2.2.0')->touch;
+throws_ok { output_from { main(qw( 2.3.0 )) } } qr/Migration failed/i, 'error while middle upgrade: restore';
+is_version '2.1.0';
+lives_ok  { output_from { main(qw( 2.3.0 )) } } 'error while middle upgrade: continue';
+is_version '2.3.0';
+path('.release/fail-upgrade-2.2.0')->remove;
 #   * test error while restore
+setup('1.5.0');
+@answers = qw( restore );
+path('.release/fail-full-1.2.0')->touch;
+throws_ok { output_from { main(qw( -R 0.0.0 )) } } qr/Migration failed/i, 'error while restore: restore';
+is_version '1.3.0';
+path('.release/fail-full-1.2.0')->remove;
 #   * test error while restore after error
+setup('1.5.0');
+@answers = qw( restore );
+path('.release/fail-full-1.2.0')->touch;
+path('.release/fail-full-1.3.0')->touch;
+throws_ok { output_from { main(qw( -R 0.0.0 )) } } qr/Migration failed/i, 'error while restore after error';
+is_version '0.0.0';
+path('.release/fail-full-1.2.0')->remove;
+path('.release/fail-full-1.3.0')->remove;
 
 
 done_testing();
+
+
+sub is_version {
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    if ($_[0] eq '0.0.0') {
+        ok !path('VERSION')->exists, 'no VERSION';
+    }
+    elsif (path('VERSION')->exists) {
+        my ($v) = path('VERSION')->lines({count=>1,chomp=>1});
+        is $v, $_[0], $_[1] // "version: $_[0]";
+    }
+    else {
+        ok 0, $_[1] // "version: $_[0]";
+    }
+}
+
+sub is_backups {
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    is_deeply [ sort map { $_->basename('.tar') }
+        path('.backup')->children(qr/\A(?!full[.]tar\z|incr[.]tar\z|snap\z)/ms)
+        ], $_[0], $_[1] // "backups: @{$_[0]}";
+}
+
+sub before {
+    my ($tmp_bin, $file, $cmd) = @_;
+    path("$tmp_bin/$file")->spew(<<"EOF");
+#!/bin/sh
+$cmd
+exec $narada_bin/$file "\$@"
+EOF
+    path("$tmp_bin/$file")->chmod(0755);
+}
+
+sub setup {
+    my ($v) = @_;
+    output_from { main(qw( -f .release/1.5.0.migrate -f .release/2.3.0.migrate -R 0.0.0 )) };
+    path('.backup')->remove_tree;
+    output_from { main($v) };
+}

@@ -50,6 +50,7 @@ sub main {
         }
         if (defined $check) {
                 die USAGE if @_ || $is_path || $allow_downgrade || $allow_restore || @files;
+                say "Checking $check";
                 App::migrate->new->load($check);
                 return;
         }
@@ -65,7 +66,7 @@ sub main {
                 die USAGE if @_ != 1;
                 $next_version = $_[0];
                 $prev_version = INITIAL_VERSION;
-                if (path(q{.})->children(qr/\A(?![.]release\z|[.]backup\z)/ms)) {
+                if (path(q{.})->children(qr/\A(?![.]release\z|[.]backup\z|[.]lock)/ms)) {
                         Narada::detect('narada');
                         ($prev_version) = path('VERSION')->lines({chomp=>1});
                 }
@@ -85,12 +86,15 @@ sub main {
 sub load {
         my ($prev_version, $next_version, @files) = @_;
         my $migrate = App::migrate->new;
-        for (@files) {
-                $migrate->load($_);
+        if ($next_version ne INITIAL_VERSION) {
+                push @files, ".release/$next_version.migrate";
         }
-        $migrate->load(".release/$next_version.migrate");
         if (-f ".release/$prev_version.migrate") {
-                $migrate->load(".release/$prev_version.migrate");
+                push @files, ".release/$prev_version.migrate";
+        }
+        for (@files) {
+                say "Loading $_";
+                $migrate->load($_);
         }
         return $migrate;
 }
@@ -111,6 +115,9 @@ sub get_path {
 
 sub check_path {
         my ($migrate, $path, $allow_downgrade, $allow_restore) = @_;
+        if ($allow_restore) {
+                $allow_downgrade = 1;
+        }
         for my $step ($migrate->get_steps($path)) {
                 my $t = $step->{type};
                 my $is_down = $t eq 'downgrade' || $t eq 'after_downgrade';
@@ -132,6 +139,7 @@ sub migrate {
         exclusive_lock();
         {
                 local $ENV{NARADA_SKIP_LOCK} = 1;
+                $Last_backup = undef;   # tests may call main() many times
                 $migrate->on(BACKUP     => \&_backup)
                         ->on(RESTORE    => \&_restore)
                         ->on(VERSION    => \&_version)
@@ -168,8 +176,10 @@ sub _backup {
                 if ($Last_backup) {
                         path($Last_backup)->copy(FULL_BACKUP);
                 }
+                my $file = ".backup/full-$step->{version}.tar";
+                say "Backuping to $file";
                 system('narada-backup') == 0 or die "BACKUP failed\n";
-                $Last_backup = ".backup/full-$step->{version}.tar";
+                $Last_backup = $file;
                 FULL_BACKUP->move($Last_backup);
         }
         return;
@@ -177,20 +187,15 @@ sub _backup {
 
 sub _restore {
         my ($step) = @_;
-        my @paths = path(q{.})->children(qr/\A(?![.]lock|[.]backup\z|[.]release\z)/ms);
-        say 'These files and directories will be removed:';
-        for (@paths) {
-                say $_->is_dir ? "\t$_/" : "\t$_";
-        }
-        say 'All databases will be deleted!!!';
-        my $prompt = "Enter 'yes' to RESTORE $step->{version} from backup ('no' to cancel) [no]: ";
-        die "RESTORE canceled\n" if 'yes' ne lc ask($prompt, qr/\A(?:yes|no|\s*)\z/msi);
-        system('narada-setup-mysql', '--clean') == 0 or die "RESTORE failed on narada-setup-mysql --clean\n";
-        for (@paths) {
+        my $file = ".backup/full-$step->{version}.tar";
+        say "Restoring from $file";
+        system 'narada-setup-mysql --clean >/dev/null 2>&1';
+        for (path(q{.})->children(qr/\A(?![.]release\z|[.]backup\z|[.]lock)/ms)) {
                 $_->remove_tree({ safe => 0 });
         }
+        system('narada-restore', $file) == 0 or die "RESTORE failed on narada-restore $file\n";
+        system('narada-setup-mysql', '--clean') == 0 or die "RESTORE failed on narada-setup-mysql --clean\n";
         system 'narada-shutdown-services';
-        system('narada-restore', ".backup/full-$step->{version}.tar") == 0 or die "RESTORE failed on narada-restore .backup/full-$step->{version}.tar\n";
         system 'narada-bg-killall';
         system('narada-setup-mysql') == 0 or die "RESTORE failed on narada-setup-mysql\n";
         system('narada-setup-cron')  == 0 or die "RESTORE failed on narada-setup-cron\n";
@@ -201,6 +206,7 @@ sub _restore {
 
 sub _version {
         my ($step) = @_;
+        say "Migration to $step->{version} completed";
         if ($step->{version} eq INITIAL_VERSION) {
                 path('VERSION')->remove;
         }
@@ -211,12 +217,15 @@ sub _version {
 }
 
 sub _error {
+        say q{};
         say 'YOU NEED TO MANUALLY FIX THIS ISSUE RIGHT NOW';
-        say 'Please choose what to do:';
-        say "  shell    - run $ENV{SHELL} (exit from it to return to this menu)";
-        say '  continue - continue migration (use if you have fixed this issue)';
-        say '  restore  - interrupt migration and RESTORE previous version from backup';
-        my $prompt = 'Enter action [shell]: ';
+        my $prompt
+                = "Please choose what to do:\n"
+                . "  shell    - run $ENV{SHELL} (exit from it to return to this menu)\n"
+                . "  continue - continue migration (use if you have fixed this issue)\n"
+                . "  restore  - interrupt migration and RESTORE previous version from backup\n"
+                . 'Enter action [shell]: '
+                ;
         while (1) {
                 my $ans = lc ask($prompt, qr/\A(?:shell|continue|restore|\s*)\z/msi);
                 if ($ans eq 'restore') {
