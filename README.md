@@ -3,11 +3,11 @@
 
 # NAME
 
-Narada - framework for ease development/deploy/support for medium/big projects
+Narada - framework for ease deploy and support microservice projects
 
 # VERSION
 
-This document describes Narada version v1.4.5
+This document describes Narada version v2.0.0
 
 # SYNOPSIS
 

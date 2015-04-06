@@ -16,18 +16,18 @@ my %module_build_args = (
     "Devel::CheckOS" => "1.63",
     "Module::Build" => "0.28"
   },
-  "dist_abstract" => "framework for ease development/deploy/support for medium/big projects",
+  "dist_abstract" => "framework for ease deploy and support microservice projects",
   "dist_author" => [
     "Alex Efros <powerman\@cpan.org>"
   ],
   "dist_name" => "Narada",
-  "dist_version" => "v1.4.5",
+  "dist_version" => "v2.0.0",
   "license" => "mit",
   "module_name" => "Narada",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
-    "App::migrate" => 0,
+    "App::migrate" => "v0.2.0",
     "App::powerdiff" => 0,
     "DBD::mysql" => 0,
     "DBI" => 0,
@@ -37,7 +37,7 @@ my %module_build_args = (
     "List::Util" => 0,
     "Log::Fast" => 0,
     "MIME::Base64" => 0,
-    "Path::Tiny" => "0.053",
+    "Path::Tiny" => "0.065",
     "Perl6::Export::Attrs" => 0,
     "Time::HiRes" => 0,
     "Time::Local" => 0,
@@ -48,6 +48,7 @@ my %module_build_args = (
   "script_files" => [
     "bin/narada-backup",
     "bin/narada-bg",
+    "bin/narada-bg-killall",
     "bin/narada-diff",
     "bin/narada-download",
     "bin/narada-emu",
@@ -69,6 +70,7 @@ my %module_build_args = (
     "bin/narada-setup-mysql",
     "bin/narada-setup-qmail",
     "bin/narada-shutdown-services",
+    "bin/narada-start-services",
     "bin/narada-upload",
     "bin/narada-viewlog"
   ],

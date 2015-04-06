@@ -51,8 +51,8 @@ This document describes Narada version v1.4.5
 
     # Run narada-* commands.
     # In perl scripts either use Narada::* modules or manually
-    # conform Narada interface.
-    # In non-perl applications just conform Narada interface.
+    # conform to Narada interface.
+    # In non-perl applications just conform to Narada interface.
 
 
 =head1 DESCRIPTION
