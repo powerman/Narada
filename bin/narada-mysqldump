@@ -130,11 +130,11 @@ sub del_dumps_except {
     my %incremental = map {$_=>1} @{$incremental};
     my %unchanged   = map {$_=>1} @{$unchanged};
     for my $file (glob SQL_DIR.'/*.sql') {
-        if ($file =~ m{\Avar/sql/([^.]*)[.]sql\z}xms) {
+        if ($file =~ m{\A\Q${\SQL_DIR}\E/([^.]*)[.]sql\z}xms) {
             my $table = $1;
             next if $unchanged{$table};
         }
-        elsif ($file =~ m{\Avar/sql/([^.]*)[.]\d+-(\d+)[.]sql\z}xms) {
+        elsif ($file =~ m{\A\Q${\SQL_DIR}\E/([^.]*)[.]\d+-(\d+)[.]sql\z}xms) {
             my $table = $1;
             next if $incremental{$table}
                 && mtime($file) >= get_table_status($table, 'Create_time');
