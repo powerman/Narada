@@ -4,10 +4,10 @@ use t::share; guard my $guard;
 plan skip_all => 'git not installed'        if !grep {-x "$_/git"} split /:/, $ENV{PATH};
 
 
+$ENV{GIT_AUTHOR_NAME} = $ENV{GIT_COMMITTER_NAME} = 'Your Name';
+$ENV{GIT_AUTHOR_EMAIL}= $ENV{GIT_COMMITTER_EMAIL}= 'you@example.com';
 system('{
     git init &&
-    git config user.email "you@example.com" &&
-    git config user.name "Your Name" &&
     git add . && git commit -m 1 &&
     git checkout -b socklog &&
     narada-install 0.2.0 &&
@@ -32,7 +32,7 @@ mkdir 'proj/.git' or die "mkdir(proj/.git): $!";
 stderr_like { isnt system("$new"),          0, 'bad proj'   } qr/not empty/i, 'not empty';
 rmdir 'proj/.git' or die "rmdir(proj/.git): $!";
 
-is system("$new proj"), 0, 'new proj';
+is system("$new proj >/dev/null 2>&1"), 0, 'new proj';
 ok path('proj/config')->is_dir, 'created';
 is system("$new proj2 >/dev/null 2>&1"), 0, 'new proj2';
 ok path('proj2/config')->is_dir, 'created';
