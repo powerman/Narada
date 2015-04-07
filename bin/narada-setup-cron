@@ -29,7 +29,7 @@ sub main {
     }
     else {
         my $c = path('config/crontab');
-        my @configs = map {s{\Aconfig/}{}msr} grep {$_->is_file}
+        my @configs = map {m{\Aconfig/(.*)}ms} grep {$_->is_file}
                  $c->is_dir ? $c->children : $c;
         if (!@configs) {
             del_cron();
