@@ -33,10 +33,7 @@ lives_ok {
     is path('tmp/dir/file')->slurp, 'modified2';
     ok !path('tmp/dir/some')->exists;
 } 'restored 2';
-system('echo rm -rf tmp/* tmp/.[^.]* >&2');
-system('rm -rf tmp/* tmp/.[^.]*');
-system('ls -al tmp/ >&2');
-system('ps ax | grep $$ >&2; set >&2');
+system('rm -rf tmp/* tmp/.[!.]*');
 #   * empty dir with only .release/ and .backup/
 path('tmp/.backup')->mkpath;
 path('tmp/.release')->mkpath;
@@ -63,50 +60,50 @@ lives_ok {
     is path('tmp/dir/file')->slurp, 'modified2';
     ok !path('tmp/dir/some')->exists;
 } 'restored 2';
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #   * fail in non-empty dir
 path('tmp/.gitignore')->touch;
 stderr_like { isnt r(0), 0, 'fail in non-empty dir' } qr/not narada/msi, 'got error';
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 # - restore only given files
 #   * one file, given as
 #     . file
 is r(1, 'file'), 0, 'restore file';
 is_deeply [sort(path('tmp')->children)], [qw(tmp/file)];
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #     . /file
 is r(1, '/file'), 0, 'restore /file';
 is_deeply [sort(path('tmp')->children)], [qw(tmp/file)];
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #     . ./file
 is r(1, './file'), 0, 'restore ./file';
 is_deeply [sort(path('tmp')->children)], [qw(tmp/file)];
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #     . dir/file
 is r(1, 'dir/file'), 0, 'restore dir/file';
 lives_ok {
     is_deeply [sort(path('tmp')->children)], [qw(tmp/dir)];
     is_deeply [sort(path('tmp/dir')->children)], [qw(tmp/dir/file)];
 };
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #     . /dir/file
 is r(1, '/dir/file'), 0, 'restore /dir/file';
 lives_ok {
     is_deeply [sort(path('tmp')->children)], [qw(tmp/dir)];
     is_deeply [sort(path('tmp/dir')->children)], [qw(tmp/dir/file)];
 };
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #     . ./dir/file
 is r(1, './dir/file'), 0, 'restore ./dir/file';
 lives_ok {
     is_deeply [sort(path('tmp')->children)], [qw(tmp/dir)];
     is_deeply [sort(path('tmp/dir')->children)], [qw(tmp/dir/file)];
 };
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #   * one empty dir
 is r(1, 'empty_dir'), 0, 'restore empty_dir';
 is_deeply [sort(path('tmp')->children)], [qw(tmp/empty_dir)];
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #   * one dir with files
 is r(1, 'dir'), 0, 'restore dir';
 lives_ok {
@@ -114,7 +111,7 @@ lives_ok {
     is_deeply [sort(path('tmp/dir')->children)], [qw(tmp/dir/dir tmp/dir/file tmp/dir/some)];
     is_deeply [sort(path('tmp/dir/dir')->children)], [qw(tmp/dir/dir/file)];
 };
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 #   * several files/dirs
 is r(1, 'file', 'dir/dir'), 0, 'restore file dir/dir';
 lives_ok {
@@ -122,7 +119,7 @@ lives_ok {
     is_deeply [sort(path('tmp/dir')->children)], [qw(tmp/dir/dir)];
     is_deeply [sort(path('tmp/dir/dir')->children)], [qw(tmp/dir/dir/file)];
 };
-system('rm -rf tmp/* tmp/.[^.]*');
+system('rm -rf tmp/* tmp/.[!.]*');
 
 
 done_testing();

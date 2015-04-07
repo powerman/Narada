@@ -6,12 +6,14 @@ plan skip_all => 'git not installed'        if !grep {-x "$_/git"} split /:/, $E
 
 system('{
     git init &&
+    git config user.email "you@example.com" &&
+    git config user.name "Your Name" &&
     git add . && git commit -m 1 &&
     git checkout -b socklog &&
     narada-install 0.2.0 &&
     git add . && git commit -m 2 &&
     git checkout master
-    }') == 0 or die "system: $?";
+    } >/dev/null 2>&1') == 0 or die "system: $?";
 my $new = 'narada-new -r '.quotemeta(cwd());
 
 my $wd      = tempdir('narada.XXXXXX');
