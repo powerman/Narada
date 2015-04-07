@@ -32,7 +32,7 @@ mkdir 'proj/.git' or die "mkdir(proj/.git): $!";
 stderr_like { isnt system("$new"),          0, 'bad proj'   } qr/not empty/i, 'not empty';
 rmdir 'proj/.git' or die "rmdir(proj/.git): $!";
 
-is system("$new proj >/dev/null 2>&1"), 0, 'new proj';
+is system("$new proj"), 0, 'new proj';
 ok path('proj/config')->is_dir, 'created';
 is system("$new proj2 >/dev/null 2>&1"), 0, 'new proj2';
 ok path('proj2/config')->is_dir, 'created';

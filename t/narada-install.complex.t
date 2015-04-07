@@ -3,7 +3,6 @@ use t::share; guard my $guard;
 require (wd().'/blib/script/narada-install');
 
 
-BEGIN { no warnings; eval q{ sub output_from (&) { goto $_[0] } } if $ENV{HARNESS_VERBOSE} }
 sub is_version;
 sub is_backups;
 my ($narada_bin) = grep {-x "$_/narada-new"} split /:/, $ENV{PATH};
