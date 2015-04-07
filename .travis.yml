@@ -26,6 +26,7 @@ install:
   - export EXTENDED_TESTING=1
   - export TEST_MYSQL_USER=root TEST_MYSQL_PASS=
 script:
+  - perl Build.PL && ./Build && HARNESS_VERBOSE=1 prove -bv t/narada-install.complex.t
   - perl Build.PL && ./Build && cover -test
 after_success:
   - cover -report coveralls
