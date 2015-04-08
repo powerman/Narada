@@ -1,11 +1,11 @@
 use t::narada1::share; guard my $guard;
 use DBI;
-
 use Narada::Config qw( set_config );
 
 
 my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
 plan skip_all => 'No database provided for testing' if $db eq q{};
+my $lock = path(wd().'/t/.answers')->filehandle({locked=>1}, '>>');
 
 
 $::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});
