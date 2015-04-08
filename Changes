@@ -1,6 +1,8 @@
 Revision history for Narada
 
 {{$NEXT}}
+
+v2.0.0  2015-04-09 02:40:20 EEST
 	[Changes in project structure]
 	- config/crontab    -> config/crontab/*
 	- config/db/        -> config/mysql/

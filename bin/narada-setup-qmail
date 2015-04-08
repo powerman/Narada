@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v1.4.5';
+our $VERSION = 'v2.0.0';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -116,7 +116,7 @@ narada-setup-qmail - install/remove project qmail configuration
 
 =head1 VERSION
 
-This document describes narada-setup-qmail version v1.4.5
+This document describes narada-setup-qmail version v2.0.0
 
 
 =head1 USAGE
