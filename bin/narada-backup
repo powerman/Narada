@@ -50,7 +50,7 @@ else
     _tar -c -g $snap --anchored "${excl[@]}" -f $full.tmp ./
 fi                                                              &&
 mv $full.tmp $full &&
-sleep 1 # make sure files modified after backup won't have same mtime on *BSD
+perl -MTime::HiRes=time,sleep -e '$a=time; sleep 1.01 + int($a) - $a' # make sure files modified after backup won't have same mtime on *BSD
 exit $?
 
 
