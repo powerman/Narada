@@ -2,6 +2,11 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.0.1  2015-04-09 08:32:49 EEST
+	- Allow `narada-setup-cron --clean` in empty dir.
+	- Allow `narada-setup-qmail --clean` in empty dir.
+	- Improve general doc.
+
 v2.0.0  2015-04-09 02:40:20 EEST
 	[Changes in project structure]
 	- config/crontab    -> config/crontab/*

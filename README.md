@@ -7,7 +7,7 @@ Narada - framework for ease deploy and support microservice projects
 
 # VERSION
 
-This document describes Narada version v2.0.0
+This document describes Narada version v2.0.1
 
 # SYNOPSIS
 
@@ -574,6 +574,18 @@ version to deploy directory, the final result should be such file/files.
 
     Narada uses [App::migrate](https://metacpan.org/pod/App::migrate) to implement project migrations, format of
     `.migrate` files is documented in ["SYNTAX" in App::migrate](https://metacpan.org/pod/App::migrate#SYNTAX).
+
+    >     **When you need to convert some data in files or database when installing
+    >     new version you should use** `.migrate` **file to run scripts which will
+    >     do this.**
+    >
+    >     You should not try to do these data migrations automatically on first time
+    >     new version of your project's application starts - both because this will
+    >     make impossible to downgrade quickly and without losing data (if you'll
+    >     provide script which does backward data conversion, of course) and you'll
+    >     have to restore from backup instead, and because project migration may
+    >     include many upgrades at once and your application as it was at one of
+    >     intermediate versions wasn't get a chance to run at all.
 
 ## Backup
 

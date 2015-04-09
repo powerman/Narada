@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v2.0.0'
+VERSION='v2.0.1'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -56,7 +56,7 @@ narada-new - creates a new project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-new version v2.0.0
+This document describes narada-new version v2.0.1
 
 
 =head1 USAGE

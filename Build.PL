@@ -21,7 +21,7 @@ my %module_build_args = (
     "Alex Efros <powerman\@cpan.org>"
   ],
   "dist_name" => "Narada",
-  "dist_version" => "v2.0.0",
+  "dist_version" => "v2.0.1",
   "license" => "mit",
   "module_name" => "Narada",
   "recommends" => {},

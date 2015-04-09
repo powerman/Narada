@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="v2.0.0"
+VERSION="v2.0.1"
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -29,7 +29,7 @@ narada-start-services - start project's services
 
 =head1 VERSION
 
-This document describes narada-start-services version v2.0.0
+This document describes narada-start-services version v2.0.1
 
 
 =head1 USAGE
