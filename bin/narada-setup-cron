@@ -18,8 +18,6 @@ main(@ARGV) if !caller;
 sub err { die "narada-setup-cron: @_\n" }
 
 sub main {
-    Narada::detect();
-
     die "Usage: narada-setup-cron [--clean]\n"
         if (@_ >  1)
         || (@_ == 1 && $_[0] ne '--clean');
@@ -28,6 +26,7 @@ sub main {
         del_cron();
     }
     else {
+        Narada::detect();
         my $c = path('config/crontab');
         my @configs = map {m{\Aconfig/(.*)}ms} grep {$_->is_file}
                  $c->is_dir ? $c->children : $c;

@@ -19,8 +19,6 @@ main(@ARGV) if !caller;
 sub err { die "narada-setup-qmail: @_\n" }
 
 sub main {
-    Narada::detect();
-
     die "Usage: narada-setup-qmail [--clean]\n"
         if (@_ >  1)
         || (@_ == 1 && $_[0] ne '--clean');
@@ -32,6 +30,7 @@ sub main {
         }
     }
     else {
+        Narada::detect();
         setup_qmail();
     }
 
