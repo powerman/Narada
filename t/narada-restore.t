@@ -24,7 +24,7 @@ $full->copy('.backup/full-2.tar');
 #   * no params
 stderr_like { isnt system('narada-restore'), 0, 'no params' } qr/usage/msi, 'got usage';
 #   * non-existing backup file
-stderr_like { isnt system('LANG= narada-restore nosuch'), 0, 'bad param' } qr/no such file/msi, 'got error';
+stderr_like { isnt system('narada-restore nosuch'), 0, 'bad param' } qr/nosuch/msi, 'got error';
 # - full restore in:
 #   * empty dir
 is r(2), 0, 'full restore in empty dir';

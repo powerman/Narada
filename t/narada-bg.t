@@ -9,7 +9,7 @@ my $pfx = sprintf 'some_script_%d_%d_', time, $$;
 my $fpfx = cwd().'/'.$pfx;
 for (1 .. 3) {
     my $script = path($pfx.$_);
-    $script->spew("#!/bin/sh\nsleep 5");
+    $script->spew("#!/bin/sh\nsleep 10");
     $script->chmod(0755);
 }
 
