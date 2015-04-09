@@ -2,6 +2,10 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.0.2  2015-04-09 12:34:52 EEST
+	- Fix hang in narada-install while restoring backup.
+	- Improve tests portability.
+
 v2.0.1  2015-04-09 08:32:49 EEST
 	- Allow `narada-setup-cron --clean` in empty dir.
 	- Allow `narada-setup-qmail --clean` in empty dir.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v2.0.1'
+VERSION='v2.0.2'
 
 perl -MNarada -E 'Narada::detect(@ARGV)' narada-1 || exit 1
 
@@ -19,7 +19,7 @@ narada-patch-remote - upload latests patch files and apply patch on remote side
 
 =head1 VERSION
 
-This document describes narada-patch-remote version v2.0.1
+This document describes narada-patch-remote version v2.0.2
 
 
 =head1 USAGE
