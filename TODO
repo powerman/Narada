@@ -1,9 +1,0 @@
-Replace dependency on mutt in `narada-patch-send` with Email::Sender and
-POWER::GPG (release it to CPAN first).
-
-FIXME Test/add Innodb support (mysqldump tests which pass on MyISAM are
-fails on Innodb).
-
-Add non-interactive mode for narada-install to use in CI/CD.
-
-Switch from bash to /bin/sh: https://wiki.ubuntu.com/DashAsBinSh
