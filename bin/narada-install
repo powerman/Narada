@@ -200,7 +200,7 @@ sub _restore {
         system('narada-setup-mysql') == 0 or die "RESTORE failed on narada-setup-mysql\n";
         system('narada-setup-cron')  == 0 or die "RESTORE failed on narada-setup-cron\n";
         system('narada-setup-qmail') == 0 or die "RESTORE failed on narada-setup-qmail\n";
-        system 'narada-start-services';
+        system 'narada-start-services &';
         return;
 }
 
