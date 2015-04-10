@@ -875,6 +875,8 @@ Alex Efros <powerman@cpan.org>
 
 # CONTRIBUTORS
 
+Nikita Savin <asdfgroup@gmail.com>
+
 Nick Levchenko <project129@yandex.ru>
 
 # COPYRIGHT AND LICENSE
