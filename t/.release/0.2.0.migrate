@@ -43,7 +43,7 @@ after_downgrade
     files='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}||print'
      dirs='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}&&print'
     tar tzf .release/$1.tgz |       perl -ne "$files" | xargs -0 rm -f
-    tar tzf .release/$1.tgz |       perl -ne "$files" | xargs -0 narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar
+    tar tzf .release/$1.tgz |       perl -ne "$files" | xargs -0 narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar
     tar tzf .release/$1.tgz | tac | perl -ne "$dirs"  | xargs -0 rmdir --ignore-fail-on-non-empty
   fi
   narada-bg-killall
@@ -98,7 +98,7 @@ upgrade
   rm -rf "$@"
 after_downgrade
   perl -e 'exit grep {m{\A/|(\A|/)[.][.](/|\z)}} @ARGV' "$@"
-  narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar "$@"
+  narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar "$@"
 
 # rm some/file ...
 # - parameters can't contain /../ or begin with /
@@ -108,7 +108,7 @@ upgrade
   rm -f "$@"
 after_downgrade
   perl -e 'exit grep {m{\A/|(\A|/)[.][.](/|\z)}} @ARGV' "$@"
-  narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar "$@"
+  narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar "$@"
 
 # add_config some/config "value"
 # add_config some/config -
@@ -141,7 +141,7 @@ upgrade
 after_downgrade
   test $# = 3 && value=$(cat "$3") || value="$2"
   if test "$(cat config/"$1")" = "$value"; then
-    narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar config/"$1"
+    narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar config/"$1"
     # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
     # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
   fi
@@ -163,7 +163,7 @@ upgrade
 after_downgrade
   test $# = 4 && value=$(cat "$4") || value="$3"
   if test "$(cat config/"$1")" = "$value"; then
-    narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar config/"$1"
+    narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar config/"$1"
     # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
     # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
   fi
@@ -176,7 +176,7 @@ upgrade
   # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
   # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 after_downgrade
-  narada-restore .backup/"$MIGRATE_NEXT_VERSION".full.tar config/"$1"
+  narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar config/"$1"
   # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
   # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 
