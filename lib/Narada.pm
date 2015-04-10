@@ -1018,6 +1018,8 @@ Alex Efros E<lt>powerman@cpan.orgE<gt>
 
 =head1 CONTRIBUTORS
 
+Nikita Savin E<lt>asdfgroup@gmail.comE<gt>
+
 Nick Levchenko E<lt>project129@yandex.ruE<gt>
 
 
