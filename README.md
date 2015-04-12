@@ -7,7 +7,7 @@ Narada - framework for ease deploy and support microservice projects
 
 # VERSION
 
-This document describes Narada version v2.0.2
+This document describes Narada version v2.1.0
 
 # SYNOPSIS
 
@@ -595,13 +595,7 @@ version to deploy directory, the final result should be such file/files.
     in backup. Must contain at least these lines:
 
         ./.backup/*         to avoid recursively including old backups in new
-        ./.lock             to avoid unlocking while restoring from backup
-        ./.lock.new         to avoid project in locked state after restore
-                            from backup
-        ./.lock.bg          to avoid unlocking while restoring from backup
-        ./.lock.service     to avoid unlocking while restoring from backup
-                            (this file is from narada-plugin-runit, but same
-                            should apply to similar files from other plugins)
+        ./.lock*            to avoid unlocking while restoring from backup
         ./tmp/*             to conform to Narada interface and not include
                             temporary files in backups
 
@@ -624,7 +618,13 @@ version to deploy directory, the final result should be such file/files.
 
 - `var/mysql/`
 
-    Contains files with last database dump (usually made while last backup).
+    Contain files with last database dump (usually made while last backup).
+
+- `var/use/`
+
+    Keeps current used/unused state recorded by last run of `narada-setup-*`
+    and `narada-*-services` tools. It will be used by [narada-restore](https://metacpan.org/pod/narada-restore) to
+    setup project after full restore.
 
 - `.backup/full.tar`
 - `.backup/incr.tar`

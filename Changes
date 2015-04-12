@@ -2,6 +2,15 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.1.0  2015-04-12 08:03:24 EEST
+	- Improve portability.
+
+	[Backup and restore state of project's setup]
+	- narada-*-services save state in var/use/services
+	- narada-setup-*    save state in var/use/*
+	- narada-setup-qmail support --lock parameter
+	- narada-restore also restore project state
+
 v2.0.2  2015-04-09 12:34:52 EEST
 	- Fix hang in narada-install while restoring backup.
 	- Improve tests portability.
