@@ -4,10 +4,12 @@ VERSION='v2.0.2'
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
-test -z "$(find . -mindepth 1 -maxdepth 1 -not -name .release -not -name .backup -not -name '.lock*')" ||
-	perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
+contents="$(find . -mindepth 1 -maxdepth 1 -not -name .release -not -name .backup -not -name '.lock*')"
+test -z "$contents" || perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 
 [ $# -ne 0 ] || die "Usage: narada-restore path/to/backup.full.tar [files]"
+
+[ $# -eq 1 -a -n "$contents" -a -z "$NARADA_SKIP_LOCK" ] && exec narada-lock-exclusive $0 "$@"
 
 backup="$1"
 shift
@@ -23,8 +25,45 @@ test -d '.release' && excl+=( --exclude './.release' )
 test -d '.backup'  && excl+=( --exclude './.backup'  )
 excl+=( --exclude './.lock*' )
 
+# Order of commands to run before/after unpacking archive is CRITICAL!
+# - qmail should be --lock, not --clean, to avoid losing emails while
+#   restoring from backup
+# - services should be shut down after cron to avoid starting them from
+#   cron right after shutdown
+
+if test -z "$files" -a -n "$contents"; then
+	narada-setup-qmail --lock
+	narada-setup-cron  --clean
+	narada-shutdown-services
+	narada-bg-killall
+	narada-setup-mysql --clean
+fi
+
 TAR=`which gtar tar 2>/dev/null | head -n 1`
-LANG= exec $TAR -x -p -f "$backup" -g /dev/null --anchored "${excl[@]}" "${files[@]}"
+LANG= $TAR -x -p -f "$backup" -g /dev/null --anchored "${excl[@]}" "${files[@]}"
+code=$?
+
+if test -z "$files"; then
+	if test $code -ne 0; then
+		(
+		echo
+		echo 'Run these commands after fixing above errors:'
+		test -f var/use/mysql           && echo 'narada-setup-mysql'
+		test -f var/use/services        && echo 'narada-start-services &'
+		test -f var/use/cron            && echo 'narada-setup-cron'
+		test ! -f var/use/qmail         && echo 'narada-setup-qmail --clean'
+		test -f var/use/qmail           && echo 'narada-setup-qmail'
+		) >&2
+	else
+		test -f var/use/mysql           && narada-setup-mysql
+		test -f var/use/services        && narada-start-services &
+		test -f var/use/cron            && narada-setup-cron
+		test ! -f var/use/qmail         && narada-setup-qmail --clean
+		test -f var/use/qmail           && narada-setup-qmail
+	fi
+fi
+
+exit $code
 
 
 : <<'=cut'
@@ -50,8 +89,15 @@ This document describes narada-restore version v2.0.2
 
 Should be executed in project deploy directory.
 
-Will extract full project or just given files from backup created with
-C<narada-backup>.
+Will restore full project or just extract given files from backup created
+using C<narada-backup>.
+
+When restoring full project in directory with existing project will run
+under L<narada-lock-exclusive>.
+
+When restoring full project will also update project's external setup (for
+ex. if project use MySQL then C<narada-setup-mysql --clean> will be run
+before unpacking backup and C<narada-setup-mysql> will be run after).
 
 When given, file names must be the full path from project deploy directory,
 without wildcards. Values C<a/b>, C</a/b> and C<./a/b> are all handled in
@@ -60,7 +106,7 @@ same way (as C<./a/b>).
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-None.
+	var/use/*
 
 
 =head1 SUPPORT

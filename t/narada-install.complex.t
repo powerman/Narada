@@ -95,7 +95,7 @@ setup('1.5.0');
 path('.release/fail-full-1.2.0')->touch;
 path('.release/fail-full-1.3.0')->touch;
 throws_ok { output_from { main(qw( -R 0.0.0 )) } } qr/Migration failed/i, 'error while restore after error';
-is_version '0.0.0';
+is_version '1.3.0';
 path('.release/fail-full-1.2.0')->remove;
 path('.release/fail-full-1.3.0')->remove;
 

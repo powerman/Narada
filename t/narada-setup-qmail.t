@@ -253,7 +253,7 @@ is_deeply
     'ls_qmail()';
 ok -f "$ENV{HOME}/.qmail-1", '.qmail-1 ok';
 ok !-e "$ENV{HOME}/.qmail-2", '.qmail-2 removed';
-my $cwd = cwd();
+$cwd = cwd();
 is readlink "$ENV{HOME}/.qmail-1", "$cwd/var/qmail/1", 'qmail-1 unlocked';
 
 main('--lock');
@@ -263,7 +263,7 @@ is_deeply
     ["$ENV{HOME}/.qmail-1"],
     'ls_qmail(lock)';
 ok -f "$ENV{HOME}/.qmail-1", '.qmail-1 ok';
-my $cwd = cwd();
+$cwd = cwd();
 is readlink "$ENV{HOME}/.qmail-1", "$cwd/.lock.qmail", 'qmail-1 locked';
 
 main('--clean');

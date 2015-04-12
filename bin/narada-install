@@ -189,18 +189,7 @@ sub _restore {
         my ($step) = @_;
         my $file = ".backup/full-$step->{version}.tar";
         say "Restoring from $file";
-        system 'narada-setup-mysql --clean >/dev/null 2>&1';
-        for (path(q{.})->children(qr/\A(?![.]release\z|[.]backup\z|[.]lock)/ms)) {
-                $_->remove_tree({ safe => 0 });
-        }
-        system('narada-restore', $file) == 0 or die "RESTORE failed on narada-restore $file\n";
-        system('narada-setup-mysql', '--clean') == 0 or die "RESTORE failed on narada-setup-mysql --clean\n";
-        system 'narada-shutdown-services';
-        system 'narada-bg-killall';
-        system('narada-setup-mysql') == 0 or die "RESTORE failed on narada-setup-mysql\n";
-        system('narada-setup-cron')  == 0 or die "RESTORE failed on narada-setup-cron\n";
-        system('narada-setup-qmail') == 0 or die "RESTORE failed on narada-setup-qmail\n";
-        system 'narada-start-services &';
+        system('narada-restore', $file) == 0 or die "RESTORE failed\n";
         return;
 }
 

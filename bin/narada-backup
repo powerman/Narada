@@ -3,7 +3,7 @@ VERSION='v2.0.2'
 
 DETECT=$(perl -MNarada -E 'say Narada::detect(@ARGV)') || exit 1
 
-[ -z $NARADA_SKIP_LOCK ] && exec narada-lock-exclusive $0 "$@"
+[ -z "$NARADA_SKIP_LOCK" ] && exec narada-lock-exclusive $0 "$@"
 
 
 if test "$DETECT" = "narada"; then
