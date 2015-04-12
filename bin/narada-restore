@@ -4,7 +4,7 @@ VERSION='v2.0.2'
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
 
-contents="$(find . -mindepth 1 -maxdepth 1 -not -name .release -not -name .backup -not -name '.lock*')"
+contents="$(find . -mindepth 1 -maxdepth 1 \! -name .release \! -name .backup \! -name '.lock*')"
 test -z "$contents" || perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 
 [ $# -ne 0 ] || die "Usage: narada-restore path/to/backup.full.tar [files]"

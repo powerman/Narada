@@ -23,7 +23,7 @@ mutt									\
     -e 'set edit_headers=yes'						\
     -e 'send-hook . set crypt_autoencrypt=yes crypt_autosign=yes'	\
     -e 'send2-hook . push y'						\
-    -- "$(find config/patch/send/ -type f -not -name "$USER" -exec grep -qvFxe "$NARADA_USER" {} \; -exec cat {} +)"
+    -- "$(find config/patch/send/ -type f \! -name "$USER" -exec grep -qvFxe "$NARADA_USER" {} \; -exec cat {} +)"
 rm tmp/ChangeLog.$$
 
 

@@ -47,10 +47,13 @@ is_backups [qw( full-1.1.0 full-1.2.0 full-1.3.0 full-1.4.0 full-1.5.0 full-2.1.
 $_->remove for path('.backup')->children;
 @answers = qw( restore continue );
 path('.release/fail-backup-2.3.0')->touch;
+ok !path('.lock.new')->exists, 'no .lock.new';
 throws_ok { output_from { main(qw( -D 0.0.0 )) } } qr/Migration failed/i, 'error while first backup: restore';
+ok path('.lock.new')->exists, '.lock.new was left after failed migration';
 is_backups [];
 is_version '2.3.0';
 lives_ok  { output_from { main(qw( -D 0.0.0 )) } } 'error while first backup: continue';
+ok !path('.lock.new')->exists, 'no .lock.new';
 is_backups [qw( full-2.1.0 full-2.2.0 )];
 is_version '0.0.0';
 path('.release/fail-backup-2.3.0')->remove;
@@ -70,6 +73,7 @@ path('.release/fail-backup-1.3.0')->remove;
 @answers = qw( restore continue );
 path('.release/fail-downgrade-1.2.0')->touch;
 throws_ok { output_from { main(qw( -R 0.0.0 )) } } qr/Migration failed/i, 'error while middle downgrade: restore';
+ok !path('.backup/full.tar')->exists, 'no full.tar'; # this may be wrong: $Last_backup optimization doesn't finished on error
 is_version '1.2.0';
 lives_ok  { output_from { main(qw( -f .release/1.5.0.migrate -D 0.0.0 )) } } 'error while middle downgrade: continue';
 is_version '0.0.0';
