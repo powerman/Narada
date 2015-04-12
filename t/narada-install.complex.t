@@ -109,7 +109,7 @@ sub is_version {
         ok !path('VERSION')->exists, 'no VERSION';
     }
     elsif (path('VERSION')->exists) {
-        my ($v) = path('VERSION')->lines({count=>1,chomp=>1});
+        my ($v) = path('VERSION')->lines({chomp=>1});
         is $v, $_[0], $_[1] // "version: $_[0]";
     }
     else {

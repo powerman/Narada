@@ -5,7 +5,7 @@ use Narada::Config qw( set_config );
 require (wd().'/blib/script/narada-setup-mysql');
 
 
-my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ chomp => 1 });
+my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ count => 3, chomp => 1 });
 plan skip_all => 'No database provided for testing' if $db eq q{};
 my $lock = path(wd().'/t/.answers')->filehandle({locked=>1}, '>>');
 
