@@ -172,9 +172,10 @@ After that you should run narada-setup-qmail again.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
- read from config/qmail/*
- write to var/qmail/*
- create/delete symlinks at ~/.qmail-*
+        config/qmail/*
+        var/qmail/*
+        ~/.qmail-*
+        var/use/qmail
 
 
 =head1 SUPPORT

@@ -108,6 +108,7 @@ When executed with --clean option will drop project's database with all tables.
     config/mysql/port
     var/mysql/db.scheme.sql
     var/mysql/*.sql
+    var/use/mysql
 
 Narada 1.x project use C<config/db/> instead of C<config/mysql/>,
 and C<var/sql/> instead of C<var/mysql/>.

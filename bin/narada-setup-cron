@@ -191,7 +191,10 @@ Internal error, possible reason - user doesn't have access to system crontab.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-narada-config-cron use "config/crontab" configuration file.
+        config/crontab/*
+        var/use/cron
+
+Narada 1.x project use C<config/crontab> instead of C<config/crontab/*>.
 
 
 =head1 SUPPORT
