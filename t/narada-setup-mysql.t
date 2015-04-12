@@ -24,6 +24,7 @@ BAIL_OUT 'Database already exists' if db_exists();
 #   * without SCHEME: make sure database created, if not exists
 #   * with SCHEME: make sure SCHEME imported
 #   * with SCHEME and several .sql: make sure all imported
+#   * manage var/use/mysql
 
 throws_ok { main('param-1', 'param-2') }    qr/Usage:/,
     'main: too many params';
@@ -84,6 +85,12 @@ output_from { main() };
 is_deeply list_tables(), {a => 2, b => 3},
     'main: scheme and table dumps loaded';
 main('--clean');
+
+ok !path('var/use/mysql')->exists, 'no var/use/mysql';
+output_from { main() };
+ok path('var/use/mysql')->is_file, 'created var/use/mysql';
+main('--clean');
+ok !path('var/use/mysql')->exists, 'removed var/use/mysql';
 
 # - import_sql()
 #   * throw if file unreadable

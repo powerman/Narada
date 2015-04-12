@@ -10,6 +10,7 @@ use lib "$FindBin::Bin/../lib/perl5";
 use Narada;
 use Narada::Config qw( get_config_line get_db_config );
 use DBI;
+use Path::Tiny;
 
 use constant IS_NARADA      => Narada::detect() eq 'narada';
 use constant CONFIG_DIR     => IS_NARADA ? 'mysql'      : 'db';
@@ -32,9 +33,13 @@ sub main {
         {RaiseError=>1}) or err DBI->errstr;
 
     if (@_) {
+        path('var/use/mysql')->remove;
         $::dbh->do('DROP DATABASE IF EXISTS `'.$db->{db}.q{`});
     }
     else {
+        if (IS_NARADA) {
+            path('var/use/mysql')->touch;
+        }
         $::dbh->do('CREATE DATABASE IF NOT EXISTS `'.$db->{db}.q{`});
         $::dbh->do('USE `'.$db->{db}.q{`});
         if (0 < $::dbh->prepare('SHOW TABLES')->execute()) {

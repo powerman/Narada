@@ -6,6 +6,8 @@ die()   { warn "$@"; exit 1;    }
 
 perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 
+touch var/use/services || exit 1
+
 if test -f config/service/type; then
 	type="$(< config/service/type)"
 else

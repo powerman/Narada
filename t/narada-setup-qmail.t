@@ -150,6 +150,18 @@ is_deeply
     [sort {$a cmp $b} qw( .qmail-file .qmail-3 .qmail-4 )],
     'main(--clean)';
 
+# - main()/main(--clean)
+#   * manage var/use/qmail
+
+sandbox();
+qmail_flood();
+main('--clean');
+ok !path('var/use/qmail')->exists, 'no var/use/qmail';
+main();
+ok path('var/use/qmail')->is_file, 'created var/use/qmail';
+main('--clean');
+ok !path('var/use/qmail')->exists, 'removed var/use/qmail';
+
 # - main() a.k.a. setup_qmail()
 #   * complex use case involving most of functionality except "conflict"
 #     and exceptions (too hard to simulate in test):

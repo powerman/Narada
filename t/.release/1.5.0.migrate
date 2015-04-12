@@ -201,6 +201,7 @@ mkdir config
 mkdir tmp
 mkdir var
 mkdir var/log
+mkdir var/use
 
 add_config backup/exclude -
   ./.backup/*

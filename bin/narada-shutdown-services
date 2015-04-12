@@ -6,6 +6,8 @@ die()   { warn "$@"; exit 1;    }
 
 DETECT=$(perl -MNarada -E 'say Narada::detect(@ARGV)') || exit 1
 
+rm -f var/use/services
+
 if test "$DETECT" = 'narada-1'; then
 	type='runit'
 elif test -f config/service/type; then

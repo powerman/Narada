@@ -11,6 +11,7 @@ use Narada;
 use Narada::Config qw( get_config set_config );
 use File::Temp qw( tempfile );
 use Cwd qw( cwd );
+use Path::Tiny;
 
 
 main(@ARGV) if !caller;
@@ -25,12 +26,15 @@ sub main {
     my $clean = @_ && $_[0] eq '--clean';
 
     if ($clean) {
+        path('var/use/qmail')->remove;
         for my $file (ls_qmail()) {
             unlink $file                        or err "unlink($file): $!";
         }
     }
     else {
-        Narada::detect();
+        if (Narada::detect() eq 'narada') {
+            path('var/use/qmail')->touch;
+        }
         setup_qmail();
     }
 

@@ -687,7 +687,13 @@ backup at all (even scheme).
 
 =item C<var/mysql/>
 
-Contains files with last database dump (usually made while last backup).
+Contain files with last database dump (usually made while last backup).
+
+=item C<var/use/>
+
+Keeps current used/unused state recorded by last run of C<narada-setup-*>
+and C<narada-*-services> tools. It will be used by L<narada-restore> to
+setup project after full restore.
 
 =item C<.backup/full.tar>
 

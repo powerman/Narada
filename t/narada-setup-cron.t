@@ -12,6 +12,7 @@ require (wd().'/blib/script/narada-setup-cron');
 #   * no --clean and no config/crontab/backup: make sure del_cron() called
 #   * no --clean and exists config/crontab/backup: make sure set_cron called
 #   * many files in config/crontab/: make sure set_cron called for them all
+#   * manage var/use/cron
 
 throws_ok { main('param-1', 'param-2') }    qr/Usage:/,
     'main: too many params';
@@ -57,6 +58,13 @@ SKIP: {
         'main: call set_cron() on config/crontab/*');
     $wait += 1 + path('config/crontab/service')->lines;
     is $lines, $wait, 'many configs';
+
+    main('--clean');
+    ok !path('var/use/cron')->exists, 'no var/use/cron';
+    output_from { main() };
+    ok path('var/use/cron')->is_file, 'created var/use/cron';
+    main('--clean');
+    ok !path('var/use/cron')->exists, 'removed var/use/cron';
 }
 
 # - get_project_dir()
