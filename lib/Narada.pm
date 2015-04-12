@@ -658,13 +658,7 @@ Shell patterns (one per line) for files/dirs which shouldn't be included
 in backup. Must contain at least these lines:
 
     ./.backup/*         to avoid recursively including old backups in new
-    ./.lock             to avoid unlocking while restoring from backup
-    ./.lock.new         to avoid project in locked state after restore
-                        from backup
-    ./.lock.bg          to avoid unlocking while restoring from backup
-    ./.lock.service     to avoid unlocking while restoring from backup
-                        (this file is from narada-plugin-runit, but same
-                        should apply to similar files from other plugins)
+    ./.lock*            to avoid unlocking while restoring from backup
     ./tmp/*             to conform to Narada interface and not include
                         temporary files in backups
 

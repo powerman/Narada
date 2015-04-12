@@ -213,6 +213,75 @@ is $content,
   . "|cd \Q$cwd\E || exit(100); othercmd",
     'main() var/qmail/cmd processed';
 
+# - main(--lock)
+#   * setup all project's files, even broken ones
+#   * repeated run has no effect
+#   * main() unlocks
+#   * main(--clean) unlocks
+#   * nothing to lock
+
+sandbox();
+qmail_flood();
+ok !path('.lock.qmail')->exists, 'no .lock.qmail';
+is_deeply
+    [sort {$a cmp $b} ls_qmail()],
+    ["$ENV{HOME}/.qmail-1", "$ENV{HOME}/.qmail-2"],
+    'ls_qmail(flood)';
+ok -f "$ENV{HOME}/.qmail-1", '.qmail-1 ok';
+ok ! -f "$ENV{HOME}/.qmail-2", '.qmail-2 broken';
+
+for (1, 2) {
+    main('--lock');
+    is path('.lock.qmail')->slurp_utf8, '|false', '.lock.qmail created';
+    is_deeply
+        [sort {$a cmp $b} ls_qmail()],
+        ["$ENV{HOME}/.qmail-1", "$ENV{HOME}/.qmail-2"],
+        'ls_qmail(lock)';
+    ok -f "$ENV{HOME}/.qmail-1", '.qmail-1 ok';
+    ok -f "$ENV{HOME}/.qmail-2", '.qmail-2 ok';
+    my $cwd = cwd();
+    is readlink "$ENV{HOME}/.qmail-1", "$cwd/.lock.qmail", 'qmail-1 locked';
+    is readlink "$ENV{HOME}/.qmail-2", "$cwd/.lock.qmail", 'qmail-2 locked';
+}
+
+path('config/qmail/1')->touch;
+main();
+ok !path('.lock.qmail')->exists, 'no .lock.qmail';
+is_deeply
+    [sort {$a cmp $b} ls_qmail()],
+    ["$ENV{HOME}/.qmail-1"],
+    'ls_qmail()';
+ok -f "$ENV{HOME}/.qmail-1", '.qmail-1 ok';
+ok !-e "$ENV{HOME}/.qmail-2", '.qmail-2 removed';
+my $cwd = cwd();
+is readlink "$ENV{HOME}/.qmail-1", "$cwd/var/qmail/1", 'qmail-1 unlocked';
+
+main('--lock');
+is path('.lock.qmail')->slurp_utf8, '|false', '.lock.qmail created';
+is_deeply
+    [sort {$a cmp $b} ls_qmail()],
+    ["$ENV{HOME}/.qmail-1"],
+    'ls_qmail(lock)';
+ok -f "$ENV{HOME}/.qmail-1", '.qmail-1 ok';
+my $cwd = cwd();
+is readlink "$ENV{HOME}/.qmail-1", "$cwd/.lock.qmail", 'qmail-1 locked';
+
+main('--clean');
+ok !path('.lock.qmail')->exists, 'no .lock.qmail';
+is_deeply
+    [sort {$a cmp $b} ls_qmail()],
+    [],
+    'ls_qmail(--clean)';
+ok !-e "$ENV{HOME}/.qmail-1", '.qmail-1 removed';
+
+path('config/qmail/1')->remove;
+main('--lock');
+is path('.lock.qmail')->slurp_utf8, '|false', '.lock.qmail created';
+is_deeply
+    [sort {$a cmp $b} ls_qmail()],
+    [],
+    'ls_qmail(lock)';
+
 
 done_testing();
 
@@ -243,7 +312,8 @@ sub qmail_flood {   # WARNING call ONLY after sandbox()
     symlink cwd().'/var/qmail/2', "$ENV{HOME}/.qmail-2" or die "symlink: $!";
     touch("$ENV{HOME}/.qmail-file");
     my $other = File::Temp::tempdir(CLEANUP => 1);
-    system('narada-new-1', $other) == 0         or die "system(narada-new-1): $!";
+    dircopy(wd()."/t/.release", "$other/.release")      or die "dircopy: $!";
+    system("cd \Q$other\E && narada-install 0.1.0 >/dev/null 2>&1") == 0 or die "narada-install 0.1.0 failed";
     touch("$other/var/qmail/3");
     symlink $other.'/var/qmail/3', "$ENV{HOME}/.qmail-3" or die "symlink: $!";
     symlink $other.'/var/qmail/4', "$ENV{HOME}/.qmail-4" or die "symlink: $!";

@@ -20,22 +20,44 @@ main(@ARGV) if !caller;
 sub err { die "narada-setup-qmail: @_\n" }
 
 sub main {
-    die "Usage: narada-setup-qmail [--clean]\n"
+    die "Usage: narada-setup-qmail [--clean|--lock]\n"
         if (@_ >  1)
-        || (@_ == 1 && $_[0] ne '--clean');
+        || (@_ == 1 && $_[0] ne '--clean' && $_[0] ne '--lock');
     my $clean = @_ && $_[0] eq '--clean';
+    my $lock  = @_ && $_[0] eq '--lock';
 
     if ($clean) {
         path('var/use/qmail')->remove;
         for my $file (ls_qmail()) {
             unlink $file                        or err "unlink($file): $!";
         }
+        unlink '.lock.qmail';
     }
     else {
         if (Narada::detect() eq 'narada') {
             path('var/use/qmail')->touch;
         }
-        setup_qmail();
+        if ($lock) {
+            lock_qmail();
+        }
+        else {
+            setup_qmail();
+        }
+    }
+
+    return;
+}
+
+sub lock_qmail {
+    my $cwd = cwd();
+    my $lock = "$cwd/.lock.qmail";
+    replacefile($lock, '|false');
+
+    my $temp = 'tmp/.qmail.symlink';
+    unlink $temp;
+    for my $qmail (ls_qmail()) {
+        symlink $lock, $temp                    or err "symlink($lock,$temp): $!";
+        rename $temp, $qmail                    or err "rename($temp,$qmail): $!";
     }
 
     return;
@@ -43,6 +65,9 @@ sub main {
 
 sub setup_qmail {
     my $cwd = cwd();
+    my $lock = "$cwd/.lock.qmail";
+    my $temp = 'tmp/.qmail.symlink';
+    unlink $temp;
 
     for my $file (ls('config/qmail')) {
         # read from config/qmail/
@@ -56,6 +81,10 @@ sub setup_qmail {
         if (! -e $qmail) {
             symlink $path, $qmail               or err "symlink($path,$qmail): $!";
         }
+        elsif (-l $qmail && _readlink($qmail) eq $lock) {
+            symlink $path, $temp                or err "symlink($path,$temp): $!";
+            rename $temp, $qmail                or err "rename($temp,$qmail): $!";
+        }
         elsif (! (-l $qmail && _readlink($qmail) eq $path)) {
             err "Conflict detected on $qmail";
         }
@@ -65,6 +94,7 @@ sub setup_qmail {
     for my $file (grep {! -f "config/qmail/$_"} ls('var/qmail')) {
         unlink "var/qmail/$file"                or err "unlink(var/qmail/$file): $!";
     }
+    unlink $lock;
     for my $file (grep {! -f} ls_qmail()) {
         unlink $file                            or err "unlink($file): $!";
     }
@@ -124,7 +154,7 @@ This document describes narada-setup-qmail version v2.0.2
 
 =head1 USAGE
 
-    narada-setup-qmail [--clean]
+    narada-setup-qmail [--clean|--lock]
 
 
 =head1 DESCRIPTION
@@ -132,10 +162,15 @@ This document describes narada-setup-qmail version v2.0.2
 Should be executed in project deploy directory (or Narada 1.x project root
 directory).
 
-Sync Narada project's qmail configuration with user's ~/.qmail-* files.
+Sync Narada project's qmail configuration with user's C<~/.qmail-*> files.
 
-When executed with --clean option will remove all ~/.qmail-* files related to
-this project.
+When executed with C<--clean> option will remove all C<~/.qmail-*> files
+related to this project.
+
+When executed with C<--lock> option will setup all C<~/.qmail-*> files related
+to this project to exit with code which means that the delivery failed but
+should be tried again in a little while (soft error). To undo this effect run
+again without options or with C<--clean>.
 
 
 =head1 SYNTAX OF "config/qmail/files"
@@ -176,6 +211,7 @@ After that you should run narada-setup-qmail again.
         var/qmail/*
         ~/.qmail-*
         var/use/qmail
+        .lock.qmail
 
 
 =head1 SUPPORT
