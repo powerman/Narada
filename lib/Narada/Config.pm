@@ -10,8 +10,8 @@ use Perl6::Export::Attrs;
 use Narada;
 use Path::Tiny 0.053;
 
-use constant IS_NARADA1 => eval { local $SIG{__DIE__}; Narada::detect('narada-1') } || undef;
-use constant CONFIG_DIR => IS_NARADA1 ? 'db' : 'mysql';
+use constant NARADA     => eval { local $SIG{__DIE__}; Narada::detect() } || q{};
+use constant DB_DIR     => NARADA eq 'narada-1' ? 'db' : 'mysql';
 use constant MAXPERM    => 0666; ## no critic (ProhibitLeadingZeros)
 
 my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*[\w.-]+\z}xms;
@@ -21,6 +21,7 @@ sub get_config :Export {
     my ($var) = @_;
     croak 'Usage: get_config(NAME)' if @_ != 1;
     $var =~ /$VAR_NAME/xms              or croak "Bad config: $var";
+    return undef if !NARADA;    ## no critic (ProhibitExplicitReturnUndef)
     return path("config/$var")->slurp_utf8;
 }
 
@@ -33,14 +34,14 @@ sub get_config_line :Export {
 
 sub get_db_config :Export {
     my %db;
-    $db{db} = eval { get_config_line(CONFIG_DIR.'/db') };
+    $db{db} = eval { get_config_line(DB_DIR.'/db') };
     if (!defined $db{db} || !length $db{db}) {
         return;
     }
-    $db{login}= get_config_line(CONFIG_DIR.'/login');
-    $db{pass} = get_config_line(CONFIG_DIR.'/pass');
-    $db{host} = eval { get_config_line(CONFIG_DIR.'/host') } || q{};
-    $db{port} = eval { get_config_line(CONFIG_DIR.'/port') } || q{};
+    $db{login}= get_config_line(DB_DIR.'/login');
+    $db{pass} = get_config_line(DB_DIR.'/pass');
+    $db{host} = eval { get_config_line(DB_DIR.'/host') } || q{};
+    $db{port} = eval { get_config_line(DB_DIR.'/port') } || q{};
     $db{dsn_nodb}  = 'dbi:mysql:';
     $db{dsn_nodb} .= ';host='.$db{host} if $db{host}; ## no critic (ProhibitPostfixControls)
     $db{dsn_nodb} .= ';port='.$db{port} if $db{port}; ## no critic (ProhibitPostfixControls)
@@ -52,6 +53,7 @@ sub set_config :Export {
     my ($var, $val) = @_;
     croak 'Usage: set_config(NAME, VALUE)' if @_ != 2;
     $var =~ /$VAR_NAME/xms              or croak "Bad config: $var";
+    croak 'Narada::Config was loaded not in narada directory' if !NARADA;
     my $cfg = path("config/$var");
     $cfg->parent->mkpath;
     $cfg->spew_utf8($val);
