@@ -27,6 +27,7 @@ sub get_config :Export {
 
 sub get_config_line :Export {
     my ($val) = get_config(@_);
+    return $val if !defined $val;
     $val =~ s/\n\s*\z//xms;
     croak 'Config contain more than one line' if $val =~ /\n/xms;
     return $val;
