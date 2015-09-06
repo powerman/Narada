@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = 'v2.2.1';
+our $VERSION = 'v2.2.2';
 
 use Perl6::Export::Attrs;
 use Narada;
@@ -86,8 +86,7 @@ Narada::Lock - manage project locks
 
 =head1 VERSION
 
-This document describes Narada::Lock version v2.2.1
-
+This document describes Narada::Lock version v2.2.2
 
 =head1 SYNOPSIS
 

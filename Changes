@@ -2,6 +2,9 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.2.2  2015-09-06 16:00:30 EEST
+	- Fix tests for new Path::Tiny.
+
 v2.2.1  2015-09-06 14:55:25 EEST
 	- Improve narada-viewlog.
 

@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v2.2.1';
+our $VERSION = 'v2.2.2';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -76,8 +76,7 @@ narada-setup-mysql - initialize project database
 
 =head1 VERSION
 
-This document describes narada-setup-mysql version v2.2.1
-
+This document describes narada-setup-mysql version v2.2.2
 
 =head1 USAGE
 
