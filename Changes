@@ -2,6 +2,9 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.2.1  2015-09-06 14:55:25 EEST
+	- Improve narada-viewlog.
+
 v2.2.0  2015-04-18 06:36:25 EEST
 	[Loading Narada::Config not in narada directory]
 	- get_config() return undef instead of throwing

@@ -7,7 +7,7 @@ Narada - framework for ease deploy and support microservice projects
 
 # VERSION
 
-This document describes Narada version v2.2.0
+This document describes Narada version v2.2.1
 
 # SYNOPSIS
 

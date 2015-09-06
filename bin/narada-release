@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v2.2.0';
+our $VERSION = 'v2.2.1';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -136,7 +136,7 @@ narada-release - release current changes in Narada project
 
 =head1 VERSION
 
-This document describes narada-release version v2.2.0
+This document describes narada-release version v2.2.1
 
 
 =head1 USAGE
