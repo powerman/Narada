@@ -108,7 +108,7 @@ sub print_line { ## no critic (ProhibitExcessComplexity)
     my $r_time   = qr/(\d\d\d\d-\d\d-\d\d)_(\d\d:\d\d:\d\d)[.](\d+)/xms;
     my $r_faclvl = qr/(\w+)[.](\w+)/xms;
     my $r_idpid  = qr/([^\[]+)\[(\d+)\]/xms;
-    if ($line !~ m{\A$r_time\s$r_faclvl:\s\S+\s+\S+\s\S+\s+$r_idpid:\s(.*)\z}xms) {
+    if ($line !~ m{\A$r_time\s$r_faclvl:[^\[]*\s$r_idpid:\s(.*)\z}xms) {
         if ($Multiline) {
             $line =~ s/\A$r_time\s//xms;
             print $line;
