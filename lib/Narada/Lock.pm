@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = 'v2.2.2';
+our $VERSION = 'v2.2.3';
 
 use Perl6::Export::Attrs;
 use Narada;
@@ -86,8 +86,7 @@ Narada::Lock - manage project locks
 
 =head1 VERSION
 
-This document describes Narada::Lock version v2.2.2
-
+This document describes Narada::Lock version v2.2.3
 =head1 SYNOPSIS
 
     use Narada::Lock qw( shared_lock unlock child_inherit_lock );

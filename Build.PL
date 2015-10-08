@@ -21,7 +21,7 @@ my %module_build_args = (
     "Alex Efros <powerman\@cpan.org>"
   ],
   "dist_name" => "Narada",
-  "dist_version" => "v2.2.2",
+  "dist_version" => "v2.2.3",
   "license" => "mit",
   "module_name" => "Narada",
   "recursive_test_files" => 1,
@@ -37,7 +37,7 @@ my %module_build_args = (
     "Log::Fast" => 0,
     "MIME::Base64" => 0,
     "Path::Tiny" => "0.065",
-    "Perl6::Export::Attrs" => 0,
+    "Perl6::Export::Attrs" => "!= v0.0.4",
     "Time::HiRes" => 0,
     "Time::Local" => 0,
     "parent" => 0,
