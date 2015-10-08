@@ -11,7 +11,7 @@ requires 'List::Util';
 requires 'Log::Fast';
 requires 'MIME::Base64';
 requires 'Path::Tiny', '0.065';
-requires 'Perl6::Export::Attrs';
+requires 'Perl6::Export::Attrs', '!= 0.0.4';
 requires 'Time::HiRes';
 requires 'Time::Local';
 requires 'parent';
