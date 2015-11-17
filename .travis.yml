@@ -16,6 +16,7 @@ perl:
   - "5.16"
   - "5.18"
   - "5.20"
+  - "5.22"
 
 install:
   - export HARNESS_OPTIONS=j1:c HARNESS_TIMER=1
