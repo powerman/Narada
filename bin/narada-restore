@@ -14,15 +14,22 @@ test -z "$contents" || perl -MNarada -E 'Narada::detect(@ARGV)' narada || exit 1
 backup="$1"
 shift
 
-# make sure every file name to extract (if any) begins with ./
+# Make sure every file name to extract (if any) begins with ./
 files=("$@")
 files=("${files[@]#/}")
 files=("${files[@]#./}")
 files=("${files[@]/#/./}")
 
+# If backup contains .backup/ or .lock* then this is 100% error in
+# config/backup/exclude and may result in damaging project when unpacked
+# (unlike similar error with including tmp/* into backup),
+# so let's protect against this just in case.
+# If backup contains .release/ (which is usually redundant but not an
+# error) then it should be unpacked only if there is no .release/ yet,
+# otherwise it also may damage project when unpacked.
 excl=()
 test -d '.release' && excl+=( --exclude './.release' )
-test -d '.backup'  && excl+=( --exclude './.backup'  )
+excl+=( --exclude './.backup' )
 excl+=( --exclude './.lock*' )
 
 # Order of commands to run before/after unpacking archive is CRITICAL!
