@@ -28,7 +28,6 @@ my %module_build_args = (
   "requires" => {
     "App::migrate" => "v0.2.0",
     "App::powerdiff" => 0,
-    "DBD::mysql" => 0,
     "DBI" => 0,
     "File::Temp" => 0,
     "FindBin" => 0,

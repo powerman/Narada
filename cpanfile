@@ -2,7 +2,6 @@ requires 'perl', '5.010001';
 
 requires 'App::migrate', 'v0.2.0';
 requires 'App::powerdiff';
-requires 'DBD::mysql';
 requires 'DBI';
 requires 'File::Temp';
 requires 'FindBin';
