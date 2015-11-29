@@ -36,6 +36,9 @@ _tar(){
     status=$?
     grep -v 'socket ignored' $tmp
     rm $tmp
+    if test "$status" -eq 1; then
+	return 0 # ignore files which was changed while archiving
+    fi
     return $status
 }
 
