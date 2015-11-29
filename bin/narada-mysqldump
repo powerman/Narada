@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v2.2.3';
+our $VERSION = 'v2.3';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -239,8 +239,7 @@ narada-mysqldump - dump project database
 
 =head1 VERSION
 
-This document describes narada-mysqldump version v2.2.3
-=head1 USAGE
+This document describes narada-mysqldump version v2.3=head1 USAGE
 
     narada-mysqldump
 

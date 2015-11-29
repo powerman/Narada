@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = 'v2.2.3';
+our $VERSION = 'v2.3';
 
 use Perl6::Export::Attrs;
 use Narada;
@@ -75,8 +75,7 @@ Narada::Config - manage project configuration
 
 =head1 VERSION
 
-This document describes Narada::Config version v2.2.3
-=head1 SYNOPSIS
+This document describes Narada::Config version v2.3=head1 SYNOPSIS
 
     use Narada::Config;
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v2.2.3'
+VERSION='v2.3'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -24,8 +24,7 @@ narada-bg - run background command for this project
 
 =head1 VERSION
 
-This document describes narada-bg version v2.2.3
-=head1 USAGE
+This document describes narada-bg version v2.3=head1 USAGE
 
     narada-bg command [args]
 

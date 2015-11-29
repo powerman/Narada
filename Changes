@@ -2,6 +2,21 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.3  2015-11-29 23:55:51 EET
+	- Ban Perl6::Export::Attrs-0.0.5.
+	- Speedup and improve parallel tests.
+	- Use Test::Database.
+	- narada-shutdown-services waits for services to exit.
+	- narada-backup ignores non-fatal tar error.
+	- Make DBD::mysql an optional dependency.
+	- Fix narada-mysql exit code when db not configured.
+	- Incremental tar backups was disabled - need to find
+	  a better solution.
+
+	[Update for narada-base]
+	- Exclude .release/* from backups.
+	- Fixed INSTALL macro.
+
 v2.2.3  2015-10-08 17:59:49 EEST
 	- Ban Perl6::Export::Attrs-0.0.4.
 
