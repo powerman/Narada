@@ -101,8 +101,8 @@ sub check_backup {
         skip 'GNU find required', 1 if `find --version 2>/dev/null` !~ /GNU/ms;
         my $wait = `
             cd \Q$dir2\E
-            find \\! -path './.lock*' -type d -printf "%M        %p %l\n" | sort
-            find \\! -path './.lock*' -type f -printf "%M %6s %p %l\n" | sort
+            find \\! -path './.release/*' \\! -path './.lock*' -type d -printf "%M        %p %l\n" | sort
+            find \\! -path './.release/*' \\! -path './.lock*' -type f -printf "%M %6s %p %l\n" | sort
             `;
         my $list = `
             find -type d -printf "%M        %p %l\n" | sort

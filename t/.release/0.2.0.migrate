@@ -207,6 +207,7 @@ add_config backup/exclude -
   ./.backup/*
   ./.lock*
   ./tmp/*
+  ./.release/*
 add_config crontab/backup -
   1 3 * * *   ( narada-backup && echo Reminder: encrypt .backup/full.tar with config/backup/pass and upload it somewhere >&2) >/dev/null
   1 2 * * 1   rm .backup/full.tar >/dev/null 2>&1
