@@ -25,6 +25,7 @@ install:
   - cpanm -nq Devel::Cover::Report::Coveralls
   - export RELEASE_TESTING=1
   - export EXTENDED_TESTING=1
+  - cpanm -nq DBD::mysql
   - echo -e "driver_dsn = dbi:mysql:\nusername = root" > ~/.test-database
 script:
   - perl Build.PL && ./Build && cover -test
