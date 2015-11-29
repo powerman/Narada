@@ -40,7 +40,8 @@ my $old_size = -s '.backup/full-1.1.0.tar';
 output_from { main(qw( -D -f .release/0.1.0.migrate 0.0.0 )) };
 is_version '0.0.0';
 is_backups [qw( full-0.1.0 full-1.1.0 full-1.2.0 )];
-ok -s '.backup/full-1.1.0.tar' > $old_size, 'full-1.1.0 updated';
+# XXX incremental archives was disabled
+# ok -s '.backup/full-1.1.0.tar' > $old_size, 'full-1.1.0 updated';
 
 
 done_testing();

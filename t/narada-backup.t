@@ -31,9 +31,10 @@ system("cd \Q$dir1\E; cp .backup/full.tar tmp/full1.tar") == 0 or die "system: $
 
 my $old_size = -s "$dir1/.backup/full.tar";
 is system("cd \Q$dir1\E; narada-backup"), 0, 'second backup';
-ok $old_size < -s "$dir1/.backup/full.tar", 'full.tar grow up';
-ok -e "$dir1/.backup/incr.tar", 'incr.tar created';
-system("cd \Q$dir1\E; cp .backup/incr.tar tmp/incr1.tar") == 0 or die "system: $?";
+# XXX incremental archives was disabled
+# ok $old_size < -s "$dir1/.backup/full.tar", 'full.tar grow up';
+# ok -e "$dir1/.backup/incr.tar", 'incr.tar created';
+# system("cd \Q$dir1\E; cp .backup/incr.tar tmp/incr1.tar") == 0 or die "system: $?";
 
 sleep 1;    # tar will detect changes based on mtime
 for my $dir ($dir1, $dir2) {
@@ -51,11 +52,13 @@ filldir("$dir1/tmp/some/");
 system("cd \Q$dir1\E && rm tmp/some/file && rmdir tmp/some/.hiddendir");
 
 is system("cd \Q$dir1\E; narada-backup"), 0, 'third backup';
-system("cd \Q$dir1\E; cp .backup/incr.tar tmp/incr2.tar") == 0 or die "system: $?";
+# XXX incremental archives was disabled
+# system("cd \Q$dir1\E; cp .backup/incr.tar tmp/incr2.tar") == 0 or die "system: $?";
 SKIP: {
     skip 'Too many broken cpan tester setups.', 2 if $ENV{AUTOMATED_TESTING} || $ENV{PERL_CPAN_REPORTER_CONFIG};
     check_backup("$dir1/.backup/full.tar");
-    check_backup("$dir1/tmp/full1.tar", "$dir1/tmp/incr1.tar", "$dir1/tmp/incr2.tar");
+    # XXX incremental archives was disabled
+    # check_backup("$dir1/tmp/full1.tar", "$dir1/tmp/incr1.tar", "$dir1/tmp/incr2.tar");
 }
 unlink "$dir1/.backup/full.tar";
 is system("cd \Q$dir1\E; narada-backup"), 0, 'force full backup';

@@ -43,15 +43,15 @@ _tar(){
 }
 
 narada-mysqldump                                                &&
-if [ -f $snap -a -f $full ]; then
-    mv $full $full.tmp                                          &&
-    _tar -c -g $snap --anchored "${excl[@]}" -f $incr.tmp ./    &&
-    mv $incr.tmp $incr                                          &&
-    _tar -g /dev/null -A $incr -f $full.tmp
-else
+# if [ -f $snap -a -f $full ]; then
+#     mv $full $full.tmp                                          &&
+#     _tar -c -g $snap --anchored "${excl[@]}" -f $incr.tmp ./    &&
+#     mv $incr.tmp $incr                                          &&
+#     _tar -g /dev/null -A $incr -f $full.tmp
+# else
     rm -f $snap $full $full.tmp $incr $incr.tmp                 &&
     _tar -c -g $snap --anchored "${excl[@]}" -f $full.tmp ./
-fi                                                              &&
+# fi                                                              &&
 mv $full.tmp $full &&
 perl -MTime::HiRes=time,sleep -e '$a=time; sleep 1.01 + int($a) - $a' # make sure files modified after backup won't have same mtime on *BSD
 exit $?
@@ -80,6 +80,7 @@ Should be executed in project deploy directory (or Narada 1.x project root
 directory).
 
 At first run prepare full project backup in C<.backup/full.tar>.
+B<NOTE: Incremental backups was disabled in version 2.3.>
 On next runs prepare incremental backup in C<.backup/incr.tar> plus
 append it to full backup in C<.backup/full.tar> (using C<tar -A>).
 
