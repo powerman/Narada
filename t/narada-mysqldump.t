@@ -1,13 +1,17 @@
 use t::share; guard my $guard;
 use DBI;
+use Test::Database;
 use Narada::Config qw( set_config );
 
 require (wd().'/blib/script/narada-mysqldump');
 
 
-my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ count => 3, chomp => 1 });
-plan skip_all => 'No database provided for testing' if $db eq q{};
-my $lock = path(wd().'/t/.answers')->filehandle({locked=>1}, '>>');
+my $h = Test::Database->handle('mysql') or plan skip_all => '~/.test-database not configured';
+$::dbh = $h->dbh->clone({RaiseError=>1});
+my $db = $h->name.'_mysqldump';
+my $db_quoted = $::dbh->quote_identifier($db);
+$::dbh->do("DROP DATABASE IF EXISTS $db_quoted");
+undef $::dbh;
 
 
 # - init_globals()
@@ -18,14 +22,14 @@ my $lock = path(wd().'/t/.answers')->filehandle({locked=>1}, '>>');
 ok !init_globals(), 'init_globals: return false';
 
 set_config('mysql/db', $db);
-set_config('mysql/login', $login);
-set_config('mysql/pass', $pass);
+set_config('mysql/login', $h->username);
+set_config('mysql/pass', $h->password);
 system('narada-setup-mysql');
 
 set_config('mysql/pass', 'wrong pass');
 throws_ok { init_globals() } qr/Access denied/i,
     'init_globals: throw with wrong mysql/pass';
-set_config('mysql/pass', $pass);
+set_config('mysql/pass', $h->password);
 
 ok !$::dbh,         'init_globals: $::dbh undefined';
 ok !$::MYSQLDUMP,   'init_globals: $::MYSQLDUMP undefined';

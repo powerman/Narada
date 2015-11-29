@@ -1,18 +1,16 @@
 use t::narada1::share; guard my $guard;
 use DBI;
+use Test::Database;
 use Narada::Config qw( set_config );
 
 require (wd().'/blib/script/narada-setup-mysql');
 
 
-my ($db, $login, $pass) = path(wd().'/t/.answers')->lines_utf8({ count => 3, chomp => 1 });
-plan skip_all => 'No database provided for testing' if $db eq q{};
-my $lock = path(wd().'/t/.answers')->filehandle({locked=>1}, '>>');
-
-
-$::dbh = DBI->connect('dbi:mysql:', $login, $pass, {RaiseError=>1});
-BAIL_OUT 'Database already exists' if db_exists();
-
+my $h = Test::Database->handle('mysql') or plan skip_all => '~/.test-database not configured';
+$::dbh = $h->dbh->clone({RaiseError=>1});
+my $db = $h->name.'_setup';
+my $db_quoted = $::dbh->quote_identifier($db);
+$::dbh->do("DROP DATABASE IF EXISTS $db_quoted");
 
 # - main()
 #   * too many params
@@ -36,11 +34,11 @@ is db_exists(), 0,
     'main: do nothing without config/db/db';
 
 set_config('db/db', $db);
-set_config('db/login', $login);
+set_config('db/login', $h->username);
 set_config('db/pass', 'wrong pass');
 throws_ok { main() }    qr/Access denied/i,
     'main: bad pass';
-set_config('db/pass', $pass);
+set_config('db/pass', $h->password);
 
 main('--clean');
 is db_exists(), 0,

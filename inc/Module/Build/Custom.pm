@@ -15,12 +15,6 @@ die "GNU tar required\n" if `$TAR --version` !~ /GNU/ms;
 #           inclusion of these directories in MANIFEST and module distribution.
 #           These files will not be installed by `narada-new-1`.
 
-sub new {
-    my $self = shift->SUPER::new(@_);
-    $self->_prompt_db();
-    return $self;
-}
-
 sub ACTION_build {
     my $self = shift;
     $self->SUPER::ACTION_build;
@@ -51,37 +45,6 @@ sub _inject_skel {
     utime $atime, $mtime, $filename or die "utime: $!";
     rename $filename, $script or die "rename: $!";
     chmod 0755, $script or die "chmod: $!";
-    return;
-}
-
-sub _prompt_db {
-    my $self= shift;
-
-    my $db  = ($ENV{TEST_MYSQL_DB} // 'test') . '_narada';
-    my $user= $ENV{TEST_MYSQL_USER} // q{};
-    my $pass= $ENV{TEST_MYSQL_PASS} // q{};
-
-    my $auth= "-u \Q$user\E" . ($pass ne q{} ? " -p\Q$pass\E" : q{});
-    if (`mysql $auth \Q$db\E </dev/null 2>&1` !~ /Unknown database/ms) {
-        $db = $self->prompt("\nEnter NON-EXISTING database name (empty/space to skip test):", $db);
-        $db =~ s/\s+//msg;
-        if ($db ne q{} && $user eq q{}) {
-            $user = $self->prompt("Enter username for database '$db':", 'test');
-            $pass = $self->prompt("Enter password for username '$user':", q{});
-        }
-        $auth = "-u \Q$user\E" . ($pass ne q{} ? " -p\Q$pass\E" : q{});
-        my $err = `mysql $auth \Q$db\E </dev/null 2>&1`;
-        if ($err !~ /Unknown database/ms) {
-            warn "Disable MySQL tests:\n";
-            warn $err =~ /ERROR/ ? "$err\n" : "ERROR: Database '$db' exists\n\n";
-            $db = $user = $pass = q{};
-        }
-    }
-
-    open my $f, '> t/.answers' or die "open: $!";
-    printf {$f} "%s\n%s\n%s\n", $db, $user, $pass;
-    close $f or die "close: $!";
-
     return;
 }
 

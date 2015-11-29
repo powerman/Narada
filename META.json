@@ -68,6 +68,7 @@
             "File::Copy::Recursive" : "0",
             "Pod::Coverage" : "0.18",
             "Test::CheckManifest" : "0.9",
+            "Test::Database" : "0",
             "Test::Differences" : "0",
             "Test::Exception" : "0",
             "Test::MockModule" : "0",
