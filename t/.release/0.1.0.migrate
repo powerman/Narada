@@ -19,7 +19,7 @@
 # - merging different release branches like 1.x and 2.x
 
 
-# INSTALL 1.2.3
+# INSTALL
 # - usually it will be automatically added by ./release, and you shouldn't
 #   add it manually
 # - this operation must be the last one, right before VERSION - to make
@@ -28,23 +28,33 @@
 #   after_downgrade operations
 DEFINE2 INSTALL
 before_upgrade
-  if test -f .release/$1.patch; then
-    GIT_DIR=.git git apply .release/$1.patch
+  if test -f .release/${MIGRATE_NEXT_VERSION}.patch; then
+    GIT_DIR=.git git apply .release/${MIGRATE_NEXT_VERSION}.patch
   fi
-  if test -f .release/$1.tgz; then
-    tar xzvpf .release/$1.tgz
+  if test -f .release/${MIGRATE_PREV_VERSION}.tgz; then
+    files='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}||print'
+     dirs='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}&&print'
+    names=$(tar tzf .release/${MIGRATE_PREV_VERSION}.tgz)
+    echo "$names" |       perl -ne "$files" | xargs -0 -r rm -f
+    echo "$names" | tac | perl -ne "$dirs"  | xargs -0 -r rmdir --ignore-fail-on-non-empty
+  fi
+  if test -f .release/${MIGRATE_NEXT_VERSION}.tgz; then
+    tar xzvpf .release/${MIGRATE_NEXT_VERSION}.tgz
   fi
   narada-bg-killall
 after_downgrade
-  if test -f .release/$1.patch; then
-    GIT_DIR=.git git apply -R .release/$1.patch
+  if test -f .release/${MIGRATE_PREV_VERSION}.patch; then
+    GIT_DIR=.git git apply -R .release/${MIGRATE_PREV_VERSION}.patch
   fi
-  if test -f .release/$1.tgz; then
+  if test -f .release/${MIGRATE_PREV_VERSION}.tgz; then
     files='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}||print'
      dirs='m{\A[.]/\n}&&next;s/\n/\0/;s/(\\.)/"\"$1\""/gee;m{/\0}&&print'
-    tar tzf .release/$1.tgz |       perl -ne "$files" | xargs -0 rm -f
-    tar tzf .release/$1.tgz |       perl -ne "$files" | xargs -0 narada-restore .backup/full-"$MIGRATE_NEXT_VERSION".tar
-    tar tzf .release/$1.tgz | tac | perl -ne "$dirs"  | xargs -0 rmdir --ignore-fail-on-non-empty
+    names=$(tar tzf .release/${MIGRATE_PREV_VERSION}.tgz)
+    echo "$names" |       perl -ne "$files" | xargs -0 -r rm -f
+    echo "$names" | tac | perl -ne "$dirs"  | xargs -0 -r rmdir --ignore-fail-on-non-empty
+  fi
+  if test -f .release/${MIGRATE_NEXT_VERSION}.tgz; then
+    tar xzvpf .release/${MIGRATE_NEXT_VERSION}.tgz
   fi
   narada-bg-killall
 
@@ -180,6 +190,18 @@ after_downgrade
   # echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
   # echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 
+# exclude_from_backup "value"
+DEFINE2 exclude_from_backup
+upgrade
+  test -e config/backup/exclude
+  if ! grep -q -F -x -- "$1" config/backup/exclude; then
+    echo "$1" >> config/backup/exclude
+  fi
+after_downgrade
+  test -e config/backup/exclude
+  grep -v -F -x -- "$1" config/backup/exclude >tmp/config_backup_exclude.$$
+  mv tmp/config_backup_exclude.$$ config/backup/exclude
+
 # kill process_name ...
 # - make sure processes started before upgrade/downgrade but blocked on
 #   start because of lock won't continue to run after upgrade/downgrade
@@ -232,7 +254,7 @@ add_config mysql/dump/ignore
 add_config mysql/dump/incremental
 
 
-INSTALL 0.1.0
+INSTALL
 VERSION 0.1.0
 
 
