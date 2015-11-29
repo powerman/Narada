@@ -14,7 +14,7 @@ use constant NARADA     => eval { local $SIG{__DIE__}; Narada::detect() } || q{}
 use constant DB_DIR     => NARADA eq 'narada-1' ? 'db' : 'mysql';
 use constant MAXPERM    => 0666; ## no critic (ProhibitLeadingZeros)
 
-my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*[\w.-]+\z}xms;
+my $VAR_NAME = qr{\A(?:(?![.][.]?/)[\w.-]+/)*(?![.][.]?\z)[\w.-]+\z}xms;
 
 
 sub get_config :Export {

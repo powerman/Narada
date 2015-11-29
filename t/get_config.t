@@ -3,7 +3,7 @@ use t::share; guard my $guard;
 use Narada::Config qw( get_config );
 
 
-my @badvar = ('a b', qw( a:b $a a+b a\b ./ a/./b ../ a/../b dir/ version/ ));
+my @badvar = ('a b', qw( a:b $a a+b a\b ./ a/./b ../ a/../b . .. a/.. a/. dir/ version/ ));
 
 throws_ok { get_config() }          qr/Usage:/,     'no params';
 throws_ok { get_config(1, 2) }      qr/Usage:/,     'too many params';
