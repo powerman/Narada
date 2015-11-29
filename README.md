@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/powerman/Narada.svg?branch=master)](https://travis-ci.org/powerman/Narada)
-[![Coverage Status](https://coveralls.io/repos/powerman/Narada/badge.png?branch=master)](https://coveralls.io/r/powerman/Narada?branch=master)
+[![Coverage Status](https://coveralls.io/repos/powerman/Narada/badge.svg?branch=master)](https://coveralls.io/r/powerman/Narada?branch=master)
 
 # NAME
 
