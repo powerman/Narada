@@ -19,7 +19,7 @@ $LOGSOCK->INFO('info');
 ok 256 == system('grep debug var/log/current >/dev/null 2>&1'), 'log file not contain "debug"';
 ok 0   == system('grep info  var/log/current >/dev/null 2>&1'), 'log file contain "info"';
 
-system('sv x ./service/log/');
+system('sv force-stop ./service/log/ &>/dev/null');
 
 
 done_testing();
