@@ -14,14 +14,17 @@ $::dbh->do("CREATE DATABASE $db_quoted");
 
 is   scalar `narada-mysql param </dev/null 2>&1`, "Usage: narada-mysql\n", 'usage';
 is   scalar `narada-mysql       </dev/null 2>&1`, "ERROR: config/mysql/db absent or empty!\n", 'no db';
+is   system('narada-mysql </dev/null >/dev/null 2>&1'), 1<<8, '  exit code 1';
 set_config('mysql/db', $db);
 set_config('mysql/login', 'wrong login');
 like scalar `narada-mysql       </dev/null 2>&1`, qr/Access denied|\A\z/i, 'bad login, empty pass';
 set_config('mysql/pass', 'wrong pass');
 like scalar `narada-mysql       </dev/null 2>&1`, qr/Access denied/i, 'bad pass';
+is   system('narada-mysql </dev/null >/dev/null 2>&1'), 1<<8, '  exit code 1';
 set_config('mysql/login', $h->username);
 set_config('mysql/pass', $h->password);
 is   scalar `narada-mysql       </dev/null 2>&1`, q{}, 'auth ok';
+is   system('narada-mysql </dev/null >/dev/null 2>&1'), 0, '  exit code 0';
 is   scalar `echo "SELECT 1+2;" | narada-mysql 2>&1`, "1+2\n3\n", 'simple select';
 set_config('mysql/host', '127.0.0.1');
 set_config('mysql/port', '36');

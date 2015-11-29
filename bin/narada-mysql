@@ -14,8 +14,8 @@ fi
 [ $# -eq 0 ] || die "Usage: narada-mysql"
 
 if [ ! -s "$config_dir/db" ]; then
-    echo "ERROR: $config_dir/db absent or empty!"
-    exit
+    echo "ERROR: $config_dir/db absent or empty!" >&2
+    exit 1
 fi
 
 restore_umask=$(umask -p)
