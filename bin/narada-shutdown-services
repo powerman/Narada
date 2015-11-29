@@ -20,6 +20,9 @@ if test "$type" = 'runit'; then
 	if test -n "$pid"; then
 		kill -HUP "$pid"
 	fi
+	while fuser -v . 2>&1 | grep -q runsvdir; do
+		sleep 0.1
+	done
 elif test -n "$type"; then
 	die "Unknown type of services: '$type'"
 fi
