@@ -12,6 +12,7 @@ my %module_build_args = (
     "Module::Build" => "0.28"
   },
   "configure_requires" => {
+    "CPAN::Meta" => "2.150005",
     "Devel::AssertOS" => 0,
     "Devel::CheckOS" => "1.63",
     "Module::Build" => "0.28"

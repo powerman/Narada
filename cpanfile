@@ -18,6 +18,7 @@ requires 'version', '0.77';
 
 on configure => sub {
     requires 'Devel::AssertOS';
+    requires 'CPAN::Meta', '2.150005';
 };
 
 on test => sub {
