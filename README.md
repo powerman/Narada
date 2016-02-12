@@ -7,10 +7,9 @@ Narada - framework for ease deploy and support microservice projects
 
 # VERSION
 
-This document describes Narada version v2.3=head1 SYNOPSIS
-
+This document describes Narada version v2.3.1
     #--- Create new project
-    ~ $ narada-new my_proj
+    ~ $ narada-new my\_proj
     ... New project will be created using template (from git repo).
 
     #--- Develop project as usually, until it's ready to run
