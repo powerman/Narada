@@ -6,7 +6,7 @@ use Carp;
 
 our $VERSION = 'v2.3';
 
-use Perl6::Export::Attrs;
+use Export::Attrs;
 use Narada;
 use Fcntl qw( :DEFAULT :flock F_SETFD FD_CLOEXEC );
 use Errno;

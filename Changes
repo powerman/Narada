@@ -1,6 +1,7 @@
 Revision history for Narada
 
 {{$NEXT}}
+	- Use Export::Attrs instead of Perl6::Export::Attrs.
 
 v2.3  2015-11-29 23:55:51 EET
 	- Ban Perl6::Export::Attrs-0.0.5.
