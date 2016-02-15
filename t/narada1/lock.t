@@ -8,7 +8,7 @@ use constant LOCKNEW    => Narada::Lock::LOCKNEW;
 use constant LOCKFILE   => Narada::Lock::LOCKFILE;
 
 
-plan skip_all => 'Too many broken cpan tester setups.' if $ENV{AUTOMATED_TESTING} || $ENV{PERL_CPAN_REPORTER_CONFIG};
+plan skip_all => 'unstable on CPAN Testers' if $ENV{AUTOMATED_TESTING} && !$ENV{RELEASE_TESTING};
 
 
 sub between;

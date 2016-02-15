@@ -19,7 +19,7 @@ ok `narada-lock $cmd & narada-lock $cmd & wait` =~ /1\n1\n2\n2\n/,
 ok `narada-lock-exclusive $cmd & narada-lock-exclusive $cmd & wait` =~ /1\n2\n1\n2\n/,
     'two exclusive_lock passes sequentially (in any order)';
 SKIP: {
-    skip 'Too many broken cpan tester setups.', 1 if $ENV{AUTOMATED_TESTING} || $ENV{PERL_CPAN_REPORTER_CONFIG};
+    skip 'unstable on CPAN Testers', 1 if $ENV{AUTOMATED_TESTING} && !$ENV{RELEASE_TESTING};
     my $cmd2 = 'bash -c \'echo 1x; sleep 1; echo 2x\'';
     my $s = "narada-lock $cmd & sleep 0.2; narada-lock-exclusive $cmd2 & sleep 0.2; narada-lock $cmd & wait";
     ok `$s` =~ /1\n2\n1x\n2x\n1\n2\n/,
