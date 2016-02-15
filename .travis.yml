@@ -1,12 +1,4 @@
-# We do not use sudo and declaring so allows us to access
-# the container based Travis infrastructure.
-# - http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
-
-notifications:
-  email:
-    on_success: change
-    on_failure: always
 
 language: perl
 perl:
@@ -18,17 +10,25 @@ perl:
   - "5.20"
   - "5.22"
 
-install:
-  - export HARNESS_OPTIONS=j1:c HARNESS_TIMER=1
-  - export AUTOMATED_TESTING=1 NONINTERACTIVE_TESTING=1 PERL_MM_USE_DEFAULT=1
-  - cpanm -nq --installdeps .
+env:
+  global:
+    - HARNESS_OPTIONS=j1:c
+    - HARNESS_TIMER=1
+    - AUTOMATED_TESTING=1
+    - NONINTERACTIVE_TESTING=1
+    - PERL_MM_USE_DEFAULT=1
+    - RELEASE_TESTING=1
+    - EXTENDED_TESTING=1
+    - TEST_MYSQL_USER=root
+    - TEST_MYSQL_PASS=
+
+before_install:
   - cpanm -nq Devel::Cover::Report::Coveralls
-  - export RELEASE_TESTING=1
-  - export EXTENDED_TESTING=1
   - cpanm -nq DBD::mysql
   - echo -e "driver_dsn = dbi:mysql:\nusername = root" > ~/.test-database
+install:
+  - cpanm -nq --installdeps .
 script:
   - perl Build.PL && ./Build && cover -test
 after_success:
   - cover -report coveralls
-
