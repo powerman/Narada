@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v2.3.1';
+our $VERSION = 'v2.3.2';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -79,8 +79,7 @@ narada-new-1 - creates a skeleton project based on Narada framework v1.x
 
 =head1 VERSION
 
-This document describes narada-new-1 version v2.3.1
-    narada-new-1 [/path/to/project]
+This document describes narada-new-1 version v2.3.2    narada-new-1 [/path/to/project]
 
 
 =head1 DESCRIPTION

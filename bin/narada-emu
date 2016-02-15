@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v2.3.1'
+VERSION='v2.3.2'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -30,8 +30,7 @@ narada-emu - start OS Inferno's emu-g for this project
 
 =head1 VERSION
 
-This document describes narada-emu version v2.3.1
-    narada-emu [options] [command]
+This document describes narada-emu version v2.3.2    narada-emu [options] [command]
 
 
 =head1 DESCRIPTION

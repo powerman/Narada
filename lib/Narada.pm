@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = 'v2.3.1';
+our $VERSION = 'v2.3.2';
 
 
 # Possible types of current directory:
@@ -44,8 +44,7 @@ Narada - framework for ease deploy and support microservice projects
 
 =head1 VERSION
 
-This document describes Narada version v2.3.1
-    #--- Create new project
+This document describes Narada version v2.3.2    #--- Create new project
     ~ $ narada-new my_proj
     ... New project will be created using template (from git repo).
 

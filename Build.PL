@@ -22,7 +22,7 @@ my %module_build_args = (
     "Alex Efros <powerman\@cpan.org>"
   ],
   "dist_name" => "Narada",
-  "dist_version" => "v2.3.1",
+  "dist_version" => "v2.3.2",
   "license" => "mit",
   "module_name" => "Narada",
   "recursive_test_files" => 1,

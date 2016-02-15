@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v2.3.1'
+VERSION='v2.3.2'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -23,8 +23,7 @@ narada-bg-killall - kill all background commands of this project
 
 =head1 VERSION
 
-This document describes narada-bg-killall version v2.3.1
-    narada-bg-killall
+This document describes narada-bg-killall version v2.3.2    narada-bg-killall
 
 
 =head1 DESCRIPTION

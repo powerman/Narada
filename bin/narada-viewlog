@@ -3,7 +3,7 @@ use 5.010001;
 use warnings;
 use strict;
 
-our $VERSION = 'v2.3.1';
+our $VERSION = 'v2.3.2';
 
 use FindBin;
 use lib "$FindBin::Bin/../lib/perl5";
@@ -173,8 +173,7 @@ narada-viewlog - log viewer for project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-viewlog version v2.3.1
-    narada-viewlog [-d] [-t] [-m] [-f] [-l] [-i] [-p] [-L LEVEL] [-R REGEX] [logfile ...]
+This document describes narada-viewlog version v2.3.2    narada-viewlog [-d] [-t] [-m] [-f] [-l] [-i] [-p] [-L LEVEL] [-R REGEX] [logfile ...]
 
 
 =head1 DESCRIPTION

@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-our $VERSION = 'v2.3.1';
+our $VERSION = 'v2.3.2';
 
 use Export::Attrs;
 use Narada;
@@ -75,8 +75,7 @@ Narada::Config - manage project configuration
 
 =head1 VERSION
 
-This document describes Narada::Config version v2.3.1
-    use Narada::Config;
+This document describes Narada::Config version v2.3.2    use Narada::Config;
 
     my $version = get_config_line("version");
     my $exclude = get_config("backup/exclude");

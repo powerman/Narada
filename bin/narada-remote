@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="v2.3.1" # based on remote-2.0.2
+VERSION="v2.3.2" # based on remote-2.0.2
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -38,8 +38,7 @@ narada-remote - use ssh to execute command on remote host in project root
 
 =head1 VERSION
 
-This document describes narada-remote version v2.3.1
-    narada-remote [-t] 'your command here'
+This document describes narada-remote version v2.3.2    narada-remote [-t] 'your command here'
 
 
 =head1 DESCRIPTION
