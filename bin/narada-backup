@@ -68,7 +68,12 @@ narada-backup - prepare consistent project backup
 
 =head1 VERSION
 
-This document describes narada-backup version v2.3.2    narada-backup
+This document describes narada-backup version v2.3.2
+
+
+=head1 USAGE
+
+    narada-backup
 
 
 =head1 DESCRIPTION

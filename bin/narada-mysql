@@ -43,7 +43,12 @@ narada-mysql - start mysql client for this project
 
 =head1 VERSION
 
-This document describes narada-mysql version v2.3.2    narada-mysql
+This document describes narada-mysql version v2.3.2
+
+
+=head1 USAGE
+
+    narada-mysql
 
 
 =head1 DESCRIPTION

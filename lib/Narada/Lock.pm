@@ -86,7 +86,12 @@ Narada::Lock - manage project locks
 
 =head1 VERSION
 
-This document describes Narada::Lock version v2.3.2    use Narada::Lock qw( shared_lock unlock child_inherit_lock );
+This document describes Narada::Lock version v2.3.2
+
+
+=head1 SYNOPSIS
+
+    use Narada::Lock qw( shared_lock unlock child_inherit_lock );
     use Narada::Lock qw( exclusive_lock unlock_new unlock );
 
     shared_lock();

@@ -75,7 +75,12 @@ Narada::Config - manage project configuration
 
 =head1 VERSION
 
-This document describes Narada::Config version v2.3.2    use Narada::Config;
+This document describes Narada::Config version v2.3.2
+
+
+=head1 SYNOPSIS
+
+    use Narada::Config;
 
     my $version = get_config_line("version");
     my $exclude = get_config("backup/exclude");

@@ -18,7 +18,12 @@ narada-patch-pull - download latests patch files from remote
 
 =head1 VERSION
 
-This document describes narada-patch-pull version v2.3.2    narada-patch-pull
+This document describes narada-patch-pull version v2.3.2
+
+
+=head1 USAGE
+
+    narada-patch-pull
 
 
 =head1 DESCRIPTION

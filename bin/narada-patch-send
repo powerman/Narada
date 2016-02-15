@@ -38,7 +38,12 @@ narada-patch-send - send latests patch files by email to other developers
 
 =head1 VERSION
 
-This document describes narada-patch-send version v2.3.2    narada-patch-send
+This document describes narada-patch-send version v2.3.2
+
+
+=head1 USAGE
+
+    narada-patch-send
 
 
 =head1 DESCRIPTION

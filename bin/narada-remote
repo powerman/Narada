@@ -38,7 +38,12 @@ narada-remote - use ssh to execute command on remote host in project root
 
 =head1 VERSION
 
-This document describes narada-remote version v2.3.2    narada-remote [-t] 'your command here'
+This document describes narada-remote version v2.3.2
+
+
+=head1 USAGE
+
+    narada-remote [-t] 'your command here'
 
 
 =head1 DESCRIPTION

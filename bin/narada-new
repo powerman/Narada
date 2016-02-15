@@ -56,7 +56,12 @@ narada-new - creates a new project based on Narada framework
 
 =head1 VERSION
 
-This document describes narada-new version v2.3.2    narada-new [-r base_repository] [-b branch] [directory]
+This document describes narada-new version v2.3.2
+
+
+=head1 USAGE
+
+    narada-new [-r base_repository] [-b branch] [directory]
 
 
 =head1 DESCRIPTION

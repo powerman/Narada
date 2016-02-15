@@ -76,7 +76,12 @@ narada-setup-mysql - initialize project database
 
 =head1 VERSION
 
-This document describes narada-setup-mysql version v2.3.2    narada-setup-mysql [--clean]
+This document describes narada-setup-mysql version v2.3.2
+
+
+=head1 USAGE
+
+    narada-setup-mysql [--clean]
 
 
 =head1 DESCRIPTION

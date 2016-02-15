@@ -33,7 +33,12 @@ narada-lock-exclusive - run command under exclusive lock
 
 =head1 VERSION
 
-This document describes narada-lock-exclusive version v2.3.2    narada-lock-exclusive [/path/to/commands param ...]
+This document describes narada-lock-exclusive version v2.3.2
+
+
+=head1 USAGE
+
+    narada-lock-exclusive [/path/to/commands param ...]
 
 
 =head1 DESCRIPTION

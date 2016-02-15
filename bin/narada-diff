@@ -36,7 +36,12 @@ narada-diff - prepare patch from previous version to current
 
 =head1 VERSION
 
-This document describes narada-diff version v2.3.2    narada-diff
+This document describes narada-diff version v2.3.2
+
+
+=head1 USAGE
+
+    narada-diff
 
 
 =head1 DESCRIPTION

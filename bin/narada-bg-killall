@@ -23,7 +23,12 @@ narada-bg-killall - kill all background commands of this project
 
 =head1 VERSION
 
-This document describes narada-bg-killall version v2.3.2    narada-bg-killall
+This document describes narada-bg-killall version v2.3.2
+
+
+=head1 USAGE
+
+    narada-bg-killall
 
 
 =head1 DESCRIPTION

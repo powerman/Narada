@@ -136,7 +136,12 @@ narada-release - release current changes in Narada project
 
 =head1 VERSION
 
-This document describes narada-release version v2.3.2    narada-release
+This document describes narada-release version v2.3.2
+
+
+=head1 USAGE
+
+    narada-release
 
 
 =head1 DESCRIPTION

@@ -64,7 +64,12 @@ Narada::Log - setup project log
 
 =head1 VERSION
 
-This document describes Narada::Log version v2.3.2    use Narada::Log qw( $LOG );
+This document describes Narada::Log version v2.3.2
+
+
+=head1 SYNOPSIS
+
+    use Narada::Log qw( $LOG );
 
     $LOG->INFO("ready to work");
 

@@ -79,7 +79,12 @@ narada-new-1 - creates a skeleton project based on Narada framework v1.x
 
 =head1 VERSION
 
-This document describes narada-new-1 version v2.3.2    narada-new-1 [/path/to/project]
+This document describes narada-new-1 version v2.3.2
+
+
+=head1 USAGE
+
+    narada-new-1 [/path/to/project]
 
 
 =head1 DESCRIPTION

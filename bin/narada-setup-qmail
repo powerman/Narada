@@ -149,7 +149,12 @@ narada-setup-qmail - install/remove project qmail configuration
 
 =head1 VERSION
 
-This document describes narada-setup-qmail version v2.3.2    narada-setup-qmail [--clean|--lock]
+This document describes narada-setup-qmail version v2.3.2
+
+
+=head1 USAGE
+
+    narada-setup-qmail [--clean|--lock]
 
 
 =head1 DESCRIPTION

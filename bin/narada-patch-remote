@@ -19,7 +19,12 @@ narada-patch-remote - upload latests patch files and apply patch on remote side
 
 =head1 VERSION
 
-This document describes narada-patch-remote version v2.3.2    narada-patch-remote
+This document describes narada-patch-remote version v2.3.2
+
+
+=head1 USAGE
+
+    narada-patch-remote
 
 
 =head1 DESCRIPTION

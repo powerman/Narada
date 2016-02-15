@@ -84,7 +84,12 @@ narada-restore - restore full project or some files from backup
 
 =head1 VERSION
 
-This document describes narada-restore version v2.3.2    narada-restore path/to/backup.full.tar [files]
+This document describes narada-restore version v2.3.2
+
+
+=head1 USAGE
+
+    narada-restore path/to/backup.full.tar [files]
 
 
 =head1 DESCRIPTION

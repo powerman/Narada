@@ -243,7 +243,12 @@ narada-install - migrate project to given version
 
 =head1 VERSION
 
-This document describes narada-install version v2.3.2    narada-install [--allow-downgrade|-D] [--allow-restore|-R] [-f <file>] <ver>
+This document describes narada-install version v2.3.2
+
+
+=head1 USAGE
+
+    narada-install [--allow-downgrade|-D] [--allow-restore|-R] [-f <file>] <ver>
     narada-install [-f <file>] --path|-p <ver1> <ver2> <ver3> ...
     narada-install --check|-c <file>
     narada-install --help|-h

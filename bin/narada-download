@@ -37,7 +37,12 @@ narada-download - use scp to download project files from remote host
 
 =head1 VERSION
 
-This document describes narada-download version v2.3.2    narada-download relative/path/file …
+This document describes narada-download version v2.3.2
+
+
+=head1 USAGE
+
+    narada-download relative/path/file …
 
 
 =head1 DESCRIPTION

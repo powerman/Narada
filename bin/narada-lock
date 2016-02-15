@@ -30,7 +30,12 @@ narada-lock - run command under shared lock
 
 =head1 VERSION
 
-This document describes narada-lock version v2.3.2    narada-lock [/path/to/commands param ...]
+This document describes narada-lock version v2.3.2
+
+
+=head1 USAGE
+
+    narada-lock [/path/to/commands param ...]
 
 
 =head1 DESCRIPTION

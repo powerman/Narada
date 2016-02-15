@@ -239,7 +239,12 @@ narada-mysqldump - dump project database
 
 =head1 VERSION
 
-This document describes narada-mysqldump version v2.3.2    narada-mysqldump
+This document describes narada-mysqldump version v2.3.2
+
+
+=head1 USAGE
+
+    narada-mysqldump
 
 
 =head1 DESCRIPTION

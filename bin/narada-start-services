@@ -31,7 +31,12 @@ narada-start-services - start project's services
 
 =head1 VERSION
 
-This document describes narada-start-services version v2.3.2    # in config/crontab/service:
+This document describes narada-start-services version v2.3.2
+
+
+=head1 USAGE
+
+    # in config/crontab/service:
     */1  * * * *    narada-start-services &
 
 
