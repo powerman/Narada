@@ -12,7 +12,7 @@ perl:
 
 env:
   global:
-    - HARNESS_OPTIONS=j10:c
+    - HARNESS_OPTIONS=j1:c
     - HARNESS_TIMER=1
     - AUTOMATED_TESTING=1
     - NONINTERACTIVE_TESTING=1
