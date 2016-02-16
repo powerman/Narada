@@ -53,7 +53,7 @@ is system("cd \Q$dir1\E; narada-backup"), 0, 'third backup';
 # XXX incremental archives was disabled
 # system("cd \Q$dir1\E; cp var/backup/incr.tar tmp/incr2.tar") == 0 or die "system: $?";
 SKIP: {
-    skip 'unstable on CPAN Testers', 2 if $ENV{AUTOMATED_TESTING} && !$ENV{RELEASE_TESTING};
+    skip 'unstable on CPAN Testers', 2 if !$ENV{RELEASE_TESTING} && ($ENV{AUTOMATED_TESTING} || $ENV{PERL_CPAN_REPORTER_CONFIG});
     check_backup("$dir1/var/backup/full.tar");
     # XXX incremental archives was disabled
     # check_backup("$dir1/tmp/full1.tar", "$dir1/tmp/incr1.tar", "$dir1/tmp/incr2.tar");

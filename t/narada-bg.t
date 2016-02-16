@@ -4,7 +4,7 @@ use t::share; guard my $guard;
 plan skip_all => 'flock not installed'      if !grep {-x "$_/flock"} split /:/, $ENV{PATH};
 plan skip_all => 'pgrep not installed'      if !grep {-x "$_/pgrep"} split /:/, $ENV{PATH};
 plan skip_all => 'fuser not installed'      if !grep {-x "$_/fuser"} split /:/, $ENV{PATH};
-plan skip_all => 'unstable on CPAN Testers' if $ENV{AUTOMATED_TESTING} && !$ENV{RELEASE_TESTING};
+plan skip_all => 'unstable on CPAN Testers' if !$ENV{RELEASE_TESTING} && ($ENV{AUTOMATED_TESTING} || $ENV{PERL_CPAN_REPORTER_CONFIG});
 
 
 my $pfx = cwd() . '/' . sprintf 'some_script_%d_%d_', time, $$;

@@ -1,6 +1,7 @@
 Revision history for Narada
 
 {{$NEXT}}
+	- Support CPAN Testers without $AUTOMATED_TESTING.
 
 v2.3.3  2016-02-15 20:33:19 EET
 	- Fix POD.
