@@ -1,6 +1,8 @@
 Revision history for Narada
 
 {{$NEXT}}
+
+v2.3.4  2016-02-16 10:21:57 EET
 	- Support CPAN Testers without $AUTOMATED_TESTING.
 
 v2.3.3  2016-02-15 20:33:19 EET
