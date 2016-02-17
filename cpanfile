@@ -17,22 +17,21 @@ requires 'parent';
 requires 'version', '0.77';
 
 on configure => sub {
-    requires 'Devel::AssertOS';
     requires 'CPAN::Meta', '2.150005';
+    requires 'Devel::AssertOS';
+    requires 'Module::Build', '0.28';
 };
 
 on test => sub {
     requires 'File::Copy::Recursive';
-    requires 'Pod::Coverage', '0.18';
-    requires 'Test::CheckManifest', '0.9';
     requires 'Test::Database';
     requires 'Test::Differences';
     requires 'Test::Exception';
     requires 'Test::MockModule';
     requires 'Test::More', '0.96';
     requires 'Test::Output';
-    requires 'Test::Perl::Critic';
-    requires 'Test::Pod', '1.22';
-    requires 'Test::Pod::Coverage', '1.08';
 };
 
+on develop => sub {
+    requires 'Test::Perl::Critic';
+};
