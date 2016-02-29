@@ -152,9 +152,9 @@ exclusive lock again and continue these critical operations.
 
 =head1 INTERFACE 
 
-=over
+=head2 shared_lock
 
-=item B<shared_lock>( $timeout )
+    shared_lock( $timeout );
 
 Try to get shared lock which is required to modify any project data (files or
 database).
@@ -166,7 +166,9 @@ Use unlock() to free this lock.
 
 Return: true if able to get lock.
 
-=item B<exclusive_lock>()
+=head2 exclusive_lock
+
+    exclusive_lock();
 
 Try to get exclusive lock which is required to guarantee consistent project
 state (needed while backup/update/maintenance operations).
@@ -182,7 +184,9 @@ Use unlock_new() in combination with exit() or unlock() to free these locks.
 
 Return: nothing.
 
-=item B<unlock_new>()
+=head2 unlock_new
+
+    unlock_new();
 
 Free first lock set by exclusive_lock() (i.e. remove file C<.lock.new>).
 This allow other tasks to get shared_lock() after this process exit or
@@ -190,13 +194,17 @@ call unlock().
 
 Return: nothing.
 
-=item B<unlock>()
+=head2 unlock
+
+    unlock();
 
 Free lock set by shared_lock() (or second lock set by exclusive_lock()).
 
 Return: nothing.
 
-=item B<child_inherit_lock>( $is_inherit )
+=head2 child_inherit_lock
+
+    child_inherit_lock( $is_inherit );
 
 By default, child processes don't inherit our FD with lock.
 This is acceptable only if we don't run child in background or if
@@ -226,8 +234,6 @@ Examples:
  child_inherit_lock(0); # next child will not inherit lock
 
 Return: nothing.
-
-=back
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -299,7 +305,7 @@ Alex Efros E<lt>powerman@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2008-2016 by Alex Efros E<lt>powerman@cpan.orgE<gt>.
+This software is Copyright (c) 2008- by Alex Efros E<lt>powerman@cpan.orgE<gt>.
 
 This is free software, licensed under:
 

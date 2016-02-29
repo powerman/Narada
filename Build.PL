@@ -75,17 +75,12 @@ my %module_build_args = (
   ],
   "test_requires" => {
     "File::Copy::Recursive" => 0,
-    "Pod::Coverage" => "0.18",
-    "Test::CheckManifest" => "0.9",
     "Test::Database" => 0,
     "Test::Differences" => 0,
     "Test::Exception" => 0,
     "Test::MockModule" => 0,
     "Test::More" => "0.96",
-    "Test::Output" => 0,
-    "Test::Perl::Critic" => 0,
-    "Test::Pod" => "1.22",
-    "Test::Pod::Coverage" => "1.08"
+    "Test::Output" => 0
   }
 );
 
@@ -93,17 +88,12 @@ my %module_build_args = (
 my %fallback_build_requires = (
   "File::Copy::Recursive" => 0,
   "Module::Build" => "0.28",
-  "Pod::Coverage" => "0.18",
-  "Test::CheckManifest" => "0.9",
   "Test::Database" => 0,
   "Test::Differences" => 0,
   "Test::Exception" => 0,
   "Test::MockModule" => 0,
   "Test::More" => "0.96",
-  "Test::Output" => 0,
-  "Test::Perl::Critic" => 0,
-  "Test::Pod" => "1.22",
-  "Test::Pod::Coverage" => "1.08"
+  "Test::Output" => 0
 );
 
 

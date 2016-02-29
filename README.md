@@ -881,7 +881,7 @@ Nick Levchenko &lt;project129@yandex.ru>
 
 # COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2008-2016 by Alex Efros &lt;powerman@cpan.org>.
+This software is Copyright (c) 2008- by Alex Efros &lt;powerman@cpan.org>.
 
 This is free software, licensed under:
 

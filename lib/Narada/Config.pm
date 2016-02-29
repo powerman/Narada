@@ -102,30 +102,34 @@ to these files, this module provide easier way to do this.
 
 =head1 INTERFACE 
 
-=over
+=head2 get_config
 
-=item B<get_config>( VARIABLE_NAME )
+    $value = get_config( $name );
 
-VARIABLE_NAME must contain only [/A-Za-z0-9._-].
+$name must contain only [/A-Za-z0-9._-].
 It must not contain "./" or "../".
 
-Return: contents of file 'config/VARIABLE_NAME' as scalar.
+Return: contents of file 'config/$name' as scalar.
 
-=item B<get_config_line>( VARIABLE_NAME )
+=head2 get_config_line
+
+    $value = get_config_line( $name );
 
 Suitable for reading files which contain single string (with/without \n at end).
 
-VARIABLE_NAME must contain only [/A-Za-z0-9._-].
+$name must contain only [/A-Za-z0-9._-].
 It must not contain "./" or "../".
 
-Return: contents of file 'config/VARIABLE_NAME' as scalar without last \n
+Return: contents of file 'config/$name' as scalar without last \n
 (if any). Raise exception if file contain more than one line.
 
-=item B<get_db_config>()
+=head2 get_db_config
+
+    $db_config = get_db_config();
 
 Helper for reading database configuration from C<config/db/*>.
 
-Return: nothing if database not configured, or hashref with keys:
+Return: nothing if database not configured, or HASHREF with keys:
 
     {db}        contents of config/db/db
     {login}     contents of config/db/login
@@ -135,17 +139,17 @@ Return: nothing if database not configured, or hashref with keys:
     {dsn_nodb}  'dbi:mysql:;host=$host;port=$port'
     {dsn}       'dbi:mysql:;host=$host;port=$port;database=$db'
 
-=item B<set_config>( VARIABLE_NAME, VARIABLE_VALUE )
+=head2 set_config
 
-See limitation for VARIABLE_VALUE above.
+    set_config( $name, $value );
 
-Atomically write VARIABLE_VALUE (scalar) to file 'config/VARIABLE_NAME'.
-If 'config/VARIABLE_NAME' doesn't exist it will be created (including
+See limitation for $name above.
+
+Atomically write $value (scalar) to file 'config/$name'.
+If 'config/$name' doesn't exist it will be created (including
 parent directories if needed).
 
 Return: nothing.
-
-=back
 
 
 =head1 DIAGNOSTICS
@@ -217,7 +221,7 @@ Alex Efros E<lt>powerman@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2008-2016 by Alex Efros E<lt>powerman@cpan.orgE<gt>.
+This software is Copyright (c) 2008- by Alex Efros E<lt>powerman@cpan.orgE<gt>.
 
 This is free software, licensed under:
 

@@ -1,6 +1,7 @@
 Revision history for Narada
 
 {{$NEXT}}
+	- Reformat doc.
 
 v2.3.4  2016-02-16 10:21:57 EET
 	- Support CPAN Testers without $AUTOMATED_TESTING.
