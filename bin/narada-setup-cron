@@ -75,7 +75,7 @@ sub get_user_crontab {
     # WORKAROUND    If user has no crontab then `crontab -l` output string
     #               "no crontab for USERNAME". So we've to use `crontab -e`
     #               instead, to get empty output in this case.
-    open my $cron, q{-|}, 'EDITOR=cat crontab -e'   or err "crontab -e: $!";
+    open my $cron, q{-|}, 'VISUAL=cat EDITOR=cat crontab -e'   or err "crontab -e: $!";
     my $crontab = <$cron>;
     close $cron                                     or err "crontab -e: $!";
     return $crontab;
