@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="v2.3.4"
+VERSION="v2.3.5"
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -39,7 +39,7 @@ narada-shutdown-services - kill services and their supervisors
 
 =head1 VERSION
 
-This document describes narada-shutdown-services version v2.3.4
+This document describes narada-shutdown-services version v2.3.5
 
 
 =head1 USAGE

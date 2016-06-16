@@ -7,7 +7,7 @@ Narada - framework for ease deploy and support microservice projects
 
 # VERSION
 
-This document describes Narada version v2.3.4
+This document describes Narada version v2.3.5
 
 # SYNOPSIS
 
@@ -871,17 +871,17 @@ Feel free to fork the repository and submit pull requests.
 
 # AUTHOR
 
-Alex Efros &lt;powerman@cpan.org>
+Alex Efros <powerman@cpan.org>
 
 # CONTRIBUTORS
 
-Nikita Savin &lt;asdfgroup@gmail.com>
+Nikita Savin <asdfgroup@gmail.com>
 
-Nick Levchenko &lt;project129@yandex.ru>
+Nick Levchenko <project129@yandex.ru>
 
 # COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2008- by Alex Efros &lt;powerman@cpan.org>.
+This software is Copyright (c) 2008- by Alex Efros <powerman@cpan.org>.
 
 This is free software, licensed under:
 
