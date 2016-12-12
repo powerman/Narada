@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION='v2.3.5'
+VERSION='v2.3.6'
 
 warn()  { echo "$@" >&2;        }
 die()   { warn "$@"; exit 1;    }
@@ -84,7 +84,7 @@ narada-restore - restore full project or some files from backup
 
 =head1 VERSION
 
-This document describes narada-restore version v2.3.5
+This document describes narada-restore version v2.3.6
 
 
 =head1 USAGE
