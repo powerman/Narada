@@ -137,6 +137,7 @@ sub check_path {
 sub migrate {
         my ($migrate, $path) = @_;
 
+        say 'Acquire exclusive lock ...';
         exclusive_lock();
         {
                 local $ENV{NARADA_SKIP_LOCK} = 1;
