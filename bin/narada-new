@@ -42,7 +42,8 @@ git init
 git commit --allow-empty -m 'empty'
 git tag -a -m empty "$INITIAL_VERSION"
 git remote add narada-base -t "$branch" -m "$branch" -f "$repo"
-git merge narada-base -m 'narada-new: merge narada-base'
+git merge -h 2>&1 | grep -q allow-unrelated-histories && mergeopt="--allow-unrelated-histories"
+git merge $mergeopt narada-base -m 'narada-new: merge narada-base'
 
 
 : <<'=cut'
