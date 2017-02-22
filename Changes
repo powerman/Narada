@@ -2,6 +2,9 @@ Revision history for Narada
 
 {{$NEXT}}
 
+v2.3.7  2017-02-22 06:49:08 EET
+	- narada-new now compatible with git-2.9
+
 v2.3.6  2016-12-13 01:07:47 EET
 	- narada-install notify when acquire lock
 	- narada-backup notify when acquire lock
