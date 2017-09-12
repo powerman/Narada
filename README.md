@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/powerman/Narada.svg?branch=master)](https://travis-ci.org/powerman/Narada)
 [![Coverage Status](https://coveralls.io/repos/powerman/Narada/badge.svg?branch=master)](https://coveralls.io/r/powerman/Narada?branch=master)
+[![Docker Automated Build](https://img.shields.io/docker/automated/powerman/narada.svg)](https://github.com/powerman/Narada)
+[![Docker Build Status](https://img.shields.io/docker/build/powerman/narada.svg)](https://hub.docker.com/r/powerman/narada/)
 
 # NAME
 
