@@ -39,6 +39,7 @@ fi
 set -ex
 cd "$dir"
 git init
+test -n "$NONINTERACTIVE_TESTING" && git config commit.gpgsign false
 git commit --allow-empty -m 'empty'
 git tag -a -m empty "$INITIAL_VERSION"
 git remote add narada-base -t "$branch" -m "$branch" -f "$repo"
