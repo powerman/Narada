@@ -1,4 +1,4 @@
-use t::narada1::share; guard my $guard;
+use lib 't'; use narada1::share; guard my $guard;
 
 
 plan skip_all => 'OS Inferno not installed'  if !grep {-x "$_/emu-g" && /inferno/} split /:/, $ENV{PATH};
