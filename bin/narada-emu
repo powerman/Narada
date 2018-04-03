@@ -16,6 +16,7 @@ if [ $# -eq 1 ]; then
 fi
 
 export INFERNO_HOME=$(pwd)
+unset LD_PRELOAD
 exec emu-g "${opts[@]}" "${cmd[@]}"
 
 
